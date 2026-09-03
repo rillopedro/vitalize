@@ -1,0 +1,8 @@
+# Segredos e configurações locais de APIs
+.env
+.env.*
+!.env.example.template
+
+# Arquivos locais alternativos de configuração
+config.local.php
+secrets.php
