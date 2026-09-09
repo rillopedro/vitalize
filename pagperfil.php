@@ -47,7 +47,7 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="/vitalize/css/style.css?v=3">
+    <link rel="stylesheet" href="css/style.css?v=3">
 </head>
 
 <body>
@@ -94,8 +94,8 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
 
                 <div class="foto-perfil">
 
-                    <?php $fotoPerfilSrc = $fotoPerfil; ?>
-                    <img src="<?= htmlspecialchars($fotoPerfilSrc) ?>" id="fotoPerfil">
+                    <?php $fotoPerfilSrc = $fotoPerfil ?: 'img/logov.png'; ?>
+                    <img src="<?= htmlspecialchars($fotoPerfilSrc) ?>" id="fotoPerfil" alt="Foto de perfil">
 
                     <label for="novaFoto" class="editar-foto">
                         <i class="fa-solid fa-camera"></i>

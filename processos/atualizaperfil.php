@@ -4,7 +4,7 @@ session_start();
 require_once __DIR__ . '/../conexao.php';
 require_once __DIR__ . '/upload_helper.php';
 
-if (empty($_SESSION['id_usuario'])) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_SESSION['id_usuario'])) {
     header('Location: ../login.php');
     exit();
 }
@@ -43,10 +43,16 @@ if ($stmt_verifica->rowCount() > 0) {
 
 $sql = "UPDATE usuarios SET nome = :nome, sobrenome = :sobrenome, email = :email, telefone = :telefone";
 
-$foto_perfil_path = null;
-if (!empty($_FILES['foto_perfil']['name'])) {
-    $foto_perfil_path = salvar_arquivo_upload($_FILES['foto_perfil'], 'usuarios');
-    $sql .= ", foto_perfil = :foto_perfil";
+try {
+    $foto_perfil_path = null;
+    if (!empty($_FILES['foto_perfil']['name'])) {
+        $foto_perfil_path = salvar_arquivo_upload($_FILES['foto_perfil'], 'usuarios');
+        $sql .= ", foto_perfil = :foto_perfil";
+    }
+} catch (Throwable $e) {
+    $_SESSION['erro_perfil'] = $e->getMessage();
+    header('Location: ../pagperfil.php');
+    exit();
 }
 
 if ($senha !== '') {

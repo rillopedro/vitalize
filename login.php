@@ -34,12 +34,17 @@
 
             <h1 class="login-titulo">Login</h1>
 
+            <?php if (!empty($_SESSION['erro_login'])): ?>
+                <p class="mensagem-erro"><?= htmlspecialchars($_SESSION['erro_login']) ?></p>
+                <?php unset($_SESSION['erro_login']); ?>
+            <?php endif; ?>
+
             <form class="login-form" method="POST" action="processos/processalogin.php">
                 <label>Email:</label>
-                <input type="email" class="login-input" name="email">
+                <input type="email" class="login-input" name="email" required autocomplete="email">
 
                 <label>Senha:</label>
-                <input type="password" class="login-input" name="senha">
+                <input type="password" class="login-input" name="senha" required autocomplete="current-password">
 
                 <button class="login-btn">ENTRAR</button>
                 <p class="subcadastro">Não possui uma conta? <a class="sublink" href="cadastro.php">Cadastre-se</a> <br>

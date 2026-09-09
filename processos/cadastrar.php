@@ -2,9 +2,6 @@
 
 session_start();
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../conexao.php';
 
 try {
@@ -16,6 +13,12 @@ try {
     $telefone = trim($_POST['telefone'] ?? '');
     $senha = trim($_POST['senha'] ?? '');
     $confirmarSenha = trim($_POST['confirmar_senha'] ?? '');
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || $nome === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $senha === '') {
+        $_SESSION['erro_cadastro'] = 'Preencha nome, e-mail válido e senha.';
+        header("Location: ../cadastro.php");
+        exit();
+    }
 
     // Verificar se as senhas são iguais
     if ($senha !== $confirmarSenha) {

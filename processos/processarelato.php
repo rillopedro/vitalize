@@ -4,7 +4,7 @@ session_start();
 
 require_once __DIR__ . '/../conexao.php';
 
-if (!isset($_SESSION['id_usuario'])) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_SESSION['id_usuario'])) {
     header("Location: ../login.php");
     exit();
 }
@@ -20,7 +20,7 @@ if ($titulo === '' || $conteudo === '') {
     exit();
 }
 
-$sql = "INSERT INTO relatos (id_usuario, titulo, relato, data_publicacao, anonimo)
+$sql = "INSERT INTO relatos (id_usuario, titulo, conteudo, data_publicacao, anonimo)
 VALUES (:id_usuario, :titulo, :conteudo, NOW(), :anonimo)";
 
 $stmt = $pdo->prepare($sql);

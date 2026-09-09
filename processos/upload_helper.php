@@ -17,7 +17,27 @@ function salvar_arquivo_upload(array $arquivo, string $subpasta): string
         throw new RuntimeException('Arquivo inválido para upload.');
     }
 
-    $extensao = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
+    $tamanhoMaximo = 5 * 1024 * 1024;
+    if (($arquivo['size'] ?? 0) > $tamanhoMaximo) {
+        throw new RuntimeException('A imagem deve ter no máximo 5 MB.');
+    }
+
+    $tipo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = $tipo ? finfo_file($tipo, $arquivo['tmp_name']) : false;
+    if ($tipo) {
+        finfo_close($tipo);
+    }
+
+    $mimesPermitidos = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp'
+    ];
+    if (!isset($mimesPermitidos[$mime])) {
+        throw new RuntimeException('O arquivo enviado não é uma imagem válida.');
+    }
+
+    $extensao = $mimesPermitidos[$mime];
     $permitidas = ['jpg', 'jpeg', 'png', 'webp'];
 
     if (!in_array($extensao, $permitidas, true)) {

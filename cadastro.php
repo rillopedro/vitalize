@@ -33,24 +33,29 @@
 
             <h1 class="login-titulo">Cadastre-Se</h1>
 
+            <?php if (!empty($_SESSION['erro_cadastro'])): ?>
+                <p class="mensagem-erro"><?= htmlspecialchars($_SESSION['erro_cadastro']) ?></p>
+                <?php unset($_SESSION['erro_cadastro']); ?>
+            <?php endif; ?>
+
             <form action="processos/cadastrar.php" class="login-form" method="post">
                 <label>Nome:</label>
-                <input type="text" class="login-input" name="nome">
+                <input type="text" class="login-input" name="nome" required autocomplete="given-name">
 
                 <label>Sobrenome:</label>
                 <input type="text" class="login-input" name="sobrenome">
 
                 <label>Email:</label>
-                <input type="email" class="login-input" name="email">
+                <input type="email" class="login-input" name="email" required autocomplete="email">
 
                 <label>Telefone:</label>
                 <input type="tel" class="login-input" name="telefone">
 
                 <label>Crie uma Senha:</label>
-                <input type="password" class="login-input" name="senha">
+                <input type="password" class="login-input" name="senha" required autocomplete="new-password">
 
                 <label>Repita a Senha:</label>
-                <input type="password" class="login-input" name="confirmar_senha"   >
+                <input type="password" class="login-input" name="confirmar_senha" required autocomplete="new-password">
 
                 <button class="login-btn">Cadastrar</button>
 

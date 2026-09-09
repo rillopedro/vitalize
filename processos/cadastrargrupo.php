@@ -2,9 +2,6 @@
 
 session_start();
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../conexao.php';
 require_once __DIR__ . '/upload_helper.php';
 
@@ -14,19 +11,17 @@ try {
     $nome = trim($_POST['nome'] ?? '');
     $foco = trim($_POST['foco'] ?? '');
     $mais_info = trim($_POST['mais_info'] ?? '');
+    $responsavel = trim($_POST['responsavel'] ?? '');
     $telefone_grupo = trim($_POST['telefone_grupo'] ?? '');
     $link = trim($_POST['link'] ?? '');
     $data_encontro_input = trim($_POST['data_encontro'] ?? '');
     $horario_input = trim($_POST['horario'] ?? '');
 
-    $data_encontro = null;
-    if (!empty($data_encontro_input)) {
-        $data_encontro = date('Y-m-d H:i:s', strtotime($data_encontro_input));
-    }
+    $data_encontro = $data_encontro_input !== '' ? date('Y-m-d', strtotime($data_encontro_input)) : null;
+    $horario = $horario_input !== '' ? date('H:i:s', strtotime($horario_input)) : null;
 
-    $horario = null;
-    if (!empty($horario_input)) {
-        $horario = date('H:i', strtotime($horario_input));
+    if ($nome === '') {
+        throw new InvalidArgumentException('Informe o nome do grupo.');
     }
 
     // Verificar se já existe um grupo com o mesmo nome
@@ -58,18 +53,20 @@ try {
     $sql = "INSERT INTO grupos
     (
         nome_grupo,
+        responsavel,
         mais_info,
         foco,
         data_encontro,
         horario,
         link,
-        telefone_grupo,
+        contato,
         imagem
     )
 
     VALUES
     (
         :nome,
+        :responsavel,
         :mais_info,
         :foco,
         :data_encontro,
@@ -82,6 +79,7 @@ try {
     $stmt = $pdo->prepare($sql);
 
     $stmt->bindParam(':nome', $nome);
+    $stmt->bindParam(':responsavel', $responsavel);
     $stmt->bindParam(':mais_info', $mais_info);
     $stmt->bindParam(':foco', $foco);
     $stmt->bindParam(':data_encontro', $data_encontro);
@@ -108,9 +106,10 @@ try {
 
     }
 
-}catch(PDOException $e){
+} catch (Throwable $e) {
 
-    $_SESSION['erro_grupo'] = "Erro ao cadastrar o grupo: " . $e->getMessage();
+    error_log('Erro ao cadastrar grupo: ' . $e->getMessage());
+    $_SESSION['erro_grupo'] = 'Não foi possível cadastrar o grupo. Verifique os dados e tente novamente.';
 
     header("Location: ../cadastrar_grupo.php");
 

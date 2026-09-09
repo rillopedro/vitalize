@@ -2,10 +2,12 @@
 
 session_start();
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../conexao.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: ../login.php');
+    exit();
+}
 
 // Receber dados do formulário
 $email = trim($_POST['email'] ?? '');
