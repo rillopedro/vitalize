@@ -31,6 +31,9 @@ USE `vitalize`;
 
 CREATE TABLE `consultas` (
   `id_consulta` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `tipo` varchar(20) NOT NULL,
+  `especialidade` varchar(150) NOT NULL,
   `data` date DEFAULT NULL,
   `horario` time DEFAULT NULL,
   `medico` varchar(150) DEFAULT NULL,
@@ -64,10 +67,11 @@ CREATE TABLE `grupos` (
   `id_grupo` int(11) NOT NULL,
   `id_criador` int(11) DEFAULT NULL,
   `nome_grupo` varchar(150) NOT NULL,
+  `responsavel` varchar(150) DEFAULT NULL,
   `mais_info` varchar(150) DEFAULT NULL,
   `foco` varchar(100) DEFAULT NULL,
   `data_encontro` date DEFAULT NULL,
-  `horario` datetime DEFAULT NULL,
+  `horario` time DEFAULT NULL,
   `link` varchar(150) DEFAULT NULL,
   `contato` varchar(150) DEFAULT NULL,
   `imagem` varchar(255) DEFAULT NULL
@@ -84,7 +88,8 @@ CREATE TABLE `relatos` (
   `id_usuario` int(11) NOT NULL,
   `titulo` varchar(150) DEFAULT NULL,
   `conteudo` text NOT NULL,
-  `data_publicacao` datetime DEFAULT current_timestamp()
+  `data_publicacao` datetime DEFAULT current_timestamp(),
+  `anonimo` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -116,6 +121,7 @@ CREATE TABLE `usuarios` (
 --
 ALTER TABLE `consultas`
   ADD PRIMARY KEY (`id_consulta`),
+  ADD KEY `id_usuario` (`id_usuario`),
   ADD KEY `id_endereco` (`id_endereco`);
 
 --
@@ -187,6 +193,7 @@ ALTER TABLE `usuarios`
 -- Restrições para tabelas `consultas`
 --
 ALTER TABLE `consultas`
+  ADD CONSTRAINT `consultas_ibfk_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`),
   ADD CONSTRAINT `consultas_ibfk_1` FOREIGN KEY (`id_endereco`) REFERENCES `endereco` (`id_endereco`);
 
 --

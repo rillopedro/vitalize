@@ -1,5 +1,18 @@
 <?php
 session_start();
+require_once 'conexao.php';
+
+$consultas = [];
+if (isset($_SESSION['id_usuario'])) {
+    $stmt = $pdo->prepare(
+        'SELECT id_consulta, tipo, especialidade, medico, nome_local, data, horario
+         FROM consultas
+         WHERE id_usuario = :id_usuario
+         ORDER BY data ASC, horario ASC, id_consulta ASC'
+    );
+    $stmt->execute([':id_usuario' => (int) $_SESSION['id_usuario']]);
+    $consultas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -233,46 +246,27 @@ session_start();
 
                 </div>
 
-                <div class="consultas">
-
-                    <div class="consulta">
-
-                        <div class="data-consulta">
-                            <strong>20</strong>
-                            <span>MAI</span>
-                        </div>
-
-                        <div class="info-consulta">
-                            <h4>Consulta com Oncologista</h4>
-                            <p>Dr. Carlos Almeida</p>
-                        </div>
-
-                        <div class="horario-consulta">
-                            <strong>10:00</strong>
-                            <span>Hospital São Lucas</span>
-                        </div>
-
-                    </div>
-
-                    <div class="consulta">
-
-                        <div class="data-consulta">
-                            <strong>05</strong>
-                            <span>JUN</span>
-                        </div>
-
-                        <div class="info-consulta">
-                            <h4>Exame de Sangue</h4>
-                            <p>Dr. João Nascimento</p>
-                        </div>
-
-                        <div class="horario-consulta">
-                            <strong>08:00</strong>
-                            <span>Laboratório Delboni</span>
-                        </div>
-
-                    </div>
-
+                <div class="consultas" id="resumoConsultas">
+                    <?php if (!$consultas): ?>
+                        <p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>
+                    <?php else: ?>
+                        <?php foreach ($consultas as $consulta): ?>
+                            <div class="consulta">
+                                <div class="data-consulta">
+                                    <strong><?= htmlspecialchars(date('d', strtotime($consulta['data']))) ?></strong>
+                                    <span><?= htmlspecialchars(strtoupper(date('M', strtotime($consulta['data'])))) ?></span>
+                                </div>
+                                <div class="info-consulta">
+                                    <h4><?= htmlspecialchars($consulta['tipo'] . ' de ' . $consulta['especialidade']) ?></h4>
+                                    <p><?= htmlspecialchars($consulta['medico'] ?: 'Profissional não informado') ?></p>
+                                </div>
+                                <div class="horario-consulta">
+                                    <strong><?= htmlspecialchars(substr($consulta['horario'], 0, 5)) ?></strong>
+                                    <span><?= htmlspecialchars($consulta['nome_local'] ?: 'Local não informado') ?></span>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
 
             </div>
@@ -330,59 +324,7 @@ session_start();
                 </button>
 
 
-                <div class="item-agenda">
-
-                    <div class="dados-agenda">
-
-                        <h4>Consulta com Oncologista</h4>
-
-                        <p>20/05/2026 • 10:00</p>
-
-                        <span>Hospital São Lucas</span>
-
-                    </div>
-
-                    <div class="acoes">
-
-                        <button class="editar">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-
-                        <button class="excluir">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <div class="item-agenda">
-
-                    <div class="dados-agenda">
-
-                        <h4>Exame de Sangue</h4>
-
-                        <p>05/06/2026 • 08:00</p>
-
-                        <span>Laboratório Delboni</span>
-
-                    </div>
-
-                    <div class="acoes">
-
-                        <button class="editar">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-
-                        <button class="excluir">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-
-                    </div>
-
-                </div>
-
+                <div id="itensAgenda"></div>
             </div>
 
 
@@ -391,11 +333,13 @@ session_start();
 
             <form id="formAgenda" class="form-consulta" style="display:none;">
 
+                <input type="hidden" name="id_consulta" id="idConsulta">
+
                 <div class="campo">
 
                     <label>Tipo</label>
 
-                    <select>
+                    <select name="tipo" id="tipoConsulta" required>
 
                         <option>Consulta</option>
                         <option>Exame</option>
@@ -408,7 +352,7 @@ session_start();
 
                     <label>Especialidade</label>
 
-                    <input type="text" placeholder="Ex.: Oncologista">
+                    <input type="text" name="especialidade" id="especialidade" placeholder="Ex.: Oncologista" required>
 
                 </div>
 
@@ -416,7 +360,7 @@ session_start();
 
                     <label>Médico</label>
 
-                    <input type="text" placeholder="Nome do médico">
+                    <input type="text" name="medico" id="medico" placeholder="Nome do médico">
 
                 </div>
 
@@ -424,7 +368,7 @@ session_start();
 
                     <label>Local</label>
 
-                    <input type="text" placeholder="Hospital ou clínica">
+                    <input type="text" name="nome_local" id="nomeLocal" placeholder="Hospital ou clínica">
 
                 </div>
 
@@ -432,7 +376,7 @@ session_start();
 
                     <label>Data</label>
 
-                    <input type="date">
+                    <input type="date" name="data" id="dataConsulta" required>
 
                 </div>
 
@@ -440,7 +384,7 @@ session_start();
 
                     <label>Horário</label>
 
-                    <input type="time">
+                    <input type="time" name="horario" id="horarioConsulta" required>
 
                 </div>
 
@@ -467,20 +411,108 @@ session_start();
     <script>
 
         const modal = document.getElementById("modalAgenda");
-
         const lista = document.getElementById("listaAgenda");
-
         const formulario = document.getElementById("formAgenda");
-
         const titulo = document.getElementById("tituloFormulario");
-        function voltarInicioModal() {
+        const itensAgenda = document.getElementById("itensAgenda");
+        const resumoConsultas = document.getElementById("resumoConsultas");
+        const consultasIniciais = <?= json_encode($consultas, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+        let consultas = consultasIniciais;
 
+        function escapar(texto) {
+            const elemento = document.createElement('span');
+            elemento.textContent = String(texto ?? '');
+            return elemento.innerHTML;
+        }
+
+        function formatarData(data) {
+            return new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR');
+        }
+
+        function formatarMes(data) {
+            return new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR', {month: 'short'}).replace('.', '').toUpperCase();
+        }
+
+        function renderizarAgenda() {
+            if (!consultas.length) {
+                itensAgenda.innerHTML = '<p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>';
+                return;
+            }
+
+            itensAgenda.innerHTML = consultas.map(consulta => `
+                <div class="item-agenda">
+                    <div class="dados-agenda">
+                        <h4>${escapar(`${consulta.tipo} de ${consulta.especialidade}`)}</h4>
+                        <p>${escapar(formatarData(consulta.data))} • ${escapar(consulta.horario.slice(0, 5))}</p>
+                        <span>${escapar(consulta.nome_local || 'Local não informado')}</span>
+                    </div>
+                    <div class="acoes">
+                        <button type="button" class="editar" data-id="${consulta.id_consulta}" aria-label="Editar consulta">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button" class="excluir" data-id="${consulta.id_consulta}" aria-label="Excluir consulta">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderizarResumo() {
+            if (!consultas.length) {
+                resumoConsultas.innerHTML = '<p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>';
+                return;
+            }
+
+            resumoConsultas.innerHTML = consultas.map(consulta => `
+                <div class="consulta">
+                    <div class="data-consulta">
+                        <strong>${escapar(consulta.data.slice(8, 10))}</strong>
+                        <span>${escapar(formatarMes(consulta.data))}</span>
+                    </div>
+                    <div class="info-consulta">
+                        <h4>${escapar(`${consulta.tipo} de ${consulta.especialidade}`)}</h4>
+                        <p>${escapar(consulta.medico || 'Profissional não informado')}</p>
+                    </div>
+                    <div class="horario-consulta">
+                        <strong>${escapar(consulta.horario.slice(0, 5))}</strong>
+                        <span>${escapar(consulta.nome_local || 'Local não informado')}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function atualizarConsultas(novasConsultas) {
+            consultas = novasConsultas;
+            renderizarAgenda();
+            renderizarResumo();
+        }
+
+        function limparFormulario() {
+            formulario.reset();
+            document.getElementById('idConsulta').value = '';
+            titulo.innerHTML = 'Nova consulta';
+        }
+
+        function voltarInicioModal() {
             formulario.style.display = "none";
             lista.style.display = "block";
-
             titulo.innerHTML = "Gerenciar Agenda";
-
         }
+
+        async function enviarAgenda(dados) {
+            const resposta = await fetch('processos/agenda.php', {
+                method: 'POST',
+                body: dados
+            });
+            const resultado = await resposta.json();
+            if (!resposta.ok) throw new Error(resultado.erro || 'Não foi possível atualizar a agenda.');
+            atualizarConsultas(resultado.consultas);
+        }
+
+        renderizarAgenda();
+        renderizarResumo();
+
         document.getElementById("abrirAgenda").onclick = () => {
             modal.classList.add("ativo");
             document.body.style.overflow = "hidden";
@@ -514,26 +546,36 @@ session_start();
 
         // NOVO
         document.getElementById("novoItem").onclick = () => {
-
-            titulo.innerHTML = "Nova consulta";
-
+            limparFormulario();
             lista.style.display = "none";
             formulario.style.display = "block";
         };
 
-        // EDITAR
-        document.querySelectorAll(".editar").forEach(botao => {
+        itensAgenda.addEventListener('click', event => {
+            const botao = event.target.closest('button');
+            if (!botao) return;
+            const consulta = consultas.find(item => String(item.id_consulta) === botao.dataset.id);
+            if (!consulta) return;
 
-            botao.onclick = () => {
-
-                titulo.innerHTML = "Editar consulta";
-
-                lista.style.display = "none";
-                formulario.style.display = "block";
-
-                // depois aqui você preencherá os campos com os dados vindos do banco
+            if (botao.classList.contains('editar')) {
+                titulo.innerHTML = 'Editar consulta';
+                document.getElementById('idConsulta').value = consulta.id_consulta;
+                document.getElementById('tipoConsulta').value = consulta.tipo;
+                document.getElementById('especialidade').value = consulta.especialidade;
+                document.getElementById('medico').value = consulta.medico || '';
+                document.getElementById('nomeLocal').value = consulta.nome_local || '';
+                document.getElementById('dataConsulta').value = consulta.data;
+                document.getElementById('horarioConsulta').value = consulta.horario.slice(0, 5);
+                lista.style.display = 'none';
+                formulario.style.display = 'block';
             }
 
+            if (botao.classList.contains('excluir') && confirm('Deseja excluir esta consulta?')) {
+                const dados = new FormData();
+                dados.append('acao', 'excluir');
+                dados.append('id_consulta', consulta.id_consulta);
+                enviarAgenda(dados).catch(erro => alert(erro.message));
+            }
         });
 
         // CANCELAR
@@ -543,28 +585,21 @@ session_start();
 
         };
         // SALVAR
-        document.getElementById("salvarAgenda").onclick = () => {
-
-            alert("Consulta salva!");
-
-            voltarInicioModal();
-
-        };
-
-        // EXCLUIR
-        document.querySelectorAll(".excluir").forEach(botao => {
-
-            botao.onclick = () => {
-
-                if (confirm("Deseja excluir esta consulta?")) {
-
-                    botao.closest(".item-agenda").remove();
-
-                }
-
+        formulario.addEventListener('submit', event => event.preventDefault());
+        document.getElementById("salvarAgenda").onclick = async () => {
+            const dados = new FormData(formulario);
+            dados.append('acao', 'salvar');
+            const botaoSalvar = document.getElementById('salvarAgenda');
+            botaoSalvar.disabled = true;
+            try {
+                await enviarAgenda(dados);
+                voltarInicioModal();
+            } catch (erro) {
+                alert(erro.message);
+            } finally {
+                botaoSalvar.disabled = false;
             }
-
-        });
+        };
     </script>
     <script>
         const botaoGerar = document.getElementById('gerarPlano');

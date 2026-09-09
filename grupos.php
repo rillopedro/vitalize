@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/conexao.php';
 
-$sql = "SELECT id_grupo, nome_grupo, mais_info, foco, data_encontro, horario, link, telefone_grupo, imagem FROM grupos ORDER BY id_grupo DESC";
+$sql = "SELECT id_grupo, nome_grupo, mais_info, foco, data_encontro, horario, link, contato AS telefone_grupo, imagem FROM grupos ORDER BY id_grupo DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -82,7 +82,6 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </p>
 
                             <div class="botoescards">
-                                <button class="cadastrogrupo">Cadastrar-se</button>
                                 <button class="infogrupos"
                                     data-nome="<?= htmlspecialchars($grupo['nome_grupo'], ENT_QUOTES) ?>"
                                     data-foco="<?= htmlspecialchars($grupo['foco'], ENT_QUOTES) ?>"

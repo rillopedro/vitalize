@@ -64,9 +64,11 @@
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");
 
-        toggle.addEventListener("click", () => {
-            menu.classList.toggle("ativo");
-        });
+        if (toggle && menu) {
+            toggle.addEventListener("click", () => {
+                menu.classList.toggle("ativo");
+            });
+        }
     </script>
 </body>
 

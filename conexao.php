@@ -1,20 +1,24 @@
 <?php
 
-$host = "localhost";
-$banco = "vitalize";
-$usuario = "root";
-$senha = "";
+$host = getenv('DB_HOST');
+$porta = getenv('DB_PORT') ?: '3306';
+$banco = getenv('DB_NAME');
+$usuario = getenv('DB_USER');
+$senha = getenv('DB_PASSWORD');
 
 try {
     $pdo = new PDO(
-        "mysql:host=$host;dbname=$banco;charset=utf8",
+        "mysql:host=$host;port=$porta;dbname=$banco;charset=utf8mb4",
         $usuario,
-        $senha
+        $senha,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
     );
-
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
 } catch (PDOException $e) {
-    die("Erro na conexão: " . $e->getMessage());
+    error_log("Erro MySQL: " . $e->getMessage());
+    http_response_code(500);
+    exit("Erro interno ao conectar ao banco.");
 }
-?>

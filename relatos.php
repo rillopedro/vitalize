@@ -5,7 +5,7 @@ require_once 'conexao.php';
 try {
    $sql = "SELECT
             r.titulo,
-            r.relato AS conteudo,
+            r.conteudo,
             r.data_publicacao,
             r.anonimo,
             u.nome,

@@ -16,7 +16,6 @@ session_start();
     <link rel="icon" type="image/png" href="img/logov.png">
 
     <link rel="stylesheet" href="css/style.css">
-    <script src="css/style.css"></script>
 </head>
 
 <body>
