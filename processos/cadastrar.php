@@ -91,8 +91,11 @@ try {
         $_SESSION['id_usuario'] = $id;
         $_SESSION['nome'] = $nome;
         $_SESSION['email'] = $email;
+        $_SESSION['sobrenome'] = $sobrenome;
+        $_SESSION['telefone'] = $telefone;
+        $_SESSION['foto_perfil'] = '';
 
-        header("Location: ../perfil.php");
+        header("Location: ../pagperfil.php");
 
         exit();
 
@@ -111,8 +114,6 @@ try {
     error_log('Erro ao cadastrar usuário: ' . $e->getMessage());
     $_SESSION['erro_cadastro'] = "Erro de conexão com o banco.";
 
-    // Durante o desenvolvimento, você pode usar:
-    // die($e->getMessage());
 
     header("Location: ../cadastro.php");
 
