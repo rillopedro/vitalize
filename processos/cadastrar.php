@@ -106,8 +106,9 @@ try {
 
     }
 
-}catch(PDOException $e){
+} catch (Throwable $e) {
 
+    error_log('Erro ao cadastrar usuário: ' . $e->getMessage());
     $_SESSION['erro_cadastro'] = "Erro de conexão com o banco.";
 
     // Durante o desenvolvimento, você pode usar:

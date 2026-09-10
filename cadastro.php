@@ -59,7 +59,7 @@
 
                 <button class="login-btn">Cadastrar</button>
 
-                <p class="subcadastro">Já tem uma conta? <a class="sublink" href="pagperfil.php">Clique Aqui</a> </p>
+                <p class="subcadastro">Já tem uma conta? <a class="sublink" href="login.php">Clique Aqui</a> </p>
 
             </form>
 
