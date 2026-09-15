@@ -1688,15 +1688,7 @@ textarea {
         grid-template-columns: 1fr;
     }
 
-    footer {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
-    }
-
-    .footer-info {
-        text-align: center;
-    }
+   
 }
 
 
@@ -2427,84 +2419,6 @@ textarea {
 
 
 
-
-
-.footer {
-    margin-top: 80px;
-
-    background: linear-gradient(90deg,
-            #73D6D3,
-            #8FB9E8,
-            #B189E8,
-            #D98AD9);
-
-    padding: 35px 50px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 30px;
-
-    color: white;
-
-    border-radius: 30px 30px 0 0;
-}
-
-.footer-redes {
-    display: flex;
-    gap: 18px;
-}
-
-.footer-redes a {
-    width: 45px;
-    height: 45px;
-
-    border-radius: 50%;
-
-    background: rgba(255, 255, 255, .15);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: white;
-    font-size: 18px;
-
-    transition: .3s;
-}
-
-.footer-redes a:hover {
-    background: white;
-    color: #B189E8;
-    transform: translateY(-4px);
-}
-
-.footer-logo img {
-    width: 200px;
-    height: auto;
-}
-
-.footer-info {
-    text-align: right;
-    line-height: 1.8;
-    font-size: 14px;
-}
-
-.footer-info p {
-    margin: 0;
-}
-
-@media (max-width: 900px) {
-
-    .footer-vitalize {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .footer-info {
-        text-align: center;
-    }
-}
 
 .modal {
     position: fixed;
@@ -3255,4 +3169,125 @@ textarea {
 @media (max-width: 600px) {
     .cabecalho-card { align-items: flex-start; gap: 12px; flex-direction: column; }
     .btn-ia { width: 100%; }
+}
+
+.footer {
+    background: linear-gradient(
+        135deg,
+        #73d6d3,
+        #8fb9e8,
+        #b189e8,
+        #d98ad9
+    );
+    color: #fff;
+    padding: 55px 7% 20px;
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1.5fr 1fr;
+    gap: 45px;
+}
+
+/* LOGO E DESCRIÇÃO */
+.footer-brand img {
+    width: 155px;
+    margin-bottom: 12px;
+}
+
+.footer-brand p {
+    max-width: 300px;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* COLUNAS */
+.footer-coluna {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-coluna h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 18px;
+}
+
+.footer-coluna a {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #fff;
+    text-decoration: none;
+
+    font-size: 14px;
+    margin-bottom: 11px;
+
+    transition: 0.3s;
+}
+
+.footer-coluna a:hover {
+    transform: translateX(4px);
+    opacity: 0.8;
+}
+
+.footer-coluna i {
+    width: 17px;
+    font-size: 15px;
+}
+
+/* LINHA E INFORMAÇÕES DO RODAPÉ */
+.footer-bottom {
+    width: 100%;
+    max-width: 1200px;
+    margin: 40px auto 0;
+    padding-top: 18px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 12px;
+}
+
+.footer-bottom p {
+    margin: 0;
+}
+
+.footer-bottom span {
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* TABLET */
+@media (max-width: 900px) {
+
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 35px;
+    }
+
+}
+
+/* CELULAR */
+@media (max-width: 600px) {
+
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+
 }

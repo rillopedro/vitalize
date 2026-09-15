@@ -274,27 +274,8 @@ session_start();
             </div>
 
     </section>
-
-    <footer class="footer">
-
-            <div class="footer-redes">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-
-            <div class="footer-logo">
-                <img src="img/logobrancacomp.png">
-            </div>
-
-            <div class="footer-info">
-                <p>© 2026 Vitalize — Apoio ao tratamento contra o câncer</p>
-                <p>Todos os direitos reservados | CNPJ 00.000.000/0001-00</p>
-                <p>SAC 0800 000 0000</p>
-            </div>
-
-        </footer>
+    
+    <?php include 'footer.php'; ?>
 
         <script>
             const toggle = document.querySelector(".menu-toggle");
