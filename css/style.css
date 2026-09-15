@@ -1688,7 +1688,7 @@ textarea {
         grid-template-columns: 1fr;
     }
 
-   
+
 }
 
 
@@ -1735,6 +1735,7 @@ textarea {
     max-width: 1200px;
     margin: 50px auto 80px;
 }
+
 .topo-depoimentos {
     display: flex;
     justify-content: center;
@@ -1822,13 +1823,11 @@ textarea {
     border-radius: 999px;
     padding: 13px 25px;
 
-    background: linear-gradient(
-        90deg,
-        #73d6d3,
-        #8fb9e8,
-        #b189e8,
-        #d98ad9
-    );
+    background: linear-gradient(90deg,
+            #73d6d3,
+            #8fb9e8,
+            #b189e8,
+            #d98ad9);
 
     color: #fff;
     font-family: "Jost", sans-serif;
@@ -1915,7 +1914,8 @@ textarea {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
-    margin-top: 30px;
+    margin-bottom: 30px;
+
 }
 
 .card-depoimento {
@@ -2021,6 +2021,7 @@ textarea {
         font-size: 30px;
     }
 }
+
 .cabecalho-relatos {
     text-align: center;
     margin-bottom: 35px;
@@ -3267,40 +3268,156 @@ textarea {
     transition: .2s;
 }
 
-.btn-ia:hover:not(:disabled) { background: #7654b5; transform: translateY(-1px); }
-.btn-ia:disabled { cursor: not-allowed; opacity: .55; }
-.restricoes-alimentares { margin: 4px 0 18px; }
-.restricoes-alimentares label { display: block; color: #4f3c70; font-weight: 600; margin-bottom: 8px; }
-.restricoes-alimentares label i { margin-right: 6px; color: #8f6bcf; }
-.campo-opcional { color: #888; font-size: 12px; font-weight: 400; }
-.restricoes-alimentares textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 78px; padding: 12px 14px; border: 1.5px solid #e2d9ef; border-radius: 12px; background: #fcfbff; color: #444; font: 14px "Jost", sans-serif; outline: none; }
-.restricoes-alimentares textarea:focus { border-color: #8f6bcf; box-shadow: 0 0 0 3px rgba(143, 107, 207, .12); }
-.rodape-restricoes { display: flex; justify-content: space-between; gap: 12px; margin-top: 5px; color: #888; }
-.rodape-restricoes span { flex-shrink: 0; font-size: 12px; }
-.ia-vazio, .ia-erro { text-align: center; color: #777; padding: 26px 15px; width: 100%; }
-.ia-vazio i { color: #b189e8; font-size: 28px; margin-bottom: 8px; }
-.ia-erro { color: #a54343; background: #fff2f2; border-radius: 14px; }
-.plano-ia h4 { color: #5f438e; font-size: 18px; margin-bottom: 12px; }
-.plano-ia ul { list-style: none; display: grid; gap: 8px; padding: 0; }
-.plano-ia li { display: flex; justify-content: space-between; gap: 15px; padding: 10px 12px; background: #faf8ff; border-radius: 10px; }
-.plano-ia li span { color: #777; text-align: right; }
-.preparo-ia { margin-top: 14px; line-height: 1.5; color: #555; }
-.plano-ia blockquote { margin: 16px 0; padding: 14px 16px; background: #f0e8fb; border-left: 4px solid #8f6bcf; border-radius: 0 12px 12px 0; color: #4f3c70; }
-.plano-ia small { display: block; color: #777; line-height: 1.4; }
+.btn-ia:hover:not(:disabled) {
+    background: #7654b5;
+    transform: translateY(-1px);
+}
+
+.btn-ia:disabled {
+    cursor: not-allowed;
+    opacity: .55;
+}
+
+.restricoes-alimentares {
+    margin: 4px 0 18px;
+}
+
+.restricoes-alimentares label {
+    display: block;
+    color: #4f3c70;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.restricoes-alimentares label i {
+    margin-right: 6px;
+    color: #8f6bcf;
+}
+
+.campo-opcional {
+    color: #888;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.restricoes-alimentares textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 78px;
+    padding: 12px 14px;
+    border: 1.5px solid #e2d9ef;
+    border-radius: 12px;
+    background: #fcfbff;
+    color: #444;
+    font: 14px "Jost", sans-serif;
+    outline: none;
+}
+
+.restricoes-alimentares textarea:focus {
+    border-color: #8f6bcf;
+    box-shadow: 0 0 0 3px rgba(143, 107, 207, .12);
+}
+
+.rodape-restricoes {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 5px;
+    color: #888;
+}
+
+.rodape-restricoes span {
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+.ia-vazio,
+.ia-erro {
+    text-align: center;
+    color: #777;
+    padding: 26px 15px;
+    width: 100%;
+}
+
+.ia-vazio i {
+    color: #b189e8;
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.ia-erro {
+    color: #a54343;
+    background: #fff2f2;
+    border-radius: 14px;
+}
+
+.plano-ia h4 {
+    color: #5f438e;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.plano-ia ul {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+    padding: 0;
+}
+
+.plano-ia li {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 10px 12px;
+    background: #faf8ff;
+    border-radius: 10px;
+}
+
+.plano-ia li span {
+    color: #777;
+    text-align: right;
+}
+
+.preparo-ia {
+    margin-top: 14px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.plano-ia blockquote {
+    margin: 16px 0;
+    padding: 14px 16px;
+    background: #f0e8fb;
+    border-left: 4px solid #8f6bcf;
+    border-radius: 0 12px 12px 0;
+    color: #4f3c70;
+}
+
+.plano-ia small {
+    display: block;
+    color: #777;
+    line-height: 1.4;
+}
 
 @media (max-width: 600px) {
-    .cabecalho-card { align-items: flex-start; gap: 12px; flex-direction: column; }
-    .btn-ia { width: 100%; }
+    .cabecalho-card {
+        align-items: flex-start;
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .btn-ia {
+        width: 100%;
+    }
 }
 
 .footer {
-    background: linear-gradient(
-        135deg,
-        #73d6d3,
-        #8fb9e8,
-        #b189e8,
-        #d98ad9
-    );
+    background: linear-gradient(135deg,
+            #73d6d3,
+            #8fb9e8,
+            #b189e8,
+            #d98ad9);
     color: #fff;
     padding: 55px 7% 20px;
 }
