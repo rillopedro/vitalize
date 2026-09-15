@@ -141,64 +141,54 @@ session_start();
     </section>
 
     <?php include 'footer.php'; ?>
-
     <script>
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");
 
-        toggle.addEventListener("click", () => {
-            menu.classList.toggle("ativo");
-        });
-    </script>
-    <script>
-        const toggle = document.querySelector(".menu-toggle");
-        const menu = document.querySelector(".menu");
+        if (toggle && menu) {
+            toggle.addEventListener("click", () => {
+                menu.classList.toggle("ativo");
+            });
+        }
 
-        toggle.addEventListener("click", () => {
-            menu.classList.toggle("ativo");
-        });
+        // MÁSCARA DO TELEFONE
+        const telefone = document.getElementById("telefone_grupo");
 
+        if (telefone) {
+            telefone.addEventListener("input", function () {
 
-        // Máscara do telefone
-        const telefoneGrupo = document.getElementById("telefone_grupo");
+                let valor = telefone.value.replace(/\D/g, "");
 
-        telefoneGrupo.addEventListener("input", function () {
+                if (valor.length > 11) {
+                    valor = valor.substring(0, 11);
+                }
 
-            let valor = telefoneGrupo.value.replace(/\D/g, "");
+                if (valor.length <= 2) {
+                    valor = valor.replace(
+                        /^(\d{0,2})/,
+                        "($1"
+                    );
 
-            if (valor.length > 11) {
-                valor = valor.substring(0, 11);
-            }
+                } else if (valor.length <= 6) {
+                    valor = valor.replace(
+                        /^(\d{2})(\d{0,4})/,
+                        "($1) $2"
+                    );
 
-            if (valor.length <= 2) {
+                } else {
+                    valor = valor.replace(
+                        /^(\d{2})(\d{5})(\d{0,4})/,
+                        "($1) $2-$3"
+                    );
+                }
 
-                valor = valor.replace(
-                    /^(\d{0,2})/,
-                    "($1"
-                );
+                telefone.value = valor;
+            });
+        }
 
-            } else if (valor.length <= 6) {
-
-                valor = valor.replace(
-                    /^(\d{2})(\d{0,4})/,
-                    "($1) $2"
-                );
-
-            } else {
-
-                valor = valor.replace(
-                    /^(\d{2})(\d{5})(\d{0,4})/,
-                    "($1) $2-$3"
-                );
-            }
-
-            telefoneGrupo.value = valor;
-        });
-    </script>
-    <script>
+        // PREVIEW DA IMAGEM
         const imagem = document.getElementById("imagem");
         const preview = document.getElementById("preview");
-        const texto = document.getElementById("texto");
 
         imagem.addEventListener("change", function () {
 
@@ -210,7 +200,6 @@ session_start();
                 leitor.onload = function (e) {
                     preview.src = e.target.result;
                     preview.style.display = "block";
-                    texto.style.display = "none";
                 };
 
                 leitor.readAsDataURL(arquivo);
