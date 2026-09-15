@@ -1725,80 +1725,182 @@ textarea {
 }
 
 
+
+/* =========================
+   DEPOIMENTOS
+========================= */
+
 .depoimentos-page {
     width: 90%;
     max-width: 1200px;
-    margin: 50px auto;
+    margin: 50px auto 80px;
 }
-
 .topo-depoimentos {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 40px;
-    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
 }
 
 .form-relato {
-    flex: 1;
-    min-width: 600px;
-    background: #f6f1f8;
-    border: 1px solid #bde8ee;
-    border-radius: 15px;
-    padding: 30px;
-    position: relative;
-}
-
-.icone-usuario {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: #d29ce8;
-    position: absolute;
-    left: 15px;
-    top: 18px;
+    width: 100%;
+    max-width: 950px;
+    background: #f8f7fc;
+    border: 1px solid #d8c8ed;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 8px 25px rgba(177, 137, 232, 0.12);
+    box-sizing: border-box;
 }
 
 .form-relato label {
     display: block;
-    margin-left: 60px;
-    margin-bottom: 8px;
+    margin: 0 0 8px;
     font-size: 14px;
+    font-weight: 500;
+    color: #555;
 }
 
-.form-relato input[type="text"] {
-    width: calc(100% - 60px);
-    margin-left: 60px;
-    background: #e8c9ef;
-    border: none;
-    border-radius: 999px;
-    padding: 12px 20px;
+.form-relato input[type="text"],
+.form-relato textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d9d3e8;
+    background: #fff;
+    border-radius: 14px;
+    padding: 13px 16px;
+    font-family: "Jost", sans-serif;
+    font-size: 14px;
+    color: #555;
+    outline: none;
+    transition: 0.3s;
+    margin-bottom: 20px;
 }
 
+.form-relato input[type="text"]:focus,
+.form-relato textarea:focus {
+    border-color: #b189e8;
+    box-shadow: 0 0 0 3px rgba(177, 137, 232, 0.15);
+}
+
+.form-relato textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* ANÔNIMO */
 .anonimo-box {
     display: flex;
     align-items: center;
-    gap: 30px;
-    margin-top: 25px;
+    gap: 20px;
     flex-wrap: wrap;
+    margin: 5px 0 25px;
 }
 
 .anonimo-box p {
+    margin: 0;
     font-size: 14px;
+    color: #555;
 }
 
 .anonimo-box label {
     margin: 0;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.anonimo-box input[type="radio"] {
+    accent-color: #b189e8;
+}
+
+/* BOTÃO */
+.form-relato .btn-relato {
+    width: 100%;
+    border: none;
+    border-radius: 999px;
+    padding: 13px 25px;
+
+    background: linear-gradient(
+        90deg,
+        #73d6d3,
+        #8fb9e8,
+        #b189e8,
+        #d98ad9
+    );
+
+    color: #fff;
+    font-family: "Jost", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.form-relato .btn-relato:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px rgba(177, 137, 232, 0.30);
+}
+
+.form-relato .btn-relato:active {
+    transform: scale(0.98);
+}
+
+/* IMAGEM */
+.img-abraco {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 250px;
 }
 
 .img-abraco img {
     width: 220px;
+    max-width: 100%;
+    transition: 0.3s ease;
 }
 
+.img-abraco img:hover {
+    transform: translateY(-5px);
+}
 
+/* MENSAGENS */
+.mensagem-relato {
+    padding: 13px 18px;
+    border-radius: 12px;
+    margin: 20px 0 0;
+    font-size: 14px;
+    text-align: center;
+    animation: aparecerMensagem 0.4s ease;
+}
+
+.mensagem-sucesso {
+    background: #e5f7f3;
+    border: 1px solid #a9ddd5;
+    color: #397c73;
+}
+
+.mensagem-erro {
+    background: #fbecef;
+    border: 1px solid #e8b9c5;
+    color: #a34d60;
+}
+
+@keyframes aparecerMensagem {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* TÍTULO */
 .titulo-depoimentos {
     margin: 60px 0 40px;
 }
@@ -1808,7 +1910,7 @@ textarea {
     font-weight: 700;
 }
 
-
+/* CARDS */
 .lista-depoimentos {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1816,10 +1918,10 @@ textarea {
 }
 
 .card-depoimento {
-    background: #ececec;
+    background: #f7f7fa;
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 5px 12px rgba(0, 0, 0, .12);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
 }
 
 .cabecalho-depoimento {
@@ -1833,7 +1935,6 @@ textarea {
     width: 55px;
     height: 55px;
     min-width: 55px;
-    min-height: 55px;
     border-radius: 50%;
     background: #aee1e0;
     border: 2px solid #95d3d2;
@@ -1841,40 +1942,16 @@ textarea {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    position: relative;
-    flex-shrink: 0;
-    flex-grow: 0;
 }
 
 .avatar img {
-    width: auto !important;
-    max-width: 100% !important;
+    width: 100% !important;
     height: 100% !important;
-    max-height: 100% !important;
     object-fit: cover;
-    display: block;
     border-radius: 50%;
 }
 
-.icone-usuario img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    display: block !important;
-}
-
-.card-depoimento .texto-depoimento img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-}
-
 .avatar-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     color: #6a6a6a;
     font-size: 1rem;
 }
@@ -1882,6 +1959,7 @@ textarea {
 .cabecalho-depoimento h4 {
     font-weight: 500;
     color: #555;
+    margin: 0;
 }
 
 .cabecalho-depoimento span {
@@ -1890,27 +1968,33 @@ textarea {
 }
 
 .texto-depoimento {
-    background: white;
-    border: 1px solid #cfcfcf;
+    background: #fff;
+    border: 1px solid #e0ddea;
     border-radius: 18px;
     padding: 20px;
     line-height: 1.6;
     color: #444;
 }
 
+/* RESPONSIVO */
+@media (max-width: 900px) {
 
-@media(max-width:900px) {
-
-    .lista-depoimentos {
-        grid-template-columns: 1fr;
+    .topo-depoimentos {
+        flex-direction: column;
     }
 
     .form-relato {
-        min-width: 100%;
+        width: 100%;
+        max-width: none;
+        box-sizing: border-box;
     }
 
-    .topo-depoimentos {
-        justify-content: center;
+    .img-abraco {
+        flex: none;
+    }
+
+    .lista-depoimentos {
+        grid-template-columns: 1fr;
     }
 
     .titulo-depoimentos h2 {
@@ -1918,6 +2002,43 @@ textarea {
     }
 }
 
+@media (max-width: 600px) {
+
+    .depoimentos-page {
+        width: 92%;
+    }
+
+    .form-relato {
+        padding: 25px 20px;
+    }
+
+    .anonimo-box {
+        gap: 12px;
+    }
+
+    .titulo-depoimentos h2 {
+        font-size: 30px;
+    }
+}
+.cabecalho-relatos {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.cabecalho-relatos h1 {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    color: #000000;
+}
+
+.cabecalho-relatos p {
+    max-width: 650px;
+    margin: 0 auto;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #666;
+}
 
 
 

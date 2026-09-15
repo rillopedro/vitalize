@@ -3,7 +3,7 @@ session_start();
 require_once 'conexao.php';
 
 try {
-   $sql = "SELECT
+    $sql = "SELECT
             r.titulo,
             r.conteudo,
             r.data_publicacao,
@@ -60,7 +60,7 @@ try {
             <?php else: ?>
                 <a href="login.php" class="btnav">Entrar</a>
             <?php endif; ?>
-             <button class="menu-toggle">
+            <button class="menu-toggle">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
@@ -68,12 +68,25 @@ try {
     </nav>
 
     <section class="depoimentos-page">
+        
+        <div class="cabecalho-relatos">
+            <h1>Compartilhe sua história</h1>
+            <p>
+                Este é um espaço seguro para compartilhar experiências,
+                sentimentos e histórias durante a jornada contra o câncer.
+            </p>
+        </div>
+
+        <div class="topo-depoimentos">
+            <!-- sua caixa de depoimento aqui -->
+        </div>
+        
 
         <!-- Formulário -->
         <div class="topo-depoimentos">
 
             <form class="form-relato" method="post" action="processos/processarelato.php">
-                <div class="icone-usuario"></div>
+
 
                 <label>Título do relato</label>
                 <input type="text" name="titulo" placeholder="Digite o título" required>
@@ -93,13 +106,11 @@ try {
                     </label>
                 </div>
 
-                <input class="btnav" type="submit" value="Enviar Relato">
+                <button class="btn-relato" type="submit">
+                    Enviar Relato
+                </button>
             </form>
 
-            <!-- sua imagem -->
-            <div class="img-abraco">
-                <img src="img/abraço.png" alt="">
-            </div>
 
         </div>
 
@@ -123,49 +134,49 @@ try {
         </div>
 
         <!-- Cards -->
-      <?php foreach($relatos as $relato){ ?>
+        <?php foreach ($relatos as $relato) { ?>
 
-<div class="card-depoimento">
+            <div class="card-depoimento">
 
-    <div class="cabecalho-depoimento">
+                <div class="cabecalho-depoimento">
 
-        <div class="avatar">
-            <?php if (!$relato['anonimo'] && !empty($relato['foto_perfil'])): ?>
-                <img src="<?= htmlspecialchars($relato['foto_perfil']) ?>" alt="Foto de perfil">
-            <?php else: ?>
-                <span class="avatar-placeholder"><i class="fa-solid fa-user"></i></span>
-            <?php endif; ?>
-        </div>
+                    <div class="avatar">
+                        <?php if (!$relato['anonimo'] && !empty($relato['foto_perfil'])): ?>
+                            <img src="<?= htmlspecialchars($relato['foto_perfil']) ?>" alt="Foto de perfil">
+                        <?php else: ?>
+                            <span class="avatar-placeholder"><i class="fa-solid fa-user"></i></span>
+                        <?php endif; ?>
+                    </div>
 
-        <div>
+                    <div>
 
-            <h4>
-                <?= $relato['anonimo'] ? '@Anônimo' : '@' . htmlspecialchars($relato['nome']) ?>
-            </h4>
+                        <h4>
+                            <?= $relato['anonimo'] ? '@Anônimo' : '@' . htmlspecialchars($relato['nome']) ?>
+                        </h4>
 
-            <span>
-                <?= date('d/m/Y', strtotime($relato['data_publicacao'])) ?>
-            </span>
+                        <span>
+                            <?= date('d/m/Y', strtotime($relato['data_publicacao'])) ?>
+                        </span>
 
-        </div>
+                    </div>
 
-    </div>
+                </div>
 
-    <div class="texto-depoimento">
+                <div class="texto-depoimento">
 
-        <h3><?= htmlspecialchars($relato['titulo']) ?></h3>
+                    <h3><?= htmlspecialchars($relato['titulo']) ?></h3>
 
-        <p><?= nl2br(htmlspecialchars($relato['conteudo'])) ?></p>
+                    <p><?= nl2br(htmlspecialchars($relato['conteudo'])) ?></p>
 
-    </div>
+                </div>
 
-</div>
+            </div>
 
-<?php } ?>
+        <?php } ?>
 
     </section>
-    
-       <?php include 'footer.php'; ?>
+
+    <?php include 'footer.php'; ?>
 
     <script>
         const toggle = document.querySelector(".menu-toggle");
