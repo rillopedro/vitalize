@@ -70,24 +70,19 @@ session_start();
             <?php unset($_SESSION['erro_grupo']); ?>
         <?php endif; ?>
 
-        <form action="processos/cadastrargrupo.php"
-            method="post" class="login-form"
-            enctype="multipart/form-data">
+        <form action="processos/cadastrargrupo.php" method="post" class="login-form" enctype="multipart/form-data">
             <div class="container-grupo">
+                <div class="upload-area">
 
-                <div class="upload-cx">
+                    <div class="upload-cx">
+                        <input type="file" id="imagem" name="imagem" accept="image/png, image/jpeg, image/webp" hidden>
 
-                    <input
-                        type="file"
-                        id="imagem"
-                        name="imagem"
-                        accept="image/png, image/jpeg, image/webp"
-                        hidden>
-                    <label for="imagem" class="btn-upload">+</label>
+                        <img id="preview" style="display:none;">
+                    </div>
 
-                    <img id="preview" style="display:none;">
-
-                    <p id="texto">INSIRA UMA<br>IMAGEM AQUI</p>
+                    <label for="imagem" class="btn-upload">
+                        Escolher imagem
+                    </label>
 
                 </div>
                 <div class="dados-grupo">
@@ -95,7 +90,7 @@ session_start();
                     <h2>Dados do Grupo</h2>
 
                     <label>Nome do grupo*</label>
-                    <input type="text" name="nome" required>
+                    <input type="text" name="nome" placeholder="Digite o nome do grupo" required>
 
                     <div class="linha-inputs">
                         <div>
@@ -112,7 +107,7 @@ session_start();
                     <div class="linha-inputs">
                         <div>
                             <label>Link do grupo</label>
-                            <input type="text" name="link">
+                            <input type="text" name="link" placeholder="https://...">
                         </div>
                     </div>
 
@@ -125,16 +120,17 @@ session_start();
                 <h2>Informações Adicionais</h2>
 
                 <label>Foco em:</label>
-                <input type="text" name="foco" placeholder="(ex: Idosos, Pacientes com...)">
+                <input type="text" name="foco" placeholder="Ex.: Idosos, pacientes com...">
 
                 <label>Responsável pelo grupo*</label>
-                <input type="text" name="responsavel">
+                <input type="text" name="responsavel" placeholder="Digite o nome do responsável" required>
 
                 <label>Telefone do grupo</label>
-                <input type="text" name="telefone_grupo" placeholder="(00)00000-0000">
+                <input type="tel" name="telefone_grupo" id="telefone_grupo" placeholder="(11) 99999-9999"
+                    maxlength="15">
 
                 <label>Mais informações:</label>
-                <textarea name="mais_info"></textarea>
+                <textarea name="mais_info" placeholder="Digite outras informações sobre o grupo..."></textarea>
 
             </div>
 
@@ -143,8 +139,8 @@ session_start();
         <img src="img/borboleta.png" class="borboleta-direita">
 
     </section>
-    
-       <?php include 'footer.php'; ?>
+
+    <?php include 'footer.php'; ?>
 
     <script>
         const toggle = document.querySelector(".menu-toggle");
@@ -152,6 +148,73 @@ session_start();
 
         toggle.addEventListener("click", () => {
             menu.classList.toggle("ativo");
+        });
+    </script>
+    <script>
+        const toggle = document.querySelector(".menu-toggle");
+        const menu = document.querySelector(".menu");
+
+        toggle.addEventListener("click", () => {
+            menu.classList.toggle("ativo");
+        });
+
+
+        // Máscara do telefone
+        const telefoneGrupo = document.getElementById("telefone_grupo");
+
+        telefoneGrupo.addEventListener("input", function () {
+
+            let valor = telefoneGrupo.value.replace(/\D/g, "");
+
+            if (valor.length > 11) {
+                valor = valor.substring(0, 11);
+            }
+
+            if (valor.length <= 2) {
+
+                valor = valor.replace(
+                    /^(\d{0,2})/,
+                    "($1"
+                );
+
+            } else if (valor.length <= 6) {
+
+                valor = valor.replace(
+                    /^(\d{2})(\d{0,4})/,
+                    "($1) $2"
+                );
+
+            } else {
+
+                valor = valor.replace(
+                    /^(\d{2})(\d{5})(\d{0,4})/,
+                    "($1) $2-$3"
+                );
+            }
+
+            telefoneGrupo.value = valor;
+        });
+    </script>
+    <script>
+        const imagem = document.getElementById("imagem");
+        const preview = document.getElementById("preview");
+        const texto = document.getElementById("texto");
+
+        imagem.addEventListener("change", function () {
+
+            const arquivo = imagem.files[0];
+
+            if (arquivo) {
+                const leitor = new FileReader();
+
+                leitor.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                    texto.style.display = "none";
+                };
+
+                leitor.readAsDataURL(arquivo);
+            }
         });
     </script>
 </body>

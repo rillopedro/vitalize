@@ -207,6 +207,17 @@ body {
     font-weight: 600;
 
     background: #AEE1E0;
+    transition: all 0.3s ease;
+
+}
+
+.login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(177, 137, 232, 0.35);
+}
+
+.login-btn:active {
+    transform: translateY(0) scale(0.97);
 }
 
 .login-btn-voltar {
@@ -544,6 +555,8 @@ a:link {
     margin-top: 5%;
     position: relative;
     overflow: hidden;
+    margin-bottom: 60px;
+
 }
 
 .logo-topo {
@@ -574,14 +587,19 @@ a:link {
     border: 4px solid #cfa4f0;
     border-radius: 25px;
 
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
 
     color: #7b4ad9;
 
     background: white;
+
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
 }
 
 .upload-cx p {
@@ -646,6 +664,17 @@ textarea {
     font-size: 18px;
     cursor: pointer;
     font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cadastrogrp-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(177, 137, 232, 0.35);
+}
+
+.cadastrogrp-btn:active {
+    transform: translateY(0) scale(0.97);
 }
 
 ::placeholder {
@@ -3009,50 +3038,63 @@ textarea {
     border-radius: 20px;
 }
 
-.upload-cx {
+
+.upload-area {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    gap: 15px;
 }
 
-.btn-upload {
-    width: 70px !important;
-    height: 70px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-
-    background: #B189E8, !important;
-    color: #fff !important;
-
-    border-radius: 50% !important;
-    font-size: 55px !important;
-    font-weight: bold !important;
-    cursor: pointer !important;
-
-    line-height: 1 !important;
-}
-
-.btn-upload:hover {
-    transform: scale(1.1);
-}
-
-.upload-cx p {
-    margin-top: 15px;
-    text-align: center;
+.upload-cx {
+    width: 350px;
+    height: 300px;
+    background: white;
+    border-radius: 20px;
+    border: 2px dashed #d9d9d9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
 #preview {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 15px;
+    border-radius: 18px;
 }
 
+.btn-upload {
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #73D6D3, #D98AD9);
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
+.btn-upload:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(177, 137, 232, 0.3);
+    filter: brightness(1.08);
+}
 
+.btn-upload:active {
+    transform: translateY(0) scale(0.95);
+}
 
+#texto {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    text-align: center;
+}
+.upload-cx p {
+    margin-top: 15px;
+    text-align: center;
+}
 
 .cabecalho-perfil {
     padding: 40px 5% 20px;
@@ -3529,3 +3571,4 @@ textarea {
     }
 
 }
+
