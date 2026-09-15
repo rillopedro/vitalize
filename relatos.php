@@ -68,7 +68,7 @@ try {
     </nav>
 
     <section class="depoimentos-page">
-        
+
         <div class="cabecalho-relatos">
             <h1>Compartilhe sua história</h1>
             <p>
@@ -80,7 +80,7 @@ try {
         <div class="topo-depoimentos">
             <!-- sua caixa de depoimento aqui -->
         </div>
-        
+
 
         <!-- Formulário -->
         <div class="topo-depoimentos">
@@ -134,45 +134,51 @@ try {
         </div>
 
         <!-- Cards -->
-        <?php foreach ($relatos as $relato) { ?>
+        <div class="lista-depoimentos">
 
-            <div class="card-depoimento">
+            <?php foreach ($relatos as $relato) { ?>
 
-                <div class="cabecalho-depoimento">
+                <div class="card-depoimento">
 
-                    <div class="avatar">
-                        <?php if (!$relato['anonimo'] && !empty($relato['foto_perfil'])): ?>
-                            <img src="<?= htmlspecialchars($relato['foto_perfil']) ?>" alt="Foto de perfil">
-                        <?php else: ?>
-                            <span class="avatar-placeholder"><i class="fa-solid fa-user"></i></span>
-                        <?php endif; ?>
+                    <div class="cabecalho-depoimento">
+
+                        <div class="avatar">
+                            <?php if (!$relato['anonimo'] && !empty($relato['foto_perfil'])): ?>
+                                <img src="<?= htmlspecialchars($relato['foto_perfil']) ?>" alt="Foto de perfil">
+                            <?php else: ?>
+                                <span class="avatar-placeholder">
+                                    <i class="fa-solid fa-user"></i>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div>
+                            <h4>
+                                <?= $relato['anonimo'] ? '@Anônimo' : '@' . htmlspecialchars($relato['nome']) ?>
+                            </h4>
+
+                            <span>
+                                <?= date('d/m/Y', strtotime($relato['data_publicacao'])) ?>
+                            </span>
+                        </div>
+
                     </div>
 
-                    <div>
+                    <div class="texto-depoimento">
 
-                        <h4>
-                            <?= $relato['anonimo'] ? '@Anônimo' : '@' . htmlspecialchars($relato['nome']) ?>
-                        </h4>
+                        <h3><?= htmlspecialchars($relato['titulo']) ?></h3>
 
-                        <span>
-                            <?= date('d/m/Y', strtotime($relato['data_publicacao'])) ?>
-                        </span>
+                        <p><?= nl2br(htmlspecialchars($relato['conteudo'])) ?></p>
 
                     </div>
 
                 </div>
 
-                <div class="texto-depoimento">
+            <?php } ?>
 
-                    <h3><?= htmlspecialchars($relato['titulo']) ?></h3>
+        </div>
+        
 
-                    <p><?= nl2br(htmlspecialchars($relato['conteudo'])) ?></p>
-
-                </div>
-
-            </div>
-
-        <?php } ?>
 
     </section>
 
