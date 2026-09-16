@@ -8,9 +8,7 @@ body {
     font-family: "Jost", sans-serif;
     background: #f5f8fc;
     padding-top: 130px;
-
-
-
+    overflow-x: hidden;
 }
 
 .header {
@@ -19,7 +17,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
 
-    width: 90%;
+    width: min(90%, 1600px);
     z-index: 9999;
 
     display: flex;
@@ -37,6 +35,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 
 }
 
@@ -47,7 +46,8 @@ body {
 }
 
 .nav-bar {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
     height: 90px;
 
     display: flex;
@@ -85,25 +85,41 @@ body {
 @media (max-width: 900px) {
 
     .header {
-        width: 95%;
+        width: calc(100% - 20px);
+        gap: 8px;
+    }
+
+    .logo-box {
+        width: 54px;
+        height: 64px;
+    }
+
+    .logo-box img {
+        width: 52px;
+        height: 52px;
     }
 
     .nav-bar {
         position: relative;
-        height: 70px;
-        padding: 0 20px;
+        width: auto;
+        height: 64px;
+        padding: 0 14px;
+        justify-content: flex-end;
+        gap: 10px;
     }
 
     .menu-toggle {
         display: block;
-        margin-left: auto;
+        flex: 0 0 auto;
+        margin-left: 0;
+        font-size: 27px;
     }
 
     .menu {
         display: none;
 
         position: absolute;
-        top: 85px;
+        top: 76px;
         left: 0;
 
         width: 100%;
@@ -128,7 +144,14 @@ body {
     }
 
     .btnav {
-        display: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        min-height: 40px;
+        padding: 8px 16px;
+        font-size: 14px;
+        white-space: nowrap;
     }
 
     body {
@@ -4382,5 +4405,53 @@ body.modal-aberto {
 
     #modalInfo .botao-inscricao-grupo {
         width: 100%;
+    }
+}
+
+@media (max-width: 900px) {
+    .btnav {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 8px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 420px) {
+    .header {
+        width: calc(100% - 12px);
+        gap: 5px;
+    }
+
+    .logo-box {
+        width: 46px;
+    }
+
+    .logo-box img {
+        width: 44px;
+        height: 44px;
+    }
+
+    .nav-bar {
+        height: 60px;
+        padding: 0 10px;
+        gap: 7px;
+    }
+
+    .btnav {
+        min-height: 36px;
+        padding: 7px 12px;
+        font-size: 13px;
+    }
+
+    .menu-toggle {
+        font-size: 24px;
+    }
+
+    .menu {
+        top: 70px;
     }
 }
