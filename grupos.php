@@ -46,7 +46,7 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php else: ?>
                 <a href="login.php" class="btnav">Entrar</a>
             <?php endif; ?>
-             <button class="menu-toggle">
+            <button class="menu-toggle">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
@@ -66,7 +66,8 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php else: ?>
                 <?php foreach ($grupos as $grupo): ?>
                     <div class="cardgrupos">
-                        <img src="<?= htmlspecialchars($grupo['imagem'] ?: 'img/apoio1.webp') ?>" alt="<?= htmlspecialchars($grupo['nome_grupo']) ?>">
+                        <img src="<?= htmlspecialchars($grupo['imagem'] ?: 'img/apoio1.webp') ?>"
+                            alt="<?= htmlspecialchars($grupo['nome_grupo']) ?>">
 
                         <div class="conteudocards">
                             <span class="taggrupo"><?= htmlspecialchars($grupo['foco'] ?: 'Grupo de apoio') ?></span>
@@ -82,16 +83,15 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </p>
 
                             <div class="botoescards">
-                                <button class="infogrupos"
-                                    data-nome="<?= htmlspecialchars($grupo['nome_grupo'], ENT_QUOTES) ?>"
+                                <button class="infogrupos" data-nome="<?= htmlspecialchars($grupo['nome_grupo'], ENT_QUOTES) ?>"
                                     data-foco="<?= htmlspecialchars($grupo['foco'], ENT_QUOTES) ?>"
                                     data-data="<?= !empty($grupo['data_encontro']) ? htmlspecialchars(date('d/m/Y', strtotime($grupo['data_encontro']))) : 'Data a definir' ?>"
                                     data-horario="<?= !empty($grupo['horario']) ? htmlspecialchars(substr($grupo['horario'], 0, 5)) : 'Horário a definir' ?>"
                                     data-info="<?= htmlspecialchars($grupo['mais_info'] ?: 'Sem descrição disponível.', ENT_QUOTES) ?>"
                                     data-link="<?= htmlspecialchars($grupo['link'] ?: '#', ENT_QUOTES) ?>"
                                     data-telefone="<?= htmlspecialchars($grupo['telefone_grupo'] ?: 'Não informado', ENT_QUOTES) ?>"
-                                    data-imagem="<?= htmlspecialchars($grupo['imagem'] ?: 'img/apoio1.webp', ENT_QUOTES) ?>"
-                                >Mais info</button>
+                                    data-imagem="<?= htmlspecialchars($grupo['imagem'] ?: 'img/apoio1.webp', ENT_QUOTES) ?>">Mais
+                                    info</button>
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,7 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     </section>
 
-       <?php include 'footer.php'; ?>
+    <?php include 'footer.php'; ?>
 
 
     <div class="modal" id="modalInfo">
@@ -146,17 +146,16 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
     </div>
-
     <script>
+        function abrirModal() {
+            modal.classList.add("ativo");
+            document.body.classList.add("modal-aberto");
+        }
 
-        const modal = document.getElementById("modalInfo");
-        const modalNome = document.getElementById("modalNomeGrupo");
-        const modalFoco = document.getElementById("modalFoco");
-        const modalHorario = document.getElementById("modalHorario");
-        const modalData = document.getElementById("modalData");
-        const modalDescricao = document.getElementById("modalDescricao");
-        const modalLink = document.getElementById("modalLink");
-        const modalTelefone = document.getElementById("modalTelefone");
+        function fecharModal() {
+            modal.classList.remove("ativo");
+            document.body.classList.remove("modal-aberto");
+        }
 
         document.querySelectorAll(".infogrupos").forEach(botao => {
             botao.addEventListener("click", () => {
@@ -174,26 +173,37 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 modalData.textContent = data;
                 modalHorario.textContent = horario;
                 modalDescricao.textContent = info;
-                modalLink.textContent = link !== "#" ? link : "Sem link disponível";
-                modalLink.href = link !== "#" ? link : "javascript:void(0);";
-                modalTelefone.textContent = telefone;
-                document.getElementById('modalImagem').src = imagem;
-                document.getElementById('modalImagem').alt = "Imagem do grupo " + nome;
 
-                modal.classList.add("ativo");
+                modalLink.textContent =
+                    link !== "#" ? link : "Sem link disponível";
+
+                modalLink.href =
+                    link !== "#" ? link : "javascript:void(0);";
+
+                modalTelefone.textContent = telefone;
+
+                const modalImagem = document.getElementById("modalImagem");
+
+                modalImagem.src = imagem;
+                modalImagem.alt = "Imagem do grupo " + nome;
+
+                abrirModal();
             });
         });
 
-        document.querySelector(".fechar-modal").addEventListener("click", () => {
-            modal.classList.remove("ativo");
-        });
+        document.querySelector(".fechar-modal").addEventListener("click", fecharModal);
 
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) {
-                modal.classList.remove("ativo");
+        modal.addEventListener("click", event => {
+            if (event.target === modal) {
+                fecharModal();
             }
         });
 
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape" && modal.classList.contains("ativo")) {
+                fecharModal();
+            }
+        });
     </script>
     <script>
         const toggle = document.querySelector(".menu-toggle");
