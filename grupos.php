@@ -8,7 +8,7 @@ $stmt->execute();
 $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -99,7 +99,7 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
 
-        </div>
+
 
     </section>
 
@@ -111,13 +111,13 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="modal-conteudo">
 
             <div class="modal-topo">
-                <button class="fechar-modal">
+                <button class="fechar-modal" type="button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
 
                 <h2>Mais Informações</h2>
             </div>
-
+            <img id="modalImagem" src="" alt="Imagem do grupo">
             <div class="modal-corpo">
                 <h2 class="h2titulo" id="modalNomeGrupo">Título do grupo</h2>
                 <h3 id="modalFoco">Foco: ...</h3>
@@ -140,13 +140,53 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     Esperamos você para juntos construirmos uma rede de apoio, cuidado e esperança!
                 </h4>
 
-                <img id="modalImagem" src="" alt="Imagem do grupo">
+
+                <div class="inscricao-grupo">
+                    <p>
+                        Quer participar? Enviaremos o link para o e-mail da sua conta.
+                    </p>
+
+                    <button class="botao-inscricao-grupo" id="botaoInscricaoGrupo" type="button">
+                        <i class="fa-regular fa-envelope"></i>
+                        Receber link por e-mail
+                    </button>
+
+                    <p class="mensagem-inscricao-grupo" id="mensagemInscricaoGrupo" aria-live="polite"></p>
+                </div>
             </div>
 
         </div>
 
     </div>
     <script>
+        const modal = document.getElementById("modalInfo");
+        const modalNome = document.getElementById("modalNomeGrupo");
+        const modalFoco = document.getElementById("modalFoco");
+        const modalHorario = document.getElementById("modalHorario");
+        const modalData = document.getElementById("modalData");
+        const modalDescricao = document.getElementById("modalDescricao");
+        const modalLink = document.getElementById("modalLink");
+        const modalTelefone = document.getElementById("modalTelefone");
+        const modalImagem = document.getElementById("modalImagem");
+
+        const botaoFecharModal = document.querySelector(
+            ".fechar-modal"
+        );
+
+        const botaoInscricao = document.getElementById(
+            "botaoInscricaoGrupo"
+        );
+
+        const mensagemInscricao = document.getElementById(
+            "mensagemInscricaoGrupo"
+        );
+
+        const toggle = document.querySelector(".menu-toggle");
+        const menu = document.querySelector(".menu");
+
+        let linkGrupoAtual = "#";
+        let nomeGrupoAtual = "Grupo de apoio";
+
         function abrirModal() {
             modal.classList.add("ativo");
             document.body.classList.add("modal-aberto");
@@ -155,43 +195,171 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         function fecharModal() {
             modal.classList.remove("ativo");
             document.body.classList.remove("modal-aberto");
+
+            mensagemInscricao.textContent = "";
+            mensagemInscricao.className =
+                "mensagem-inscricao-grupo";
+        }
+
+        function atualizarBotaoInscricao() {
+            if (linkGrupoAtual === "#") {
+                botaoInscricao.disabled = true;
+
+                botaoInscricao.innerHTML =
+                    '<i class="fa-solid fa-link-slash"></i> Link indisponível';
+
+                return;
+            }
+
+            botaoInscricao.disabled = false;
+
+            botaoInscricao.innerHTML =
+                '<i class="fa-regular fa-envelope"></i> Receber link por e-mail';
         }
 
         document.querySelectorAll(".infogrupos").forEach(botao => {
             botao.addEventListener("click", () => {
-                const nome = botao.getAttribute("data-nome") || "Grupo";
-                const foco = botao.getAttribute("data-foco") || "Grupo de apoio";
-                const data = botao.getAttribute("data-data") || "Data a definir";
-                const horario = botao.getAttribute("data-horario") || "Horário a definir";
-                const info = botao.getAttribute("data-info") || "Descrição não disponível.";
-                const link = botao.getAttribute("data-link") || "#";
-                const telefone = botao.getAttribute("data-telefone") || "Não informado";
-                const imagem = botao.getAttribute("data-imagem") || "img/apoio1.webp";
+                const nome =
+                    botao.getAttribute("data-nome") ||
+                    "Grupo";
+
+                const foco =
+                    botao.getAttribute("data-foco") ||
+                    "Grupo de apoio";
+
+                const data =
+                    botao.getAttribute("data-data") ||
+                    "Data a definir";
+
+                const horario =
+                    botao.getAttribute("data-horario") ||
+                    "Horário a definir";
+
+                const info =
+                    botao.getAttribute("data-info") ||
+                    "Descrição não disponível.";
+
+                const link =
+                    botao.getAttribute("data-link") ||
+                    "#";
+
+                const telefone =
+                    botao.getAttribute("data-telefone") ||
+                    "Não informado";
+
+                const imagem =
+                    botao.getAttribute("data-imagem") ||
+                    "img/apoio1.webp";
+
+                linkGrupoAtual = link;
+                nomeGrupoAtual = nome;
 
                 modalNome.textContent = nome;
                 modalFoco.textContent = "Foco: " + foco;
                 modalData.textContent = data;
                 modalHorario.textContent = horario;
                 modalDescricao.textContent = info;
-
-                modalLink.textContent =
-                    link !== "#" ? link : "Sem link disponível";
-
-                modalLink.href =
-                    link !== "#" ? link : "javascript:void(0);";
-
                 modalTelefone.textContent = telefone;
 
-                const modalImagem = document.getElementById("modalImagem");
-
                 modalImagem.src = imagem;
-                modalImagem.alt = "Imagem do grupo " + nome;
+                modalImagem.alt =
+                    "Imagem do grupo " + nome;
 
+                if (link !== "#") {
+                    modalLink.textContent = link;
+                    modalLink.href = link;
+                    modalLink.target = "_blank";
+                    modalLink.rel = "noopener noreferrer";
+                } else {
+                    modalLink.textContent =
+                        "Sem link disponível";
+
+                    modalLink.removeAttribute("href");
+                    modalLink.removeAttribute("target");
+                    modalLink.removeAttribute("rel");
+                }
+
+                mensagemInscricao.textContent = "";
+                mensagemInscricao.className =
+                    "mensagem-inscricao-grupo";
+
+                atualizarBotaoInscricao();
                 abrirModal();
             });
         });
 
-        document.querySelector(".fechar-modal").addEventListener("click", fecharModal);
+        botaoInscricao.addEventListener("click", async () => {
+            if (linkGrupoAtual === "#") {
+                return;
+            }
+
+            botaoInscricao.disabled = true;
+
+            botaoInscricao.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+
+            mensagemInscricao.textContent = "";
+            mensagemInscricao.className =
+                "mensagem-inscricao-grupo";
+
+            try {
+                /*
+                 * Este endpoint será desenvolvido pelo integrante
+                 * responsável pelo backend.
+                 */
+                const resposta = await fetch(
+                    "enviar_link_grupo.php",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            link: linkGrupoAtual,
+                            nomeGrupo: nomeGrupoAtual
+                        })
+                    }
+                );
+
+                let resultado;
+
+                try {
+                    resultado = await resposta.json();
+                } catch {
+                    throw new Error(
+                        "O servidor retornou uma resposta inválida."
+                    );
+                }
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        resultado.mensagem ||
+                        "Não foi possível enviar o link."
+                    );
+                }
+
+                mensagemInscricao.textContent =
+                    resultado.mensagem ||
+                    "Link enviado para o e-mail da sua conta.";
+
+                mensagemInscricao.classList.add("sucesso");
+            } catch (erro) {
+                mensagemInscricao.textContent =
+                    erro.message ||
+                    "Não foi possível enviar o link.";
+
+                mensagemInscricao.classList.add("erro");
+            } finally {
+                atualizarBotaoInscricao();
+            }
+        });
+
+        botaoFecharModal.addEventListener(
+            "click",
+            fecharModal
+        );
 
         modal.addEventListener("click", event => {
             if (event.target === modal) {
@@ -200,20 +368,20 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         });
 
         document.addEventListener("keydown", event => {
-            if (event.key === "Escape" && modal.classList.contains("ativo")) {
+            if (
+                event.key === "Escape" &&
+                modal.classList.contains("ativo")
+            ) {
                 fecharModal();
             }
         });
-    </script>
-    <script>
-        const toggle = document.querySelector(".menu-toggle");
-        const menu = document.querySelector(".menu");
 
-        toggle.addEventListener("click", () => {
-            menu.classList.toggle("ativo");
-        });
+        if (toggle && menu) {
+            toggle.addEventListener("click", () => {
+                menu.classList.toggle("ativo");
+            });
+        }
     </script>
-
 </body>
 
 </html>
