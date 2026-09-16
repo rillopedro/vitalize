@@ -3572,3 +3572,43 @@ textarea {
 
 }
 
+.btn-excluirconta{
+    text-decoration:none; 
+    background:#b91c1c; 
+    display:inline-flex; 
+    align-items:center; 
+    gap:8px;
+
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.btn-sairconta {
+    text-decoration: none;
+    background: #b91c1c;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: white !important;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.btn-sairconta i,
+.btn-sairconta span {
+    color: white !important;
+}
+.btn-agenda,
+.btn-sairconta,
+.btn-excluirconta {
+    min-height: 42px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

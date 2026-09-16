@@ -83,7 +83,7 @@ session_start();
             <div class="card-integrante">
                 <img src="img/leticia.jpeg" alt="Integrante 2">
                 <h3>Letícia Vasconcelos</h3>
-                <p>17 Anos</p>
+                <p>18 Anos</p>
             </div>
 
             <div class="card-integrante">
@@ -100,7 +100,7 @@ session_start();
             <div class="card-integrante">
                 <img src="img/vitoria.jpeg" alt="Integrante 3">
                 <h3>Vitória Guedes</h3>
-                <p>17 Anos</p>
+                <p>18 Anos</p>
             </div>
 
         </div>

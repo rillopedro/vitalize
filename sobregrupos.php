@@ -48,9 +48,7 @@ session_start();
 
     </nav>
 
-    <section class="banner-home">
-        <img src="img/sobregrupos.jpg">
-    </section>
+    
     <section class="apoio-section">
 
 

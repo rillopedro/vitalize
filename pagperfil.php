@@ -97,9 +97,7 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
                     <?php $fotoPerfilSrc = $fotoPerfil ?: 'img/logov.png'; ?>
                     <img src="<?= htmlspecialchars($fotoPerfilSrc) ?>" id="fotoPerfil" alt="Foto de perfil">
 
-                    <label for="novaFoto" class="editar-foto">
-                        <i class="fa-solid fa-camera"></i>
-                    </label>
+
 
                     <input type="file" id="novaFoto" hidden>
 
@@ -116,12 +114,15 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
                         <i class="fa-solid fa-pen"></i>
                         Alterar dados
                     </button>
-                    <a href="processos/processalogout.php" class="btn-agenda" style="text-decoration:none; background:#d9534f; display:inline-flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        <span>Sair</span>
-                    </a>
-                    <form method="POST" action="processos/deletarperfil.php" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');" style="margin:0;">
-                        <button type="submit" class="btn-agenda" style="background:#b91c1c; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                    <form method="POST" action="processos/processalogout.php" style="margin:0;">
+                        <button type="submit" class="btn-sairconta">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sair</span>
+                        </button>
+                    </form>
+                    <form method="POST" action="processos/deletarperfil.php"
+                        onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');" style="margin:0;">
+                        <button type="submit" class="btn-excluirconta">
                             <i class="fa-solid fa-trash"></i>
                             <span>Excluir conta</span>
                         </button>
@@ -158,81 +159,82 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
 
     </div>
 
-       <?php include 'footer.php'; ?>
+    <?php include 'footer.php'; ?>
 
 
 
     <div class="modal" id="modalPerfil">
 
-    <div class="modal-conteudo agenda">
+        <div class="modal-conteudo agenda">
 
-        <div class="modal-topo">
+            <div class="modal-topo">
 
-            <button class="fechar-modal" id="fecharPerfil">
-                <i class="fa-solid fa-arrow-left"></i>
-            </button>
+                <button class="fechar-modal" id="fecharPerfil">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
 
-            <h2>Editar Perfil</h2>
+                <h2>Editar Perfil</h2>
+
+            </div>
+
+            <form id="formPerfil" class="form-consulta" method="POST" action="processos/atualizaperfil.php"
+                enctype="multipart/form-data">
+
+                <div class="campo full">
+
+                    <label>Foto de Perfil</label>
+
+                    <input type="file" name="foto_perfil" accept="image/png, image/jpeg, image/webp">
+
+                </div>
+
+                <div class="campo">
+                    <label>Nome</label>
+                    <input type="text" name="nome" value="<?php echo htmlspecialchars($nome); ?>">
+                </div>
+
+                <div class="campo">
+                    <label>Sobrenome</label>
+                    <input type="text" name="sobrenome" value="<?php echo htmlspecialchars($sobrenome); ?>">
+                </div>
+
+                <div class="campo">
+                    <label>Email</label>
+                    <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>">
+                </div>
+
+                <div class="campo">
+                    <label>Telefone</label>
+                    <input type="tel" name="telefone" value="<?php echo htmlspecialchars($telefone); ?>">
+                </div>
+
+                <div class="campo">
+                    <label>Nova senha</label>
+                    <input type="password" name="senha">
+                </div>
+
+                <div class="campo">
+                    <label>Confirmar senha</label>
+                    <input type="password" name="confirmar_senha">
+                </div>
+
+                <div class="botoes-modal">
+
+                    <button type="button" class="btn-cancelar" id="cancelarPerfil">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn-salvar">
+                        Salvar
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
 
-        <form id="formPerfil" class="form-consulta" method="POST" action="processos/atualizaperfil.php" enctype="multipart/form-data">
-
-            <div class="campo full">
-
-                <label>Foto de Perfil</label>
-
-                <input type="file" name="foto_perfil" accept="image/png, image/jpeg, image/webp">
-
-            </div>
-
-            <div class="campo">
-                <label>Nome</label>
-                <input type="text" name="nome" value="<?php echo htmlspecialchars($nome); ?>">
-            </div>
-
-            <div class="campo">
-                <label>Sobrenome</label>
-                <input type="text" name="sobrenome" value="<?php echo htmlspecialchars($sobrenome); ?>">
-            </div>
-
-            <div class="campo">
-                <label>Email</label>
-                <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>">
-            </div>
-
-            <div class="campo">
-                <label>Telefone</label>
-                <input type="tel" name="telefone" value="<?php echo htmlspecialchars($telefone); ?>">
-            </div>
-
-            <div class="campo">
-                <label>Nova senha</label>
-                <input type="password" name="senha">
-            </div>
-
-            <div class="campo">
-                <label>Confirmar senha</label>
-                <input type="password" name="confirmar_senha">
-            </div>
-
-            <div class="botoes-modal">
-
-                <button type="button" class="btn-cancelar" id="cancelarPerfil">
-                    Cancelar
-                </button>
-
-                <button type="submit" class="btn-salvar">
-                    Salvar
-                </button>
-
-            </div>
-
-        </form>
-
     </div>
-
-</div>
 
     <script>
         const modalPerfil = document.getElementById("modalPerfil");
