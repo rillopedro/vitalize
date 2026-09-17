@@ -265,6 +265,37 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
             }
 
         };
+        <script>
+            const modalPerfil = document.getElementById("modalPerfil");
+
+    document.getElementById("abrirPerfil").onclick = () => {
+                modalPerfil.classList.add("ativo");
+            document.body.style.overflow = "hidden";
+    };
+
+            document.getElementById("fecharPerfil").onclick = fecharPerfil;
+            document.getElementById("cancelarPerfil").onclick = fecharPerfil;
+
+            function fecharPerfil() {
+                modalPerfil.classList.remove("ativo");
+            document.body.style.overflow = "auto";
+    }
+
+    modalPerfil.onclick = (e) => {
+        if (e.target == modalPerfil) {
+                fecharPerfil();
+        }
+    };
+
+
+            const toggle = document.querySelector(".menu-toggle");
+            const menu = document.querySelector(".menu");
+
+            if (toggle && menu) {
+                toggle.addEventListener("click", () => {
+                    menu.classList.toggle("ativo");
+                });
+    }
     </script>
 
 
