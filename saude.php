@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once 'conexao.php';
-
 $consultas = [];
 if (isset($_SESSION['id_usuario'])) {
     $stmt = $pdo->prepare(
@@ -29,16 +28,13 @@ if (isset($_SESSION['id_usuario'])) {
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="icon" type="image/png" href="img/logov.png">
-
 </head>
 
 <body>
     <nav class="header">
-
         <div class="logo-box">
             <img src="img/logov.png" alt="">
         </div>
-
         <div class="nav-bar">
             <ul class="menu">
                 <li><a href="index.php">Início</a></li>
@@ -48,7 +44,6 @@ if (isset($_SESSION['id_usuario'])) {
                 <li><a href="relatos.php">Relatos</a></li>
                 <li><a href="sobre.php">Sobre</a></li>
             </ul>
-
             <?php if (!empty($_SESSION['id_usuario'])): ?>
                 <a href="pagperfil.php" class="btnav">Perfil</a>
             <?php else: ?>
@@ -58,105 +53,84 @@ if (isset($_SESSION['id_usuario'])) {
                 <i class="fas fa-bars"></i>
             </button>
         </div>
-
     </nav>
-
     <div class="painel">
-
         <div class="cabecalho-painel">
-            <h1>Olá, <?= htmlspecialchars($_SESSION['nome'] ?? 'Usuário') ?>!</h1>
+            <h1>Olá,
+                <?= htmlspecialchars($_SESSION['nome'] ?? 'Usuário') ?>!
+            </h1>
             <p>Acompanhe sua rotina hoje</p>
         </div>
-
         <div class="grade-painel">
-
             <!-- Humor -->
             <div class="card">
                 <h3>Como vai seu humor?</h3>
-
                 <div class="humor">
-
                     <button class="opcao-humor" data-humor="Muito bem" type="button">
                         <div class="emoji roxo">
                             <i class="fa-regular fa-face-laugh"></i>
                         </div>
                         <span class="texto-emoji">Muito bem</span>
                     </button>
-
                     <button class="opcao-humor" data-humor="Bem" type="button">
                         <div class="emoji lilas">
                             <i class="fa-regular fa-face-smile"></i>
                         </div>
                         <span class="texto-emoji">Bem</span>
                     </button>
-
                     <button class="opcao-humor" data-humor="Mais ou menos" type="button">
                         <div class="emoji azul">
                             <i class="fa-regular fa-face-meh"></i>
                         </div>
                         <span class="texto-emoji">Mais ou menos</span>
                     </button>
-
                     <button class="opcao-humor" data-humor="Cansada" type="button">
                         <div class="emoji cinza">
                             <i class="fa-regular fa-face-frown"></i>
                         </div>
                         <span class="texto-emoji">Cansada</span>
                     </button>
-
                     <button class="opcao-humor" data-humor="Triste" type="button">
                         <div class="emoji rosa">
                             <i class="fa-regular fa-face-sad-tear"></i>
                         </div>
                         <span class="texto-emoji">Triste</span>
                     </button>
-
                 </div>
             </div>
-
             <!-- Sintomas -->
             <div class="card">
                 <h3>Registro de sintomas</h3>
                 <p class="subtitulo">Marque como você se sente hoje</p>
-
                 <div class="sintomas">
-
                     <button class="sintoma" data-sintoma="Náusea" type="button">
                         <span class="material-symbols-outlined">sick</span>
                         Náusea
                     </button>
-
                     <button class="sintoma" data-sintoma="Dor" type="button">
                         <span class="material-symbols-outlined">bolt</span>
                         Dor
                     </button>
-
                     <button class="sintoma" data-sintoma="Sono" type="button">
                         <span class="material-symbols-outlined">bedtime</span>
                         Sono
                     </button>
-
                     <button class="sintoma" data-sintoma="Apetite" type="button">
                         <span class="material-symbols-outlined">restaurant</span>
                         Apetite
                     </button>
-
                     <button class="sintoma" data-sintoma="Hidratação" type="button">
                         <span class="material-symbols-outlined">water_drop</span>
                         Hidratação
                     </button>
-
                     <button class="sintoma" data-sintoma="Disposição" type="button">
                         <span class="material-symbols-outlined">directions_walk</span>
                         Disposição
                     </button>
-
                 </div>
             </div>
-
             <!-- Cardápio -->
             <div class="card">
-
                 <div class="cabecalho-card">
                     <div>
                         <h3>Seu café da manhã com IA</h3>
@@ -166,10 +140,10 @@ if (isset($_SESSION['id_usuario'])) {
                         <i class="fa-solid fa-wand-magic-sparkles"></i> Gerar sugestão
                     </button>
                 </div>
-
                 <div class="restricoes-alimentares">
                     <label for="restricoesAlimentares">
-                        <i class="fa-solid fa-utensils"></i> Restrições alimentares <span class="campo-opcional">(opcional)</span>
+                        <i class="fa-solid fa-utensils"></i> Restrições alimentares <span
+                            class="campo-opcional">(opcional)</span>
                     </label>
                     <textarea id="restricoesAlimentares" maxlength="500" rows="3"
                         placeholder="Ex.: alergia a amendoim, intolerância à lactose, alimentação vegetariana..."></textarea>
@@ -178,74 +152,57 @@ if (isset($_SESSION['id_usuario'])) {
                         <span id="contadorRestricoes">0/500</span>
                     </div>
                 </div>
-
                 <div class="refeicoes" id="resultadoIA" aria-live="polite">
                     <div class="ia-vazio">
                         <i class="fa-regular fa-heart"></i>
                         <p>Conte como você está para receber uma sugestão acolhedora para esta manhã.</p>
                     </div>
                 </div>
-
             </div>
-
             <!-- Dicas -->
             <div class="card">
-
                 <div class="cabecalho-card">
                     <h3>Dicas de rotina</h3>
                 </div>
-
                 <div class="dicas">
-
                     <div class="dica">
                         <div class="icone-dica">
                             <i class="fa-solid fa-glass-water"></i>
                         </div>
                         <span>Beba bastante água ao longo do dia.</span>
                     </div>
-
                     <div class="dica">
                         <div class="icone-dica">
                             <i class="fa-solid fa-person-walking"></i>
                         </div>
                         <span>Faça atividades leves e respeite seus limites.</span>
                     </div>
-
                     <div class="dica">
                         <div class="icone-dica">
                             <i class="fa-solid fa-bed"></i>
                         </div>
                         <span>Descanse sempre que precisar.</span>
                     </div>
-
                     <div class="dica">
                         <div class="icone-dica">
                             <i class="fa-solid fa-pills"></i>
                         </div>
                         <span>Não se esqueça da sua medicação.</span>
                     </div>
-
                 </div>
-
             </div>
-
             <!-- Consultas -->
             <div class="card card-consultas">
-
                 <div class="cabecalho-card">
-
                     <div>
                         <h3>Próximas consultas e exames</h3>
                         <p class="subtitulo">Acompanhe seus próximos compromissos.</p>
                     </div>
-
                     <button id="abrirAgenda" class="btn-agenda">
                         <i class="fa-solid fa-calendar-plus"></i>
                         Gerenciar
                     </button>
-
                 </div>
-
                 <div class="consultas" id="resumoConsultas">
                     <?php if (!$consultas): ?>
                         <p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>
@@ -253,145 +210,225 @@ if (isset($_SESSION['id_usuario'])) {
                         <?php foreach ($consultas as $consulta): ?>
                             <div class="consulta">
                                 <div class="data-consulta">
-                                    <strong><?= htmlspecialchars(date('d', strtotime($consulta['data']))) ?></strong>
-                                    <span><?= htmlspecialchars(strtoupper(date('M', strtotime($consulta['data'])))) ?></span>
+                                    <strong>
+                                        <?= htmlspecialchars(date('d', strtotime($consulta['data']))) ?>
+                                    </strong>
+                                    <span>
+                                        <?= htmlspecialchars(strtoupper(date('M', strtotime($consulta['data'])))) ?>
+                                    </span>
                                 </div>
                                 <div class="info-consulta">
-                                    <h4><?= htmlspecialchars($consulta['tipo'] . ' de ' . $consulta['especialidade']) ?></h4>
-                                    <p><?= htmlspecialchars($consulta['medico'] ?: 'Profissional não informado') ?></p>
+                                    <h4>
+                                        <?= htmlspecialchars($consulta['tipo'] . ' de ' . $consulta['especialidade']) ?>
+                                    </h4>
+                                    <p>
+                                        <?= htmlspecialchars($consulta['medico'] ?: 'Profissional não informado') ?>
+                                    </p>
                                 </div>
                                 <div class="horario-consulta">
-                                    <strong><?= htmlspecialchars(substr($consulta['horario'], 0, 5)) ?></strong>
-                                    <span><?= htmlspecialchars($consulta['nome_local'] ?: 'Local não informado') ?></span>
+                                    <strong>
+                                        <?= htmlspecialchars(substr($consulta['horario'], 0, 5)) ?>
+                                    </strong>
+                                    <span>
+                                        <?= htmlspecialchars($consulta['nome_local'] ?: 'Local não informado') ?>
+                                    </span>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-
             </div>
         </div>
     </div>
-
-       <?php include 'footer.php'; ?>
-
-
+    <?php include 'footer.php'; ?>
     <div class="modal" id="modalAgenda">
-
         <div class="modal-conteudo agenda">
-
             <div class="modal-topo">
-
                 <button class="fechar-modal" id="fecharAgenda">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-
                 <h2 id="tituloFormulario">
                     Gerenciar Agenda
                 </h2>
-
             </div>
-
-
             <!-- LISTA -->
-
             <div id="listaAgenda">
-
+                <div id="confirmarExclusaoAgenda" hidden>
+                    <p>Deseja excluir esta consulta ou exame?</p>
+                    <div class="acoes-confirmacao">
+                        <button type="button" id="cancelarExclusaoAgenda" class="btn-cancelar">
+                            Cancelar
+                        </button>
+                        <button type="button" id="confirmarExcluirAgenda" class="btn-excluir-agenda">
+                            Excluir
+                        </button>
+                    </div>
+                </div>
                 <button class="btn-novo" id="novoItem">
-
                     <i class="fa-solid fa-plus"></i>
-
                     Nova consulta ou exame
-
                 </button>
-
-
                 <div id="itensAgenda"></div>
             </div>
 
-
-
             <!-- FORM -->
-
             <form id="formAgenda" class="form-consulta" style="display:none;">
-
                 <input type="hidden" name="id_consulta" id="idConsulta">
-
                 <div class="campo">
-
                     <label>Tipo</label>
-
                     <select name="tipo" id="tipoConsulta" required>
-
                         <option>Consulta</option>
                         <option>Exame</option>
-
                     </select>
-
                 </div>
-
                 <div class="campo">
-
                     <label>Especialidade</label>
-
                     <input type="text" name="especialidade" id="especialidade" placeholder="Ex.: Oncologista" required>
-
                 </div>
-
                 <div class="campo">
-
                     <label>Médico</label>
-
                     <input type="text" name="medico" id="medico" placeholder="Nome do médico">
-
                 </div>
-
                 <div class="campo">
-
                     <label>Local</label>
-
                     <input type="text" name="nome_local" id="nomeLocal" placeholder="Hospital ou clínica">
-
                 </div>
-
                 <div class="campo">
-
                     <label>Data</label>
-
                     <input type="date" name="data" id="dataConsulta" required>
-
                 </div>
-
                 <div class="campo">
-
                     <label>Horário</label>
-
                     <input type="time" name="horario" id="horarioConsulta" required>
-
                 </div>
-
                 <div class="botoes-modal">
-
                     <button type="button" id="cancelarEdicao" class="btn-cancelar">
                         Cancelar
                     </button>
-
                     <button type="button" id="salvarAgenda" class="btn-salvar">
                         Salvar
                     </button>
-
                 </div>
-
             </form>
-
-
         </div>
-
     </div>
+    <style>
+        #modalAgenda .modal-topo {
+            position: relative;
+            padding-inline: 72px;
+        }
 
+        #modalAgenda .modal-topo h2 {
+            margin: 0;
+            text-align: center;
+        }
 
+        #modalAgenda .fechar-modal {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            appearance: none;
+            border: none !important;
+            border-radius: 0;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: white !important;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #modalAgenda .fechar-modal i {
+            color: inherit;
+        }
+
+        #modalAgenda .fechar-modal:hover {
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        #modalAgenda .fechar-modal:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 3px;
+        }
+
+        #formAgenda .campo .input-erro {
+            border: 1px solid #c62828 !important;
+        }
+
+        #formAgenda .campo .input-erro:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(198, 40, 40, .12);
+        }
+
+        #formAgenda .erro-campo {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+            color: #c62828;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        #modalAgenda .erro-agenda {
+            grid-column: 1 / -1;
+            width: 100%;
+            margin: 0 0 12px;
+            color: #c62828;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        #modalAgenda .erro-campo[hidden],
+        #modalAgenda .erro-agenda[hidden] {
+            display: none !important;
+        }
+
+        #confirmarExclusaoAgenda {
+            margin-bottom: 20px;
+            padding: 18px;
+            border: 1px solid #e5d8f5;
+            border-radius: 12px;
+            background: #faf7fe;
+        }
+
+        #confirmarExclusaoAgenda[hidden] {
+            display: none !important;
+        }
+
+        #confirmarExclusaoAgenda p {
+            margin: 0 0 14px;
+            color: #444;
+            font-size: 15px;
+        }
+
+        #confirmarExclusaoAgenda .acoes-confirmacao {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #modalAgenda .btn-excluir-agenda {
+            padding: 13px 25px;
+            border: none;
+            border-radius: 12px;
+            background: #b61010;
+            color: white;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        #modalAgenda .btn-excluir-agenda:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+    </style>
     <script>
-
         const modal = document.getElementById("modalAgenda");
         const lista = document.getElementById("listaAgenda");
         const formulario = document.getElementById("formAgenda");
@@ -400,27 +437,156 @@ if (isset($_SESSION['id_usuario'])) {
         const resumoConsultas = document.getElementById("resumoConsultas");
         const consultasIniciais = <?= json_encode($consultas, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         let consultas = consultasIniciais;
-
+        let overflowAnteriorAgenda = "";
+        formulario.noValidate = true;
+        const erroLista = document.createElement("p");
+        erroLista.className = "erro-agenda";
+        erroLista.setAttribute("role", "alert");
+        erroLista.hidden = true;
+        lista.prepend(erroLista);
+        const botaoSalvar = document.getElementById("salvarAgenda");
+        botaoSalvar.type = "submit";
+        let tentouSalvarAgenda = false;
+        let salvandoAgenda = false;
+        const camposAgenda = Array.from(
+            formulario.querySelectorAll(
+                'input:not([type="hidden"]), select, textarea'
+            )
+        );
+        const mensagensAgenda = new Map();
+        camposAgenda.forEach(campo => {
+            const mensagem = document.createElement("small");
+            mensagem.id = `${campo.id}-erro`;
+            mensagem.className = "erro-campo";
+            mensagem.setAttribute("aria-live", "polite");
+            mensagem.hidden = true;
+            campo.insertAdjacentElement("afterend", mensagem);
+            const descricao = campo.getAttribute("aria-describedby") || "";
+            campo.setAttribute(
+                "aria-describedby",
+                `${descricao} ${mensagem.id}`.trim()
+            );
+            mensagensAgenda.set(campo, mensagem);
+        });
+        const erroAgenda = document.createElement("p");
+        erroAgenda.className = "erro-agenda";
+        erroAgenda.setAttribute("role", "alert");
+        erroAgenda.hidden = true;
+        formulario.prepend(erroAgenda);
+        function mensagemDoCampo(campo) {
+            const mensagensObrigatorias = {
+                tipoConsulta: "Selecione o tipo.",
+                especialidade: "Informe a especialidade.",
+                dataConsulta: "Informe a data.",
+                horarioConsulta: "Informe o horário."
+            };
+            if (campo.validity.badInput) {
+                return "Informe um valor válido.";
+            }
+            if (campo.required && !campo.value.trim()) {
+                return mensagensObrigatorias[campo.id] || "Preencha este campo.";
+            }
+            if (!campo.validity.valid) {
+                return campo.validationMessage || "Confira este campo.";
+            }
+            return "";
+        }
+        function validarCampoAgenda(campo) {
+            const texto = mensagemDoCampo(campo);
+            const mensagem = mensagensAgenda.get(campo);
+            campo.classList.toggle("input-erro", Boolean(texto));
+            mensagem.textContent = texto;
+            mensagem.hidden = !texto;
+            if (texto) {
+                campo.setAttribute("aria-invalid", "true");
+            } else {
+                campo.removeAttribute("aria-invalid");
+            }
+            return !texto;
+        }
+        const painelExclusao = document.getElementById("confirmarExclusaoAgenda");
+        const confirmarExcluir = document.getElementById("confirmarExcluirAgenda");
+        const cancelarExclusao = document.getElementById("cancelarExclusaoAgenda");
+        let consultaParaExcluir = null;
+        let botaoOrigemExclusao = null;
+        let excluindoAgenda = false;
+        function limparConfirmacaoExclusao() {
+            consultaParaExcluir = null;
+            painelExclusao.hidden = true;
+        }
+        cancelarExclusao.onclick = () => {
+            if (excluindoAgenda) return;
+            limparConfirmacaoExclusao();
+            botaoOrigemExclusao?.focus();
+        };
+        confirmarExcluir.onclick = async () => {
+            if (consultaParaExcluir === null || excluindoAgenda) return;
+            const dados = new FormData();
+            dados.append("acao", "excluir");
+            dados.append("id_consulta", consultaParaExcluir);
+            excluindoAgenda = true;
+            confirmarExcluir.disabled = true;
+            cancelarExclusao.disabled = true;
+            confirmarExcluir.textContent = "Excluindo...";
+            erroLista.hidden = true;
+            erroLista.textContent = "";
+            try {
+                await enviarAgenda(dados);
+                limparConfirmacaoExclusao();
+                document.getElementById("novoItem").focus();
+            } catch (erro) {
+                erroLista.textContent =
+                    erro.message || "Não foi possível excluir. Tente novamente.";
+                erroLista.hidden = false;
+            } finally {
+                excluindoAgenda = false;
+                confirmarExcluir.disabled = false;
+                cancelarExclusao.disabled = false;
+                confirmarExcluir.textContent = "Excluir";
+            }
+        };
+        function limparErrosAgenda() {
+            limparConfirmacaoExclusao();
+            erroLista.hidden = true;
+            erroLista.textContent = "";
+            tentouSalvarAgenda = false;
+            erroAgenda.textContent = "";
+            erroAgenda.hidden = true;
+            camposAgenda.forEach(campo => {
+                campo.classList.remove("input-erro");
+                campo.removeAttribute("aria-invalid");
+                const mensagem = mensagensAgenda.get(campo);
+                mensagem.textContent = "";
+                mensagem.hidden = true;
+            });
+        }
+        camposAgenda.forEach(campo => {
+            function atualizarValidacao() {
+                if (tentouSalvarAgenda) {
+                    validarCampoAgenda(campo);
+                }
+                erroAgenda.textContent = "";
+                erroAgenda.hidden = true;
+            }
+            campo.addEventListener("input", atualizarValidacao);
+            campo.addEventListener("change", atualizarValidacao);
+        });
         function escapar(texto) {
             const elemento = document.createElement('span');
             elemento.textContent = String(texto ?? '');
             return elemento.innerHTML;
         }
-
         function formatarData(data) {
             return new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR');
         }
-
         function formatarMes(data) {
-            return new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR', {month: 'short'}).replace('.', '').toUpperCase();
+            return new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '').toUpperCase();
         }
-
         function renderizarAgenda() {
             if (!consultas.length) {
                 itensAgenda.innerHTML = '<p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>';
                 return;
             }
-
             itensAgenda.innerHTML = consultas.map(consulta => `
                 <div class="item-agenda">
                     <div class="dados-agenda">
@@ -439,13 +605,11 @@ if (isset($_SESSION['id_usuario'])) {
                 </div>
             `).join('');
         }
-
         function renderizarResumo() {
             if (!consultas.length) {
                 resumoConsultas.innerHTML = '<p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>';
                 return;
             }
-
             resumoConsultas.innerHTML = consultas.map(consulta => `
                 <div class="consulta">
                     <div class="data-consulta">
@@ -463,25 +627,23 @@ if (isset($_SESSION['id_usuario'])) {
                 </div>
             `).join('');
         }
-
         function atualizarConsultas(novasConsultas) {
             consultas = novasConsultas;
             renderizarAgenda();
             renderizarResumo();
         }
-
         function limparFormulario() {
             formulario.reset();
-            document.getElementById('idConsulta').value = '';
-            titulo.innerHTML = 'Nova consulta';
+            document.getElementById("idConsulta").value = "";
+            limparErrosAgenda();
+            titulo.textContent = "Nova consulta";
         }
-
         function voltarInicioModal() {
+            limparFormulario();
             formulario.style.display = "none";
             lista.style.display = "block";
-            titulo.innerHTML = "Gerenciar Agenda";
+            titulo.textContent = "Gerenciar Agenda";
         }
-
         async function enviarAgenda(dados) {
             const resposta = await fetch('processos/agenda.php', {
                 method: 'POST',
@@ -491,55 +653,38 @@ if (isset($_SESSION['id_usuario'])) {
             if (!resposta.ok) throw new Error(resultado.erro || 'Não foi possível atualizar a agenda.');
             atualizarConsultas(resultado.consultas);
         }
-
         renderizarAgenda();
         renderizarResumo();
-
         document.getElementById("abrirAgenda").onclick = () => {
+            voltarInicioModal();
+            overflowAnteriorAgenda = document.body.style.overflow;
             modal.classList.add("ativo");
             document.body.style.overflow = "hidden";
         };
-
-        document.querySelector(".fechar-modal").onclick = () => {
-
+        document.getElementById("fecharAgenda").onclick = () => {
+            if (excluindoAgenda || salvandoAgenda) return;
             if (formulario.style.display === "block") {
-
                 voltarInicioModal();
-
             } else {
-
                 modal.classList.remove("ativo");
-                document.body.style.overflow = "auto";
-
+                document.body.style.overflow = overflowAnteriorAgenda;
             }
-
         };
-
-        modal.onclick = (e) => {
-
-            if (e.target === modal) {
-
-                modal.classList.remove("ativo");
-                document.body.style.overflow = "auto";
-
-            }
-
-        };
-
         // NOVO
         document.getElementById("novoItem").onclick = () => {
+            if (excluindoAgenda || salvandoAgenda) return;
             limparFormulario();
             lista.style.display = "none";
             formulario.style.display = "block";
         };
-
         itensAgenda.addEventListener('click', event => {
             const botao = event.target.closest('button');
             if (!botao) return;
             const consulta = consultas.find(item => String(item.id_consulta) === botao.dataset.id);
             if (!consulta) return;
-
             if (botao.classList.contains('editar')) {
+                if (excluindoAgenda || salvandoAgenda) return;
+                limparFormulario();
                 titulo.innerHTML = 'Editar consulta';
                 document.getElementById('idConsulta').value = consulta.id_consulta;
                 document.getElementById('tipoConsulta').value = consulta.tipo;
@@ -551,37 +696,62 @@ if (isset($_SESSION['id_usuario'])) {
                 lista.style.display = 'none';
                 formulario.style.display = 'block';
             }
-
-            if (botao.classList.contains('excluir') && confirm('Deseja excluir esta consulta?')) {
-                const dados = new FormData();
-                dados.append('acao', 'excluir');
-                dados.append('id_consulta', consulta.id_consulta);
-                enviarAgenda(dados).catch(erro => alert(erro.message));
+            if (botao.classList.contains("excluir")) {
+                if (excluindoAgenda) return;
+                consultaParaExcluir = consulta.id_consulta;
+                botaoOrigemExclusao = botao;
+                erroLista.hidden = true;
+                erroLista.textContent = "";
+                painelExclusao.hidden = false;
+                painelExclusao.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest"
+                });
+                cancelarExclusao.focus();
             }
         });
-
         // CANCELAR
         document.getElementById("cancelarEdicao").onclick = () => {
-
+            if (salvandoAgenda) return;
             voltarInicioModal();
-
         };
         // SALVAR
-        formulario.addEventListener('submit', event => event.preventDefault());
-        document.getElementById("salvarAgenda").onclick = async () => {
+        formulario.addEventListener("submit", async event => {
+            event.preventDefault();
+            if (salvandoAgenda) return;
+            tentouSalvarAgenda = true;
+            erroAgenda.hidden = true;
+            erroAgenda.textContent = "";
+            let primeiroInvalido = null;
+            camposAgenda.forEach(campo => {
+                if (!validarCampoAgenda(campo) && !primeiroInvalido) {
+                    primeiroInvalido = campo;
+                }
+            });
+            if (primeiroInvalido) {
+                primeiroInvalido.focus();
+                return;
+            }
             const dados = new FormData(formulario);
-            dados.append('acao', 'salvar');
-            const botaoSalvar = document.getElementById('salvarAgenda');
+            dados.append("acao", "salvar");
+            const textoOriginal = botaoSalvar.textContent;
+            salvandoAgenda = true;
             botaoSalvar.disabled = true;
+            botaoSalvar.textContent = "Salvando...";
             try {
                 await enviarAgenda(dados);
                 voltarInicioModal();
             } catch (erro) {
-                alert(erro.message);
+                // Erros do servidor aparecem no formulário, sem alert.
+                erroAgenda.textContent =
+                    erro.message || "Não foi possível salvar. Tente novamente.";
+                erroAgenda.hidden = false;
             } finally {
+                salvandoAgenda = false;
                 botaoSalvar.disabled = false;
+                botaoSalvar.textContent = textoOriginal;
             }
-        };
+        });
     </script>
     <script>
         const botaoGerar = document.getElementById('gerarPlano');
@@ -589,20 +759,17 @@ if (isset($_SESSION['id_usuario'])) {
         const campoRestricoes = document.getElementById('restricoesAlimentares');
         const contadorRestricoes = document.getElementById('contadorRestricoes');
         let humorSelecionado = '';
-
         campoRestricoes.value = localStorage.getItem('vitalize_restricoes_alimentares') || '';
         contadorRestricoes.textContent = `${campoRestricoes.value.length}/500`;
         campoRestricoes.addEventListener('input', () => {
             localStorage.setItem('vitalize_restricoes_alimentares', campoRestricoes.value.trim());
             contadorRestricoes.textContent = `${campoRestricoes.value.length}/500`;
         });
-
         function escapar(texto) {
             const elemento = document.createElement('span');
             elemento.textContent = String(texto ?? '');
             return elemento.innerHTML;
         }
-
         async function gerarPlanoMatinal() {
             const sintomas = [...document.querySelectorAll('.sintoma.ativo')]
                 .map(item => item.dataset.sintoma);
@@ -610,16 +777,14 @@ if (isset($_SESSION['id_usuario'])) {
             botaoGerar.disabled = true;
             botaoGerar.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Preparando...';
             resultadoIA.innerHTML = '<div class="ia-vazio"><p>Criando uma sugestão para você...</p></div>';
-
             try {
                 const resposta = await fetch('api/assistente_bem_estar.php', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({humor: humorSelecionado, sintomas, restricoes})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ humor: humorSelecionado, sintomas, restricoes })
                 });
                 const dados = await resposta.json();
                 if (!resposta.ok) throw new Error(dados.erro || 'Não foi possível gerar a sugestão.');
-
                 const itens = dados.itens.map(item => `
                     <li><strong>${escapar(item.nome)}</strong><span>${escapar(item.quantidade)}</span></li>
                 `).join('');
@@ -638,17 +803,13 @@ if (isset($_SESSION['id_usuario'])) {
                 botaoGerar.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Gerar outra sugestão';
             }
         }
-
         botaoGerar.addEventListener('click', gerarPlanoMatinal);
-
         // Humor: seleção única
         document.querySelectorAll('.opcao-humor').forEach(btn => {
             btn.addEventListener('click', () => {
-
                 document.querySelectorAll('.opcao-humor').forEach(item => {
                     item.classList.remove('ativo');
                 });
-
                 btn.classList.add('ativo');
                 humorSelecionado = btn.dataset.humor;
                 botaoGerar.disabled = false;
@@ -661,12 +822,10 @@ if (isset($_SESSION['id_usuario'])) {
         });
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");
-
         toggle.addEventListener("click", () => {
             menu.classList.toggle("ativo");
         });
     </script>
-
 </body>
 
 </html>

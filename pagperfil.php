@@ -53,7 +53,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
 
     <link rel="stylesheet" href="css/style.css?v=4">
     <style>
-        /* =========================
+/* =========================
    MODAL EXCLUIR CONTA
 ========================= */
 
@@ -270,7 +270,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
                 <li><a href="saude.php">Saúde</a></li>
                 <li><a href="relatos.php">Relatos</a></li>
                 <li><a href="sobre.php">Sobre</a></li>
-                <li><a href="pagperfil.php"><?= htmlspecialchars(!empty($nome) ? $nome : 'Perfil') ?></a></li>
+                
 
             </ul>
 

@@ -4458,3 +4458,41 @@ body.modal-aberto {
 
 
 
+#confirmarExclusaoAgenda {
+    margin-bottom: 20px;
+    padding: 18px;
+    border: 1px solid #e5d8f5;
+    border-radius: 12px;
+    background: #faf7fe;
+}
+
+#confirmarExclusaoAgenda[hidden] {
+    display: none !important;
+}
+
+#confirmarExclusaoAgenda p {
+    margin: 0 0 14px;
+    color: #444;
+    font-size: 15px;
+}
+
+#confirmarExclusaoAgenda .acoes-confirmacao {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#modalAgenda .btn-excluir-agenda {
+    padding: 13px 25px;
+    border: none;
+    border-radius: 12px;
+    background: #b61010;
+    color: white;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+#modalAgenda .btn-excluir-agenda:disabled {
+    opacity: .6;
+    cursor: wait;
+}
