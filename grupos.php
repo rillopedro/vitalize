@@ -202,19 +202,20 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         function atualizarBotaoInscricao() {
-            if (linkGrupoAtual === "#") {
-                botaoInscricao.disabled = true;
+            const semLink = !linkGrupoAtual || linkGrupoAtual.trim() === "#";
 
-                botaoInscricao.innerHTML =
-                    '<i class="fa-solid fa-link-slash"></i> Link indisponível';
+            botaoInscricao.classList.toggle("link-indisponivel", semLink);
+            botaoInscricao.disabled = semLink;
 
-                return;
-            }
+            botaoInscricao.style.setProperty(
+                "cursor",
+                semLink ? "not-allowed" : "pointer",
+                "important"
+            );
 
-            botaoInscricao.disabled = false;
-
-            botaoInscricao.innerHTML =
-                '<i class="fa-regular fa-envelope"></i> Receber link por e-mail';
+            botaoInscricao.innerHTML = semLink
+                ? '<i class="fa-solid fa-link-slash"></i> Link indisponível'
+                : '<i class="fa-regular fa-envelope"></i> Receber link por e-mail';
         }
 
         document.querySelectorAll(".infogrupos").forEach(botao => {

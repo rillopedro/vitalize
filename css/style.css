@@ -4496,3 +4496,12 @@ body.modal-aberto {
     opacity: .6;
     cursor: wait;
 }
+
+#modalInfo #botaoInscricaoGrupo.link-indisponivel,
+#modalInfo #botaoInscricaoGrupo.link-indisponivel * {
+    cursor: not-allowed !important;
+}
+
+#modalInfo #modalLink:not([href]) {
+    cursor: not-allowed;
+}
