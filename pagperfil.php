@@ -369,10 +369,6 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
 
             <div class="modal-topo">
 
-                <button class="fechar-modal" id="fecharPerfil">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-
                 <h2>Editar Perfil</h2>
 
             </div>
@@ -488,8 +484,8 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
 
         };
 
-        document.getElementById("fecharPerfil").onclick = fecharPerfil;
-        document.getElementById("cancelarPerfil").onclick = fecharPerfil;
+        document.getElementById("fecharPerfil")?.addEventListener("click", fecharPerfil);
+        document.getElementById("cancelarPerfil")?.addEventListener("click", fecharPerfil);
 
         function fecharPerfil() {
 
