@@ -48,6 +48,207 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
     <link rel="icon" type="image/png" href="img/logov.png">
 
     <link rel="stylesheet" href="css/style.css?v=4">
+    <style>
+        /* =========================
+   MODAL EXCLUIR CONTA
+========================= */
+
+        .modal-excluir {
+            width: 500px !important;
+            max-width: calc(100% - 30px);
+            padding: 0 !important;
+            overflow: hidden;
+            background: #fff !important;
+        }
+
+        /* Cabeçalho */
+
+        .modal-excluir .modal-topo {
+            height: 90px;
+            padding: 0 28px;
+            background: linear-gradient(135deg, #b189e8, #9d7bd4) !important;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            position: relative;
+        }
+
+        .modal-excluir .modal-topo h2 {
+            margin: 0;
+            color: white !important;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .modal-excluir .fechar-modal {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            width: 38px;
+            height: 38px;
+
+            border: none;
+            background: transparent !important;
+
+            color: white !important;
+            font-size: 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+        }
+
+        .modal-excluir .fechar-modal i {
+            color: white !important;
+        }
+
+        .modal-excluir .fechar-modal:hover {
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        /* Conteúdo */
+
+        .excluir-conteudo {
+            padding: 35px 40px 40px !important;
+            text-align: center;
+            background: white;
+        }
+
+        /* Ícone */
+
+        .excluir-icone {
+            width: 58px !important;
+            height: 58px !important;
+
+            margin: 0 auto 20px !important;
+
+            border-radius: 50% !important;
+
+            background: #f3eafb !important;
+            color: #9b78c5 !important;
+
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+        }
+
+        .excluir-icone i {
+            color: #9b78c5 !important;
+        }
+
+        /* Título */
+
+        .excluir-conteudo h3 {
+            margin: 0 auto 10px !important;
+
+            max-width: 380px;
+
+            color: #444 !important;
+
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        /* Texto */
+
+        .excluir-conteudo p {
+            margin: 0 auto 28px !important;
+
+            max-width: 370px;
+
+            color: #777 !important;
+
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Botões */
+
+        .botoes-excluir {
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-cancelar-excluir,
+        .btn-confirmar-excluir {
+            height: 42px !important;
+            min-width: 135px;
+
+            padding: 0 20px !important;
+
+            border-radius: 10px !important;
+            border: none !important;
+
+            font-family: "Jost", sans-serif !important;
+            font-size: 14px !important;
+            font-weight: 500;
+
+            cursor: pointer;
+
+            transition: all .3s ease;
+        }
+
+        /* Cancelar */
+
+        .btn-cancelar-excluir {
+            background: #f1f1f1 !important;
+            color: #555 !important;
+        }
+
+        .btn-cancelar-excluir:hover {
+            background: #e5e5e5 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Confirmar */
+
+        .btn-confirmar-excluir {
+            background: #b61010 !important;
+            color: white !important;
+        }
+
+        .btn-confirmar-excluir:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(177, 137, 232, .25);
+        }
+
+        .btn-confirmar-excluir:active,
+        .btn-cancelar-excluir:active {
+            transform: scale(.97);
+        }
+
+        /* Celular */
+
+        @media (max-width: 500px) {
+
+            .modal-excluir {
+                width: calc(100% - 25px) !important;
+            }
+
+            .excluir-conteudo {
+                padding: 30px 20px 35px !important;
+            }
+
+            .botoes-excluir {
+                flex-direction: column !important;
+            }
+
+            .btn-cancelar-excluir,
+            .btn-confirmar-excluir {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -84,7 +285,7 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
     <div class="painel">
 
         <div class="cabecalho-perfil">
-            <h1>Meu Perfil</h1>
+            <h1>Meu Perfl</h1>
             <p>Visualize e altere suas informações pessoais.</p>
         </div>
 
@@ -94,7 +295,7 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
 
                 <div class="foto-perfil">
 
-                    <?php $fotoPerfilSrc = $fotoPerfil ?: 'img/logov.png'; ?>
+                    <?php $fotoPerfilSrc = $fotoPerfil ?: 'img/usuario.png'; ?>
                     <img src="<?= htmlspecialchars($fotoPerfilSrc) ?>" id="fotoPerfil" alt="Foto de perfil">
 
 
@@ -120,9 +321,8 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
                             <span>Sair</span>
                         </button>
                     </form>
-                    <form method="POST" action="processos/deletarperfil.php"
-                        onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');" style="margin:0;">
-                        <button type="submit" class="btn-excluirconta">
+                    <form method="POST" action="processos/deletarperfil.php" id="formExcluir" style="margin:0;">
+                        <button type="button" class="btn-excluirconta" id="abrirExcluir">
                             <i class="fa-solid fa-trash"></i>
                             <span>Excluir conta</span>
                         </button>
@@ -236,6 +436,48 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
 
     </div>
 
+    <div class="modal" id="modalExcluir">
+
+        <div class="modal-conteudo modal-excluir">
+
+            <div class="modal-topo">
+                <button type="button" class="fechar-modal" id="cancelarExcluir">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+
+                <h2>Excluir conta</h2>
+            </div>
+
+            <div class="excluir-conteudo">
+
+                <div class="excluir-icone">
+                    <i class="fa-solid fa-trash-can"></i>
+                </div>
+
+                <h3>Tem certeza que deseja excluir sua conta?</h3>
+
+                <p>
+                    Ao continuar, sua conta e seus dados serão excluídos permanentemente.
+                </p>
+
+                <div class="botoes-excluir">
+
+                    <button type="button" class="btn-cancelar-excluir" id="voltarExcluir">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" form="formExcluir" class="btn-confirmar-excluir">
+                        Excluir conta
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
     <script>
         const modalPerfil = document.getElementById("modalPerfil");
 
@@ -277,6 +519,32 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
                 menu.classList.toggle("ativo");
             });
         }
+    </script>
+
+    <script>
+        const modalExcluir = document.getElementById("modalExcluir");
+        const abrirExcluir = document.getElementById("abrirExcluir");
+        const cancelarExcluir = document.getElementById("cancelarExcluir");
+        const voltarExcluir = document.getElementById("voltarExcluir");
+
+        abrirExcluir.onclick = () => {
+            modalExcluir.classList.add("ativo");
+            document.body.style.overflow = "hidden";
+        };
+
+        cancelarExcluir.onclick = fecharExcluir;
+        voltarExcluir.onclick = fecharExcluir;
+
+        function fecharExcluir() {
+            modalExcluir.classList.remove("ativo");
+            document.body.style.overflow = "auto";
+        }
+
+        modalExcluir.onclick = (e) => {
+            if (e.target === modalExcluir) {
+                fecharExcluir();
+            }
+        };
     </script>
 </body>
 
