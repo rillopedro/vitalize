@@ -32,6 +32,10 @@ $fotoPerfil = $usuario['foto_perfil'] ?? '';
 if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
     $fotoPerfil = $_SESSION['foto_perfil'];
 }
+$erroPerfil = $_SESSION['erro_perfil'] ?? '';
+$sucessoPerfil = $_SESSION['sucesso_perfil'] ?? '';
+
+unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -287,6 +291,12 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
         <div class="cabecalho-perfil">
             <h1>Meu Perfl</h1>
             <p>Visualize e altere suas informações pessoais.</p>
+
+            <?php if ($sucessoPerfil !== ''): ?>
+                <p role="status" style="color: #287542;">
+                    <?= htmlspecialchars($sucessoPerfil, ENT_QUOTES, 'UTF-8') ?>
+                </p>
+            <?php endif; ?>
         </div>
 
         <div class="perfil-card">
@@ -375,6 +385,18 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
 
             <form id="formPerfil" class="form-consulta" method="POST" action="processos/atualizaperfil.php"
                 enctype="multipart/form-data">
+
+                <div class="campo full" id="erroValidacaoPerfil" role="alert" hidden>
+                    <p style="margin: 0; color: #b61010;"></p>
+                </div>
+
+                <?php if ($erroPerfil !== ''): ?>
+                    <div class="campo full" role="alert">
+                        <p style="margin: 0; color: #b61010;">
+                            <?= htmlspecialchars($erroPerfil, ENT_QUOTES, 'UTF-8') ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
 
                 <div class="campo full">
 
@@ -473,37 +495,158 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
         </div>
 
     </div>
-
     <script>
         const modalPerfil = document.getElementById("modalPerfil");
+        const formPerfil = document.getElementById("formPerfil");
+        const abrirPerfil = document.getElementById("abrirPerfil");
+        const cancelarPerfil = document.getElementById("cancelarPerfil");
 
-        document.getElementById("abrirPerfil").onclick = () => {
+        const nomeInput = formPerfil.elements.namedItem("nome");
+        const emailInput = formPerfil.elements.namedItem("email");
+        const senhaInput = formPerfil.elements.namedItem("senha");
+        const confirmarInput = formPerfil.elements.namedItem("confirmar_senha");
+
+        let overflowAnterior = "";
+        let tentouSalvar = false;
+
+        nomeInput.required = true;
+        emailInput.required = true;
+
+        // Impede os balões de validação do navegador.
+        formPerfil.noValidate = true;
+
+        senhaInput.autocomplete = "new-password";
+        confirmarInput.autocomplete = "new-password";
+
+        // Reutiliza o aviso caso ele já exista no HTML.
+        let erroValidacao = document.getElementById("erroValidacaoPerfil");
+
+        if (!erroValidacao) {
+            erroValidacao = document.createElement("div");
+            erroValidacao.id = "erroValidacaoPerfil";
+            erroValidacao.className = "campo full";
+            erroValidacao.setAttribute("role", "alert");
+
+            formPerfil.prepend(erroValidacao);
+        }
+
+        erroValidacao.style.color = "#b61010";
+        erroValidacao.style.margin = "0";
+        erroValidacao.style.gridColumn = "1 / -1";
+
+        function limparAviso() {
+            erroValidacao.textContent = "";
+            erroValidacao.hidden = true;
+            erroValidacao.style.display = "none";
+        }
+
+        function mostrarAviso(mensagem) {
+            erroValidacao.textContent = mensagem;
+            erroValidacao.hidden = false;
+            erroValidacao.style.display = "block";
+        }
+
+        limparAviso();
+
+        function validarCampos() {
+            nomeInput.setCustomValidity(
+                nomeInput.value.trim() ? "" : "Informe seu nome."
+            );
+
+            emailInput.setCustomValidity("");
+
+            if (!emailInput.value.trim()) {
+                emailInput.setCustomValidity("Informe seu e-mail.");
+            } else if (emailInput.validity.typeMismatch) {
+                emailInput.setCustomValidity("Informe um e-mail válido.");
+            }
+
+            senhaInput.setCustomValidity("");
+            confirmarInput.setCustomValidity("");
+
+            if (!senhaInput.value && confirmarInput.value) {
+                senhaInput.setCustomValidity("Digite a nova senha.");
+            } else if (senhaInput.value && !confirmarInput.value) {
+                confirmarInput.setCustomValidity("Confirme a nova senha.");
+            } else if (senhaInput.value !== confirmarInput.value) {
+                confirmarInput.setCustomValidity("As senhas não coincidem.");
+            }
+
+            return Array.from(formPerfil.elements).find(
+                campo => campo.willValidate && !campo.validity.valid
+            );
+        }
+
+        function restaurarFormulario() {
+            // Restaura os dados salvos e limpa a foto selecionada.
+            formPerfil.reset();
+
+            senhaInput.value = "";
+            confirmarInput.value = "";
+
+            nomeInput.setCustomValidity("");
+            emailInput.setCustomValidity("");
+            senhaInput.setCustomValidity("");
+            confirmarInput.setCustomValidity("");
+
+            tentouSalvar = false;
+            limparAviso();
+        }
+
+        abrirPerfil.addEventListener("click", () => {
+            restaurarFormulario();
+            overflowAnterior = document.body.style.overflow;
 
             modalPerfil.classList.add("ativo");
             document.body.style.overflow = "hidden";
+        });
 
-        };
+        cancelarPerfil.addEventListener("click", () => {
+            restaurarFormulario();
 
-        document.getElementById("fecharPerfil")?.addEventListener("click", fecharPerfil);
-        document.getElementById("cancelarPerfil")?.addEventListener("click", fecharPerfil);
-
-        function fecharPerfil() {
+            // Remove os erros do PHP, preservando o aviso da validação.
+            formPerfil.querySelectorAll('[role="alert"]').forEach(aviso => {
+                if (aviso !== erroValidacao) {
+                    aviso.remove();
+                }
+            });
 
             modalPerfil.classList.remove("ativo");
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = overflowAnterior;
 
-        }
+            abrirPerfil.focus();
+        });
 
-        modalPerfil.onclick = (e) => {
+        formPerfil.addEventListener("input", () => {
+            const campoInvalido = validarCampos();
 
-            if (e.target == modalPerfil) {
+            // Atualiza o aviso enquanto a pessoa corrige os campos.
+            if (tentouSalvar && campoInvalido) {
+                mostrarAviso(campoInvalido.validationMessage);
+            } else {
+                limparAviso();
+            }
+        });
 
-                fecharPerfil();
+        formPerfil.addEventListener("submit", event => {
+            tentouSalvar = true;
+            const campoInvalido = validarCampos();
 
+            if (campoInvalido) {
+                event.preventDefault();
+                mostrarAviso(campoInvalido.validationMessage);
+                campoInvalido.focus();
+                return;
             }
 
-        };
+            limparAviso();
+            // Formulário válido: segue com o POST para o PHP.
+        });
 
+        // Clicar fora não fecha o modal.
+        <?php if ($erroPerfil !== ''): ?>
+            abrirPerfil.click();
+        <?php endif; ?>
     </script>
 
     <script>
@@ -523,7 +666,11 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
         const cancelarExcluir = document.getElementById("cancelarExcluir");
         const voltarExcluir = document.getElementById("voltarExcluir");
 
+        let overflowAnteriorExcluir = "";
+
         abrirExcluir.onclick = () => {
+            overflowAnteriorExcluir = document.body.style.overflow;
+
             modalExcluir.classList.add("ativo");
             document.body.style.overflow = "hidden";
         };
@@ -533,16 +680,11 @@ if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
 
         function fecharExcluir() {
             modalExcluir.classList.remove("ativo");
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = overflowAnteriorExcluir;
+
+            abrirExcluir.focus();
         }
 
-        modalExcluir.onclick = (e) => {
-            if (e.target === modalExcluir) {
-                fecharExcluir();
-            }
-        };
     </script>
 </body>
-
-
 </html>

@@ -14,17 +14,23 @@ $nome = trim($_POST['nome'] ?? '');
 $sobrenome = trim($_POST['sobrenome'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $telefone = trim($_POST['telefone'] ?? '');
-$senha = trim($_POST['senha'] ?? '');
-$confirmar_senha = trim($_POST['confirmar_senha'] ?? '');
+$senha = $_POST['senha'] ?? '';
+$confirmar_senha = $_POST['confirmar_senha'] ?? '';
 
-if ($senha !== '' && $senha !== $confirmar_senha) {
-    $_SESSION['erro_perfil'] = 'As senhas não coincidem.';
+if ($nome === '') {
+    $_SESSION['erro_perfil'] = 'O nome é obrigatório.';
     header('Location: ../pagperfil.php');
     exit();
 }
 
-if ($email === '') {
-    $_SESSION['erro_perfil'] = 'O e-mail é obrigatório.';
+if ($senha !== $confirmar_senha) {
+    $_SESSION['erro_perfil'] = 'Preencha as duas senhas com o mesmo valor.';
+    header('Location: ../pagperfil.php');
+    exit();
+}
+
+if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $_SESSION['erro_perfil'] = 'Informe um e-mail válido.';
     header('Location: ../pagperfil.php');
     exit();
 }
@@ -35,7 +41,7 @@ $stmt_verifica->bindParam(':email', $email);
 $stmt_verifica->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
 $stmt_verifica->execute();
 
-if ($stmt_verifica->rowCount() > 0) {
+if ($stmt_verifica->fetch(PDO::FETCH_ASSOC)) {
     $_SESSION['erro_perfil'] = 'Este e-mail já está sendo usado por outro usuário.';
     header('Location: ../pagperfil.php');
     exit();
