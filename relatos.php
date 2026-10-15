@@ -35,7 +35,8 @@ try {
     <link rel="icon" type="image/png" href="img/logov.png">
 
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=9">
+
 </head>
 
 <body>
@@ -138,8 +139,7 @@ try {
 
             <?php foreach ($relatos as $relato) { ?>
 
-                <div class="card-depoimento">
-
+                <div class="card-depoimento" data-depoimento>
                     <div class="cabecalho-depoimento">
 
                         <div class="avatar">
@@ -177,20 +177,84 @@ try {
             <?php } ?>
 
         </div>
-        
+        <div class="rodape-depoimentos">
+            <p id="contadorDepoimentos" aria-live="polite"></p>
+
+            <button type="button" id="verMaisDepoimentos" class="btn-relato" hidden>
+                Ver mais depoimentos
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+        </div>
 
 
     </section>
 
     <?php include 'footer.php'; ?>
-
     <script>
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");
 
-        toggle.addEventListener("click", () => {
-            menu.classList.toggle("ativo");
+        if (toggle && menu) {
+            toggle.addEventListener("click", () => {
+                menu.classList.toggle("ativo");
+            });
+        }
+
+        const depoimentos = Array.from(
+            document.querySelectorAll("[data-depoimento]")
+        );
+
+        const botaoVerMais = document.getElementById("verMaisDepoimentos");
+        const contador = document.getElementById("contadorDepoimentos");
+
+        const quantidadePorVez = 6;
+        let quantidadeVisivel = Math.min(quantidadePorVez, depoimentos.length);
+
+        function atualizarDepoimentos() {
+            depoimentos.forEach((card, indice) => {
+                card.hidden = indice >= quantidadeVisivel;
+            });
+
+            contador.textContent = depoimentos.length
+                ? `Mostrando ${quantidadeVisivel} de ${depoimentos.length} depoimentos`
+                : "Nenhum depoimento publicado ainda.";
+
+            const restantes = depoimentos.length - quantidadeVisivel;
+
+            botaoVerMais.hidden = restantes === 0;
+
+            if (restantes > 0) {
+                const quantidade = Math.min(quantidadePorVez, restantes);
+
+                botaoVerMais.innerHTML = `
+                Ver mais ${quantidade} ${quantidade === 1 ? "depoimento" : "depoimentos"}
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            `;
+            }
+        }
+
+        botaoVerMais.addEventListener("click", () => {
+            const primeiroNovo = depoimentos[quantidadeVisivel];
+
+            quantidadeVisivel = Math.min(
+                quantidadeVisivel + quantidadePorVez,
+                depoimentos.length
+            );
+
+            atualizarDepoimentos();
+
+            if (primeiroNovo) {
+                primeiroNovo.setAttribute("tabindex", "-1");
+                primeiroNovo.focus({ preventScroll: true });
+
+                primeiroNovo.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
         });
+
+        atualizarDepoimentos();
     </script>
 </body>
 

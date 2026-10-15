@@ -4695,3 +4695,62 @@ body.modal-aberto {
 #modalPerfil #formPerfil .campo-senha input {
     margin: 0;
 }
+
+
+
+#verMaisDepoimentos {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    width: auto;
+    min-height: 46px;
+    padding: 12px 26px;
+    margin: 0;
+
+    border: none;
+    border-radius: 12px;
+    background: #b189e8;
+    color: #fff;
+
+    font-family: "Jost", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: background .2s, transform .2s, box-shadow .2s;
+}
+
+#verMaisDepoimentos:hover {
+    background: #9d76d4;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(177, 137, 232, .25);
+}
+
+#verMaisDepoimentos:focus-visible {
+    outline: 3px solid #7450a5;
+    outline-offset: 3px;
+}
+
+#verMaisDepoimentos i {
+    font-size: 13px;
+}
+
+#verMaisDepoimentos[hidden] {
+    display: none !important;
+}
+
+.rodape-depoimentos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 30px 0;
+}
+
+#contadorDepoimentos {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
