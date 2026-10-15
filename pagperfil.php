@@ -51,8 +51,9 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="css/style.css?v=4">
+    <link rel="stylesheet" href="css/style.css?v=8">
     <style>
+        
 /* =========================
    MODAL EXCLUIR CONTA
 ========================= */
@@ -270,7 +271,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
                 <li><a href="saude.php">Saúde</a></li>
                 <li><a href="relatos.php">Relatos</a></li>
                 <li><a href="sobre.php">Sobre</a></li>
-                
+
 
             </ul>
 
@@ -386,9 +387,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
             <form id="formPerfil" class="form-consulta" method="POST" action="processos/atualizaperfil.php"
                 enctype="multipart/form-data">
 
-                <div class="campo full" id="erroValidacaoPerfil" role="alert" hidden>
-                    <p style="margin: 0; color: #b61010;"></p>
-                </div>
+
 
                 <?php if ($erroPerfil !== ''): ?>
                     <div class="campo full" role="alert">
@@ -407,34 +406,56 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
                 </div>
 
                 <div class="campo">
-                    <label>Nome</label>
-                    <input type="text" name="nome" value="<?php echo htmlspecialchars($nome); ?>">
+                    <label for="nomePerfil">Nome</label>
+                    <input type="text" id="nomePerfil" name="nome" value="<?= htmlspecialchars($nome) ?>" required>
+                    <small class="erro-campo"></small>
                 </div>
 
                 <div class="campo">
-                    <label>Sobrenome</label>
-                    <input type="text" name="sobrenome" value="<?php echo htmlspecialchars($sobrenome); ?>">
+                    <label for="sobrenomePerfil">Sobrenome</label>
+                    <input type="text" id="sobrenomePerfil" name="sobrenome"
+                        value="<?= htmlspecialchars($sobrenome) ?>">
+                    <small class="erro-campo"></small>
                 </div>
 
                 <div class="campo">
-                    <label>Email</label>
-                    <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>">
+                    <label for="emailPerfil">Email</label>
+                    <input type="email" id="emailPerfil" name="email" value="<?= htmlspecialchars($email) ?>" required>
+                    <small class="erro-campo"></small>
                 </div>
 
                 <div class="campo">
-                    <label>Telefone</label>
-                    <input type="tel" name="telefone" value="<?php echo htmlspecialchars($telefone); ?>">
+                    <label for="telefonePerfil">Telefone</label>
+                    <input type="tel" id="telefonePerfil" name="telefone" value="<?= htmlspecialchars($telefone) ?>"
+                        placeholder="(11) 99999-9999" maxlength="15" inputmode="numeric">
+                    <small class="erro-campo"></small>
                 </div>
 
                 <div class="campo">
-                    <label>Nova senha</label>
-                    <input type="password" name="senha">
+                    <label for="senhaPerfil">Nova senha</label>
+                    <div class="campo-senha">
+                        <input type="password" id="senhaPerfil" name="senha" placeholder="Digite a nova senha"
+                            minlength="6" autocomplete="new-password">
+                        <button type="button" class="olho-senha" data-alvo="senhaPerfil" aria-label="Mostrar senha">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="erro-campo"></small>
                 </div>
 
                 <div class="campo">
-                    <label>Confirmar senha</label>
-                    <input type="password" name="confirmar_senha">
+                    <label for="confirmarSenhaPerfil">Confirmar senha</label>
+                    <div class="campo-senha">
+                        <input type="password" id="confirmarSenhaPerfil" name="confirmar_senha"
+                            placeholder="Repita a nova senha" autocomplete="new-password">
+                        <button type="button" class="olho-senha" data-alvo="confirmarSenhaPerfil"
+                            aria-label="Mostrar senha">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="erro-campo"></small>
                 </div>
+
 
                 <div class="botoes-modal">
 
@@ -495,155 +516,278 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
         </div>
 
     </div>
+
     <script>
         const modalPerfil = document.getElementById("modalPerfil");
         const formPerfil = document.getElementById("formPerfil");
         const abrirPerfil = document.getElementById("abrirPerfil");
         const cancelarPerfil = document.getElementById("cancelarPerfil");
 
-        const nomeInput = formPerfil.elements.namedItem("nome");
-        const emailInput = formPerfil.elements.namedItem("email");
-        const senhaInput = formPerfil.elements.namedItem("senha");
-        const confirmarInput = formPerfil.elements.namedItem("confirmar_senha");
+        const nomeInput = document.getElementById("nomePerfil");
+        const emailInput = document.getElementById("emailPerfil");
+        const telefoneInput = document.getElementById("telefonePerfil");
+        const senhaInput = document.getElementById("senhaPerfil");
+        const confirmarInput = document.getElementById("confirmarSenhaPerfil");
 
         let overflowAnterior = "";
         let tentouSalvar = false;
 
-        nomeInput.required = true;
-        emailInput.required = true;
-
-        // Impede os balões de validação do navegador.
+        // O formulário terá mensagens próprias, sem balões do navegador.
         formPerfil.noValidate = true;
 
-        senhaInput.autocomplete = "new-password";
-        confirmarInput.autocomplete = "new-password";
+        // DDDs existentes no Brasil.
+        const dddsValidos = new Set([
+            "11", "12", "13", "14", "15", "16", "17", "18", "19",
+            "21", "22", "24", "27", "28",
+            "31", "32", "33", "34", "35", "37", "38",
+            "41", "42", "43", "44", "45", "46", "47", "48", "49",
+            "51", "53", "54", "55",
+            "61", "62", "63", "64", "65", "66", "67", "68", "69",
+            "71", "73", "74", "75", "77", "79",
+            "81", "82", "83", "84", "85", "86", "87", "88", "89",
+            "91", "92", "93", "94", "95", "96", "97", "98", "99"
+        ]);
 
-        // Reutiliza o aviso caso ele já exista no HTML.
-        let erroValidacao = document.getElementById("erroValidacaoPerfil");
+        function mostrarErro(input, mensagem) {
+            input.classList.add("erro-input");
+            input.setAttribute("aria-invalid", "true");
 
-        if (!erroValidacao) {
-            erroValidacao = document.createElement("div");
-            erroValidacao.id = "erroValidacaoPerfil";
-            erroValidacao.className = "campo full";
-            erroValidacao.setAttribute("role", "alert");
+            const campo = input.closest(".campo");
+            const aviso = campo.querySelector(".erro-campo");
 
-            formPerfil.prepend(erroValidacao);
+            aviso.textContent = mensagem;
+            aviso.classList.add("visivel");
         }
 
-        erroValidacao.style.color = "#b61010";
-        erroValidacao.style.margin = "0";
-        erroValidacao.style.gridColumn = "1 / -1";
+        function limparErro(input) {
+            input.classList.remove("erro-input");
+            input.removeAttribute("aria-invalid");
 
-        function limparAviso() {
-            erroValidacao.textContent = "";
-            erroValidacao.hidden = true;
-            erroValidacao.style.display = "none";
+            const campo = input.closest(".campo");
+            const aviso = campo.querySelector(".erro-campo");
+
+            aviso.textContent = "";
+            aviso.classList.remove("visivel");
         }
 
-        function mostrarAviso(mensagem) {
-            erroValidacao.textContent = mensagem;
-            erroValidacao.hidden = false;
-            erroValidacao.style.display = "block";
-        }
+        function validarCampo(input) {
+            limparErro(input);
 
-        limparAviso();
+            const valor = input.value.trim();
 
-        function validarCampos() {
-            nomeInput.setCustomValidity(
-                nomeInput.value.trim() ? "" : "Informe seu nome."
-            );
-
-            emailInput.setCustomValidity("");
-
-            if (!emailInput.value.trim()) {
-                emailInput.setCustomValidity("Informe seu e-mail.");
-            } else if (emailInput.validity.typeMismatch) {
-                emailInput.setCustomValidity("Informe um e-mail válido.");
+            if (input === nomeInput && !valor) {
+                mostrarErro(input, "Informe seu nome.");
+                return false;
             }
 
-            senhaInput.setCustomValidity("");
-            confirmarInput.setCustomValidity("");
+            if (input === emailInput) {
+                if (!valor) {
+                    mostrarErro(input, "Informe seu e-mail.");
+                    return false;
+                }
 
-            if (!senhaInput.value && confirmarInput.value) {
-                senhaInput.setCustomValidity("Digite a nova senha.");
-            } else if (senhaInput.value && !confirmarInput.value) {
-                confirmarInput.setCustomValidity("Confirme a nova senha.");
-            } else if (senhaInput.value !== confirmarInput.value) {
-                confirmarInput.setCustomValidity("As senhas não coincidem.");
+                if (input.validity.typeMismatch) {
+                    mostrarErro(input, "Digite um e-mail válido.");
+                    return false;
+                }
             }
 
-            return Array.from(formPerfil.elements).find(
-                campo => campo.willValidate && !campo.validity.valid
-            );
+            if (input === telefoneInput && valor) {
+                const numeros = valor.replace(/\D/g, "");
+
+                if (numeros.length !== 10 && numeros.length !== 11) {
+                    mostrarErro(input, "Digite um telefone com DDD e 10 ou 11 números.");
+                    return false;
+                }
+
+                if (!dddsValidos.has(numeros.substring(0, 2))) {
+                    mostrarErro(input, "Digite um DDD válido.");
+                    return false;
+                }
+
+                const numero = numeros.substring(2);
+
+                if (numero.length === 9 && numero[0] !== "9") {
+                    mostrarErro(input, "Confira o número do celular.");
+                    return false;
+                }
+
+                if (numero.length === 8 && /^[0-9]{8}$/.test(numero)) {
+                    // Telefone fixo: formato de 8 dígitos.
+                } else if (numero.length === 9 && /^[0-9]{9}$/.test(numero)) {
+                    // Celular: formato de 9 dígitos.
+                } else {
+                    mostrarErro(input, "Confira o número de telefone.");
+                    return false;
+                }
+            }
+
+            if (input === senhaInput || input === confirmarInput) {
+                if (senhaInput.value && senhaInput.value.length < 6) {
+                    mostrarErro(senhaInput, "A senha deve ter pelo menos 6 caracteres.");
+                    return false;
+                }
+
+                if (!senhaInput.value && confirmarInput.value) {
+                    mostrarErro(senhaInput, "Digite a nova senha.");
+                    mostrarErro(confirmarInput, "Confirme a nova senha.");
+                    return false;
+                }
+
+                if (senhaInput.value && !confirmarInput.value) {
+                    mostrarErro(confirmarInput, "Confirme a nova senha.");
+                    return false;
+                }
+
+                if (senhaInput.value !== confirmarInput.value) {
+                    mostrarErro(confirmarInput, "As senhas não coincidem.");
+                    return false;
+                }
+
+                limparErro(senhaInput);
+                limparErro(confirmarInput);
+            }
+
+            return true;
+        }
+
+        function validarFormulario() {
+            let valido = true;
+
+            [nomeInput, emailInput, telefoneInput, senhaInput, confirmarInput]
+                .forEach(input => {
+                    if (!validarCampo(input)) {
+                        valido = false;
+                    }
+                });
+
+            return valido;
+        }
+
+        // Máscara automática para o telefone.
+        telefoneInput.addEventListener("input", () => {
+            let numeros = telefoneInput.value.replace(/\D/g, "").slice(0, 11);
+
+            if (numeros.length > 10) {
+                numeros = numeros.replace(
+                    /^(\d{2})(\d{5})(\d{0,4}).*/,
+                    "($1) $2-$3"
+                );
+            } else if (numeros.length > 6) {
+                numeros = numeros.replace(
+                    /^(\d{2})(\d{4})(\d{0,4}).*/,
+                    "($1) $2-$3"
+                );
+            } else if (numeros.length > 2) {
+                numeros = numeros.replace(/^(\d{2})(\d+)/, "($1) $2");
+            } else if (numeros.length > 0) {
+                numeros = "(" + numeros;
+            }
+
+            telefoneInput.value = numeros;
+
+            if (tentouSalvar) {
+                validarCampo(telefoneInput);
+            } else {
+                limparErro(telefoneInput);
+            }
+        });
+
+        // Validação enquanto a pessoa digita.
+        [nomeInput, emailInput, senhaInput, confirmarInput].forEach(input => {
+            input.addEventListener("input", () => {
+                if (tentouSalvar || input === senhaInput || input === confirmarInput) {
+                    validarCampo(input);
+                } else {
+                    limparErro(input);
+                }
+            });
+
+            input.addEventListener("blur", () => {
+                if (tentouSalvar) {
+                    validarCampo(input);
+                }
+            });
+        });
+
+        // Mostrar ou ocultar cada senha pelo ícone de olho.
+        document.querySelectorAll("#formPerfil .olho-senha").forEach(botao => {
+            botao.addEventListener("click", () => {
+                const input = document.getElementById(botao.dataset.alvo);
+                const icone = botao.querySelector("i");
+                const mostrar = input.type === "password";
+
+                input.type = mostrar ? "text" : "password";
+                icone.classList.toggle("fa-eye", !mostrar);
+                icone.classList.toggle("fa-eye-slash", mostrar);
+
+                botao.setAttribute(
+                    "aria-label",
+                    mostrar ? "Ocultar senha" : "Mostrar senha"
+                );
+            });
+        });
+
+        function limparValidacoes() {
+            [nomeInput, emailInput, telefoneInput, senhaInput, confirmarInput]
+                .forEach(limparErro);
         }
 
         function restaurarFormulario() {
-            // Restaura os dados salvos e limpa a foto selecionada.
             formPerfil.reset();
+            limparValidacoes();
+
+            // Restaura os valores atuais do perfil após cancelar.
+            nomeInput.value = <?= json_encode($nome) ?>;
+            emailInput.value = <?= json_encode($email) ?>;
+            telefoneInput.value = <?= json_encode($telefone) ?>;
 
             senhaInput.value = "";
             confirmarInput.value = "";
+            senhaInput.type = "password";
+            confirmarInput.type = "password";
 
-            nomeInput.setCustomValidity("");
-            emailInput.setCustomValidity("");
-            senhaInput.setCustomValidity("");
-            confirmarInput.setCustomValidity("");
+            formPerfil.querySelectorAll(".olho-senha i").forEach(icone => {
+                icone.classList.remove("fa-eye-slash");
+                icone.classList.add("fa-eye");
+            });
+
+            formPerfil.querySelectorAll(".olho-senha").forEach(botao => {
+                botao.setAttribute("aria-label", "Mostrar senha");
+            });
 
             tentouSalvar = false;
-            limparAviso();
         }
 
         abrirPerfil.addEventListener("click", () => {
             restaurarFormulario();
-            overflowAnterior = document.body.style.overflow;
 
+            overflowAnterior = document.body.style.overflow;
             modalPerfil.classList.add("ativo");
             document.body.style.overflow = "hidden";
         });
 
         cancelarPerfil.addEventListener("click", () => {
             restaurarFormulario();
-
-            // Remove os erros do PHP, preservando o aviso da validação.
-            formPerfil.querySelectorAll('[role="alert"]').forEach(aviso => {
-                if (aviso !== erroValidacao) {
-                    aviso.remove();
-                }
-            });
-
             modalPerfil.classList.remove("ativo");
             document.body.style.overflow = overflowAnterior;
-
             abrirPerfil.focus();
-        });
-
-        formPerfil.addEventListener("input", () => {
-            const campoInvalido = validarCampos();
-
-            // Atualiza o aviso enquanto a pessoa corrige os campos.
-            if (tentouSalvar && campoInvalido) {
-                mostrarAviso(campoInvalido.validationMessage);
-            } else {
-                limparAviso();
-            }
         });
 
         formPerfil.addEventListener("submit", event => {
             tentouSalvar = true;
-            const campoInvalido = validarCampos();
 
-            if (campoInvalido) {
+            if (!validarFormulario()) {
                 event.preventDefault();
-                mostrarAviso(campoInvalido.validationMessage);
-                campoInvalido.focus();
+
+                const primeiroErro = formPerfil.querySelector(".erro-input");
+                if (primeiroErro) {
+                    primeiroErro.focus();
+                }
                 return;
             }
-
-            limparAviso();
-            // Formulário válido: segue com o POST para o PHP.
         });
 
-        // Clicar fora não fecha o modal.
         <?php if ($erroPerfil !== ''): ?>
             abrirPerfil.click();
         <?php endif; ?>
@@ -687,4 +831,5 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
 
     </script>
 </body>
+
 </html>

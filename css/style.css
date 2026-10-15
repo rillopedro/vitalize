@@ -4505,3 +4505,193 @@ body.modal-aberto {
 #modalInfo #modalLink:not([href]) {
     cursor: not-allowed;
 }
+
+
+
+
+
+/* Borda vermelha nos campos com erro */
+#formPerfil .campo input.erro-input,
+#formPerfil .campo input.erro-input:focus {
+    border: 2px solid #d93025 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Mensagem de erro abaixo do campo */
+#formPerfil .erro-campo {
+    display: none;
+    color: #d93025 !important;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+#formPerfil .erro-campo.visivel {
+    display: block !important;
+}
+
+/* Caixa da senha */
+#formPerfil .campo-senha {
+    position: relative;
+    width: 100%;
+}
+
+/* Campo de senha ocupa toda a largura */
+#formPerfil .campo-senha input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 42px !important;
+}
+
+/* Olhinho à direita, dentro da caixa */
+#formPerfil .campo-senha .olho-senha {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+    padding: 0;
+
+    background: transparent !important;
+    border: none !important;
+    outline: none;
+    box-shadow: none !important;
+    border-radius: 0;
+
+    color: #8b78a8;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#formPerfil .campo-senha .olho-senha:hover {
+    color: #b189e8;
+    background: transparent !important;
+}
+
+#formPerfil .campo-senha .olho-senha:focus,
+#formPerfil .campo-senha .olho-senha:active {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+#modalPerfil #formPerfil .campo-senha .olho-senha {
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+}
+
+#modalPerfil #formPerfil .olho-senha i {
+    display: block;
+    margin: 0;
+    line-height: 1;
+}
+
+/* Borda vermelha quando o JavaScript marca um erro */
+#modalPerfil #formPerfil input.erro-input,
+#modalPerfil #formPerfil input.erro-input:focus {
+    border: 2px solid #d93025 !important;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(217, 48, 37, .10);
+}
+
+#formPerfil .erro-campo.visivel {
+    display: block;
+    margin-top: 5px;
+    color: #d93025;
+    font-size: 12px;
+}
+
+/* Input e olho compartilham a mesma caixa */
+#modalPerfil #formPerfil .campo-senha {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+#modalPerfil #formPerfil .campo-senha input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 48px !important;
+}
+
+#modalPerfil #formPerfil .campo-senha .olho-senha {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    bottom: auto;
+    left: auto;
+    transform: translateY(-50%);
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    color: #8b78a8;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#modalPerfil #formPerfil .olho-senha:focus-visible {
+    outline: 2px solid #8b78a8;
+    outline-offset: 2px;
+    border-radius: 5px;
+}
+#modalPerfil #formPerfil .campo-senha {
+    position: relative;
+}
+
+#modalPerfil #formPerfil .campo-senha input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 48px !important;
+}
+
+#modalPerfil #formPerfil .campo-senha .olho-senha {
+    position: absolute;
+    inset: 0 8px 0 auto !important;
+    transform: none !important;
+
+    width: 34px;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1;
+}
+
+#modalPerfil #formPerfil .olho-senha i {
+    display: block;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+#modalPerfil #formPerfil .campo-senha input {
+    margin: 0;
+}
