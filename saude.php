@@ -14,7 +14,7 @@ if (isset($_SESSION['id_usuario'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -25,7 +25,7 @@ if (isset($_SESSION['id_usuario'])) {
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=10">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="icon" type="image/png" href="img/logov.png">
 </head>
@@ -200,7 +200,7 @@ if (isset($_SESSION['id_usuario'])) {
                     </div>
                     <button id="abrirAgenda" class="btn-agenda">
                         <i class="fa-solid fa-calendar-plus"></i>
-                        Gerenciar
+                        Nova consulta ou exame
                     </button>
                 </div>
                 <div class="consultas" id="resumoConsultas">
@@ -233,6 +233,14 @@ if (isset($_SESSION['id_usuario'])) {
                                         <?= htmlspecialchars($consulta['nome_local'] ?: 'Local não informado') ?>
                                     </span>
                                 </div>
+                                <div class="acoes-evento">
+                                    <button type="button" class="acao-evento editar-evento" data-acao="editar"
+                                        data-id="<?= (int) $consulta['id_consulta'] ?>" aria-label="Editar consulta ou exame"
+                                        title="Editar"><i class="fa-solid fa-pen" aria-hidden="true"></i></button>
+                                    <button type="button" class="acao-evento excluir-evento" data-acao="excluir"
+                                        data-id="<?= (int) $consulta['id_consulta'] ?>" aria-label="Excluir consulta ou exame"
+                                        title="Excluir"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -242,37 +250,17 @@ if (isset($_SESSION['id_usuario'])) {
     </div>
     <?php include 'footer.php'; ?>
     <div class="modal" id="modalAgenda">
-        <div class="modal-conteudo agenda">
+        <div class="modal-conteudo agenda" role="dialog" aria-modal="true" aria-labelledby="tituloFormulario">
             <div class="modal-topo">
-                <button class="fechar-modal" id="fecharAgenda">
+                <button type="button" class="fechar-modal" id="fecharAgenda" aria-label="Fechar formulário">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
                 <h2 id="tituloFormulario">
-                    Gerenciar Agenda
+                    Nova consulta ou exame
                 </h2>
             </div>
-            <!-- LISTA -->
-            <div id="listaAgenda">
-                <div id="confirmarExclusaoAgenda" hidden>
-                    <p>Deseja excluir esta consulta ou exame?</p>
-                    <div class="acoes-confirmacao">
-                        <button type="button" id="cancelarExclusaoAgenda" class="btn-cancelar">
-                            Cancelar
-                        </button>
-                        <button type="button" id="confirmarExcluirAgenda" class="btn-excluir-agenda">
-                            Excluir
-                        </button>
-                    </div>
-                </div>
-                <button class="btn-novo" id="novoItem">
-                    <i class="fa-solid fa-plus"></i>
-                    Nova consulta ou exame
-                </button>
-                <div id="itensAgenda"></div>
-            </div>
-
             <!-- FORM -->
-            <form id="formAgenda" class="form-consulta" style="display:none;">
+            <form id="formAgenda" class="form-consulta" novalidate>
                 <input type="hidden" name="id_consulta" id="idConsulta">
                 <div class="campo">
                     <label>Tipo</label>
@@ -305,453 +293,275 @@ if (isset($_SESSION['id_usuario'])) {
                     <button type="button" id="cancelarEdicao" class="btn-cancelar">
                         Cancelar
                     </button>
-                    <button type="button" id="salvarAgenda" class="btn-salvar">
+                    <button type="submit" id="salvarAgenda" class="btn-salvar">
                         Salvar
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    <style>
-        #modalAgenda .modal-topo {
-            position: relative;
-            padding-inline: 72px;
-        }
 
-        #modalAgenda .modal-topo h2 {
-            margin: 0;
-            text-align: center;
-        }
+    <div class="modal" id="modalExcluirEvento">
+        <div class="modal-conteudo confirmar-evento" role="alertdialog" aria-modal="true"
+            aria-labelledby="tituloExcluirEvento" aria-describedby="descricaoExcluirEvento">
+            <div class="icone-excluir-evento"><i class="fa-solid fa-trash" aria-hidden="true"></i></div>
+            <h2 id="tituloExcluirEvento">Excluir compromisso?</h2>
+            <p id="descricaoExcluirEvento"></p>
+            <p id="erroExcluirEvento" role="alert" hidden></p>
+            <div class="botoes-confirmar-evento">
+                <button type="button" id="cancelarExclusaoAgenda" class="btn-cancelar">Cancelar</button>
+                <button type="button" id="confirmarExcluirAgenda" class="btn-excluir-agenda">Excluir</button>
+            </div>
+        </div>
+    </div>
 
-        #modalAgenda .fechar-modal {
-            position: absolute;
-            left: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 38px;
-            height: 38px;
-            padding: 0;
-            appearance: none;
-            border: none !important;
-            border-radius: 0;
-            background: transparent !important;
-            box-shadow: none !important;
-            color: white !important;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        #modalAgenda .fechar-modal i {
-            color: inherit;
-        }
-
-        #modalAgenda .fechar-modal:hover {
-            transform: translateY(-50%) scale(1.08);
-        }
-
-        #modalAgenda .fechar-modal:focus-visible {
-            outline: 2px solid white;
-            outline-offset: 3px;
-        }
-
-        #formAgenda .campo .input-erro {
-            border: 1px solid #c62828 !important;
-        }
-
-        #formAgenda .campo .input-erro:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(198, 40, 40, .12);
-        }
-
-        #formAgenda .erro-campo {
-            display: block;
-            width: 100%;
-            margin-top: 5px;
-            color: #c62828;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        #modalAgenda .erro-agenda {
-            grid-column: 1 / -1;
-            width: 100%;
-            margin: 0 0 12px;
-            color: #c62828;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        #modalAgenda .erro-campo[hidden],
-        #modalAgenda .erro-agenda[hidden] {
-            display: none !important;
-        }
-
-        #confirmarExclusaoAgenda {
-            margin-bottom: 20px;
-            padding: 18px;
-            border: 1px solid #e5d8f5;
-            border-radius: 12px;
-            background: #faf7fe;
-        }
-
-        #confirmarExclusaoAgenda[hidden] {
-            display: none !important;
-        }
-
-        #confirmarExclusaoAgenda p {
-            margin: 0 0 14px;
-            color: #444;
-            font-size: 15px;
-        }
-
-        #confirmarExclusaoAgenda .acoes-confirmacao {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        #modalAgenda .btn-excluir-agenda {
-            padding: 13px 25px;
-            border: none;
-            border-radius: 12px;
-            background: #b61010;
-            color: white;
-            font-family: inherit;
-            cursor: pointer;
-        }
-
-        #modalAgenda .btn-excluir-agenda:disabled {
-            opacity: .6;
-            cursor: wait;
-        }
-    </style>
     <script>
-        const modal = document.getElementById("modalAgenda");
-        const lista = document.getElementById("listaAgenda");
-        const formulario = document.getElementById("formAgenda");
-        const titulo = document.getElementById("tituloFormulario");
-        const itensAgenda = document.getElementById("itensAgenda");
-        const resumoConsultas = document.getElementById("resumoConsultas");
-        const consultasIniciais = <?= json_encode($consultas, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-        let consultas = consultasIniciais;
-        let overflowAnteriorAgenda = "";
-        formulario.noValidate = true;
-        const erroLista = document.createElement("p");
-        erroLista.className = "erro-agenda";
-        erroLista.setAttribute("role", "alert");
-        erroLista.hidden = true;
-        lista.prepend(erroLista);
-        const botaoSalvar = document.getElementById("salvarAgenda");
-        botaoSalvar.type = "submit";
-        let tentouSalvarAgenda = false;
-        let salvandoAgenda = false;
-        const camposAgenda = Array.from(
-            formulario.querySelectorAll(
-                'input:not([type="hidden"]), select, textarea'
-            )
-        );
-        const mensagensAgenda = new Map();
-        camposAgenda.forEach(campo => {
-            const mensagem = document.createElement("small");
-            mensagem.id = `${campo.id}-erro`;
-            mensagem.className = "erro-campo";
-            mensagem.setAttribute("aria-live", "polite");
-            mensagem.hidden = true;
-            campo.insertAdjacentElement("afterend", mensagem);
-            const descricao = campo.getAttribute("aria-describedby") || "";
-            campo.setAttribute(
-                "aria-describedby",
-                `${descricao} ${mensagem.id}`.trim()
+        (() => {
+            const modal = document.getElementById('modalAgenda');
+            const modalExcluir = document.getElementById('modalExcluirEvento');
+            const formulario = document.getElementById('formAgenda');
+            const titulo = document.getElementById('tituloFormulario');
+            const resumoConsultas = document.getElementById('resumoConsultas');
+            const abrirAgenda = document.getElementById('abrirAgenda');
+            const botaoSalvar = document.getElementById('salvarAgenda');
+            const cancelarEdicao = document.getElementById('cancelarEdicao');
+            const fecharAgenda = document.getElementById('fecharAgenda');
+            const confirmarExcluir = document.getElementById('confirmarExcluirAgenda');
+            const cancelarExclusao = document.getElementById('cancelarExclusaoAgenda');
+            const erroExcluir = document.getElementById('erroExcluirEvento');
+            const descricaoExcluir = document.getElementById('descricaoExcluirEvento');
+            let consultas = <?= json_encode($consultas, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+            let tentouSalvarAgenda = false;
+            let salvandoAgenda = false;
+            let excluindoAgenda = false;
+            let consultaParaExcluir = null;
+            let origemModal = null;
+            let overflowAnterior = '';
+            let modalAtual = null;
+            formulario.noValidate = true;
+            const camposAgenda = Array.from(
+                formulario.querySelectorAll(
+                    'input:not([type="hidden"]), select, textarea'
+                )
             );
-            mensagensAgenda.set(campo, mensagem);
-        });
-        const erroAgenda = document.createElement("p");
-        erroAgenda.className = "erro-agenda";
-        erroAgenda.setAttribute("role", "alert");
-        erroAgenda.hidden = true;
-        formulario.prepend(erroAgenda);
-        function mensagemDoCampo(campo) {
-            const mensagensObrigatorias = {
-                tipoConsulta: "Selecione o tipo.",
-                especialidade: "Informe a especialidade.",
-                dataConsulta: "Informe a data.",
-                horarioConsulta: "Informe o horário."
-            };
-            if (campo.validity.badInput) {
-                return "Informe um valor válido.";
-            }
-            if (campo.required && !campo.value.trim()) {
-                return mensagensObrigatorias[campo.id] || "Preencha este campo.";
-            }
-            if (!campo.validity.valid) {
-                return campo.validationMessage || "Confira este campo.";
-            }
-            return "";
-        }
-        function validarCampoAgenda(campo) {
-            const texto = mensagemDoCampo(campo);
-            const mensagem = mensagensAgenda.get(campo);
-            campo.classList.toggle("input-erro", Boolean(texto));
-            mensagem.textContent = texto;
-            mensagem.hidden = !texto;
-            if (texto) {
-                campo.setAttribute("aria-invalid", "true");
-            } else {
-                campo.removeAttribute("aria-invalid");
-            }
-            return !texto;
-        }
-        const painelExclusao = document.getElementById("confirmarExclusaoAgenda");
-        const confirmarExcluir = document.getElementById("confirmarExcluirAgenda");
-        const cancelarExclusao = document.getElementById("cancelarExclusaoAgenda");
-        let consultaParaExcluir = null;
-        let botaoOrigemExclusao = null;
-        let excluindoAgenda = false;
-        function limparConfirmacaoExclusao() {
-            consultaParaExcluir = null;
-            painelExclusao.hidden = true;
-        }
-        cancelarExclusao.onclick = () => {
-            if (excluindoAgenda) return;
-            limparConfirmacaoExclusao();
-            botaoOrigemExclusao?.focus();
-        };
-        confirmarExcluir.onclick = async () => {
-            if (consultaParaExcluir === null || excluindoAgenda) return;
-            const dados = new FormData();
-            dados.append("acao", "excluir");
-            dados.append("id_consulta", consultaParaExcluir);
-            excluindoAgenda = true;
-            confirmarExcluir.disabled = true;
-            cancelarExclusao.disabled = true;
-            confirmarExcluir.textContent = "Excluindo...";
-            erroLista.hidden = true;
-            erroLista.textContent = "";
-            try {
-                await enviarAgenda(dados);
-                limparConfirmacaoExclusao();
-                document.getElementById("novoItem").focus();
-            } catch (erro) {
-                erroLista.textContent =
-                    erro.message || "Não foi possível excluir. Tente novamente.";
-                erroLista.hidden = false;
-            } finally {
-                excluindoAgenda = false;
-                confirmarExcluir.disabled = false;
-                cancelarExclusao.disabled = false;
-                confirmarExcluir.textContent = "Excluir";
-            }
-        };
-        function limparErrosAgenda() {
-            limparConfirmacaoExclusao();
-            erroLista.hidden = true;
-            erroLista.textContent = "";
-            tentouSalvarAgenda = false;
-            erroAgenda.textContent = "";
-            erroAgenda.hidden = true;
+            const mensagensAgenda = new Map();
             camposAgenda.forEach(campo => {
-                campo.classList.remove("input-erro");
-                campo.removeAttribute("aria-invalid");
-                const mensagem = mensagensAgenda.get(campo);
-                mensagem.textContent = "";
+                const mensagem = document.createElement("small");
+                mensagem.id = `${campo.id}-erro`;
+                mensagem.className = "erro-campo";
+                mensagem.setAttribute("aria-live", "polite");
                 mensagem.hidden = true;
+                campo.insertAdjacentElement("afterend", mensagem);
+                const descricao = campo.getAttribute("aria-describedby") || "";
+                campo.setAttribute(
+                    "aria-describedby",
+                    `${descricao} ${mensagem.id}`.trim()
+                );
+                mensagensAgenda.set(campo, mensagem);
             });
-        }
-        camposAgenda.forEach(campo => {
-            function atualizarValidacao() {
-                if (tentouSalvarAgenda) {
-                    validarCampoAgenda(campo);
-                }
-                erroAgenda.textContent = "";
-                erroAgenda.hidden = true;
-            }
-            campo.addEventListener("input", atualizarValidacao);
-            campo.addEventListener("change", atualizarValidacao);
-        });
-        function escapar(texto) {
-            const elemento = document.createElement('span');
-            elemento.textContent = String(texto ?? '');
-            return elemento.innerHTML;
-        }
-        function formatarData(data) {
-            return new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR');
-        }
-        function formatarMes(data) {
-            return new Date(`${data}T00:00:00`).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '').toUpperCase();
-        }
-        function renderizarAgenda() {
-            if (!consultas.length) {
-                itensAgenda.innerHTML = '<p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>';
-                return;
-            }
-            itensAgenda.innerHTML = consultas.map(consulta => `
-                <div class="item-agenda">
-                    <div class="dados-agenda">
-                        <h4>${escapar(`${consulta.tipo} de ${consulta.especialidade}`)}</h4>
-                        <p>${escapar(formatarData(consulta.data))} • ${escapar(consulta.horario.slice(0, 5))}</p>
-                        <span>${escapar(consulta.nome_local || 'Local não informado')}</span>
-                    </div>
-                    <div class="acoes">
-                        <button type="button" class="editar" data-id="${consulta.id_consulta}" aria-label="Editar consulta">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button type="button" class="excluir" data-id="${consulta.id_consulta}" aria-label="Excluir consulta">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-        function renderizarResumo() {
-            if (!consultas.length) {
-                resumoConsultas.innerHTML = '<p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>';
-                return;
-            }
-            resumoConsultas.innerHTML = consultas.map(consulta => `
-                <div class="consulta">
-                    <div class="data-consulta">
-                        <strong>${escapar(consulta.data.slice(8, 10))}</strong>
-                        <span>${escapar(formatarMes(consulta.data))}</span>
-                    </div>
-                    <div class="info-consulta">
-                        <h4>${escapar(`${consulta.tipo} de ${consulta.especialidade}`)}</h4>
-                        <p>${escapar(consulta.medico || 'Profissional não informado')}</p>
-                    </div>
-                    <div class="horario-consulta">
-                        <strong>${escapar(consulta.horario.slice(0, 5))}</strong>
-                        <span>${escapar(consulta.nome_local || 'Local não informado')}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-        function atualizarConsultas(novasConsultas) {
-            consultas = novasConsultas;
-            renderizarAgenda();
-            renderizarResumo();
-        }
-        function limparFormulario() {
-            formulario.reset();
-            document.getElementById("idConsulta").value = "";
-            limparErrosAgenda();
-            titulo.textContent = "Nova consulta";
-        }
-        function voltarInicioModal() {
-            limparFormulario();
-            formulario.style.display = "none";
-            lista.style.display = "block";
-            titulo.textContent = "Gerenciar Agenda";
-        }
-        async function enviarAgenda(dados) {
-            const resposta = await fetch('processos/agenda.php', {
-                method: 'POST',
-                body: dados
-            });
-            const resultado = await resposta.json();
-            if (!resposta.ok) throw new Error(resultado.erro || 'Não foi possível atualizar a agenda.');
-            atualizarConsultas(resultado.consultas);
-        }
-        renderizarAgenda();
-        renderizarResumo();
-        document.getElementById("abrirAgenda").onclick = () => {
-            voltarInicioModal();
-            overflowAnteriorAgenda = document.body.style.overflow;
-            modal.classList.add("ativo");
-            document.body.style.overflow = "hidden";
-        };
-        document.getElementById("fecharAgenda").onclick = () => {
-            if (excluindoAgenda || salvandoAgenda) return;
-            if (formulario.style.display === "block") {
-                voltarInicioModal();
-            } else {
-                modal.classList.remove("ativo");
-                document.body.style.overflow = overflowAnteriorAgenda;
-            }
-        };
-        // NOVO
-        document.getElementById("novoItem").onclick = () => {
-            if (excluindoAgenda || salvandoAgenda) return;
-            limparFormulario();
-            lista.style.display = "none";
-            formulario.style.display = "block";
-        };
-        itensAgenda.addEventListener('click', event => {
-            const botao = event.target.closest('button');
-            if (!botao) return;
-            const consulta = consultas.find(item => String(item.id_consulta) === botao.dataset.id);
-            if (!consulta) return;
-            if (botao.classList.contains('editar')) {
-                if (excluindoAgenda || salvandoAgenda) return;
-                limparFormulario();
-                titulo.innerHTML = 'Editar consulta';
-                document.getElementById('idConsulta').value = consulta.id_consulta;
-                document.getElementById('tipoConsulta').value = consulta.tipo;
-                document.getElementById('especialidade').value = consulta.especialidade;
-                document.getElementById('medico').value = consulta.medico || '';
-                document.getElementById('nomeLocal').value = consulta.nome_local || '';
-                document.getElementById('dataConsulta').value = consulta.data;
-                document.getElementById('horarioConsulta').value = consulta.horario.slice(0, 5);
-                lista.style.display = 'none';
-                formulario.style.display = 'block';
-            }
-            if (botao.classList.contains("excluir")) {
-                if (excluindoAgenda) return;
-                consultaParaExcluir = consulta.id_consulta;
-                botaoOrigemExclusao = botao;
-                erroLista.hidden = true;
-                erroLista.textContent = "";
-                painelExclusao.hidden = false;
-                painelExclusao.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest"
-                });
-                cancelarExclusao.focus();
-            }
-        });
-        // CANCELAR
-        document.getElementById("cancelarEdicao").onclick = () => {
-            if (salvandoAgenda) return;
-            voltarInicioModal();
-        };
-        // SALVAR
-        formulario.addEventListener("submit", async event => {
-            event.preventDefault();
-            if (salvandoAgenda) return;
-            tentouSalvarAgenda = true;
+            const erroAgenda = document.createElement("p");
+            erroAgenda.className = "erro-agenda";
+            erroAgenda.setAttribute("role", "alert");
             erroAgenda.hidden = true;
-            erroAgenda.textContent = "";
-            let primeiroInvalido = null;
+            formulario.prepend(erroAgenda);
+            function mensagemDoCampo(campo) {
+                const mensagensObrigatorias = {
+                    tipoConsulta: "Selecione o tipo.",
+                    especialidade: "Informe a especialidade.",
+                    dataConsulta: "Informe a data.",
+                    horarioConsulta: "Informe o horário."
+                };
+                if (campo.validity.badInput) {
+                    return "Informe um valor válido.";
+                }
+                if (campo.required && !campo.value.trim()) {
+                    return mensagensObrigatorias[campo.id] || "Preencha este campo.";
+                }
+                if (!campo.validity.valid) {
+                    return campo.validationMessage || "Confira este campo.";
+                }
+                return "";
+            }
+            function validarCampoAgenda(campo) {
+                const texto = mensagemDoCampo(campo);
+                const mensagem = mensagensAgenda.get(campo);
+                campo.classList.toggle("input-erro", Boolean(texto));
+                mensagem.textContent = texto;
+                mensagem.hidden = !texto;
+                if (texto) {
+                    campo.setAttribute("aria-invalid", "true");
+                } else {
+                    campo.removeAttribute("aria-invalid");
+                }
+                return !texto;
+            }
+
             camposAgenda.forEach(campo => {
-                if (!validarCampoAgenda(campo) && !primeiroInvalido) {
-                    primeiroInvalido = campo;
+                function atualizarValidacao() {
+                    if (tentouSalvarAgenda) {
+                        validarCampoAgenda(campo);
+                    }
+                    erroAgenda.textContent = "";
+                    erroAgenda.hidden = true;
+                }
+                campo.addEventListener("input", atualizarValidacao);
+                campo.addEventListener("change", atualizarValidacao);
+            });
+
+            function limparErrosAgenda() {
+                tentouSalvarAgenda = false;
+                erroAgenda.textContent = '';
+                erroAgenda.hidden = true;
+                camposAgenda.forEach(campo => {
+                    campo.classList.remove('input-erro');
+                    campo.removeAttribute('aria-invalid');
+                    mensagensAgenda.get(campo).textContent = '';
+                    mensagensAgenda.get(campo).hidden = true;
+                });
+            }
+            function limparFormulario() {
+                formulario.reset();
+                document.getElementById('idConsulta').value = '';
+                limparErrosAgenda();
+            }
+            function abrirModal(elemento, origem, foco) {
+                if (modalAtual) return;
+                origemModal = origem;
+                overflowAnterior = document.body.style.overflow;
+                modalAtual = elemento;
+                elemento.classList.add('ativo');
+                document.body.style.overflow = 'hidden';
+                foco.focus();
+            }
+            function fecharModal(forcar = false) {
+                if (!modalAtual || (!forcar && (salvandoAgenda || excluindoAgenda))) return;
+                modalAtual.classList.remove('ativo');
+                modalAtual = null;
+                document.body.style.overflow = overflowAnterior;
+                limparFormulario();
+                consultaParaExcluir = null;
+                erroExcluir.textContent = '';
+                erroExcluir.hidden = true;
+                if (origemModal?.isConnected) origemModal.focus();
+                else abrirAgenda.focus();
+            }
+            // Mantém a navegação por Tab dentro do modal; clique no fundo não fecha.
+            document.addEventListener('keydown', event => {
+                if (!modalAtual || event.key !== 'Tab') return;
+                const focaveis = Array.from(modalAtual.querySelectorAll('button:not(:disabled), input:not([type="hidden"]):not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]'));
+                if (!focaveis.length) { event.preventDefault(); return; }
+                const primeiro = focaveis[0];
+                const ultimo = focaveis[focaveis.length - 1];
+                if (event.shiftKey && document.activeElement === primeiro) { event.preventDefault(); ultimo.focus(); }
+                else if (!event.shiftKey && document.activeElement === ultimo) { event.preventDefault(); primeiro.focus(); }
+            });
+            function escaparAgenda(texto) {
+                const el = document.createElement('span');
+                el.textContent = String(texto ?? '');
+                return el.innerHTML;
+            }
+            function renderizarResumo() {
+                if (!consultas.length) {
+                    resumoConsultas.innerHTML = '<p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>';
+                    return;
+                }
+                resumoConsultas.innerHTML = consultas.map(consulta => {
+                    const mes = new Date(`${consulta.data}T00:00:00`).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '').toUpperCase();
+                    const id = escaparAgenda(consulta.id_consulta);
+                    return `<div class="consulta">
+                <div class="data-consulta"><strong>${escaparAgenda(consulta.data.slice(8, 10))}</strong><span>${escaparAgenda(mes)}</span></div>
+                <div class="info-consulta"><h4>${escaparAgenda(`${consulta.tipo} de ${consulta.especialidade}`)}</h4><p>${escaparAgenda(consulta.medico || 'Profissional não informado')}</p></div>
+                <div class="horario-consulta"><strong>${escaparAgenda(consulta.horario.slice(0, 5))}</strong><span>${escaparAgenda(consulta.nome_local || 'Local não informado')}</span></div>
+                <div class="acoes-evento">
+                    <button type="button" class="acao-evento editar-evento" data-acao="editar" data-id="${id}" aria-label="Editar consulta ou exame" title="Editar"><i class="fa-solid fa-pen" aria-hidden="true"></i></button>
+                    <button type="button" class="acao-evento excluir-evento" data-acao="excluir" data-id="${id}" aria-label="Excluir consulta ou exame" title="Excluir"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
+                </div>
+            </div>`;
+                }).join('');
+            }
+            async function enviarAgenda(dados) {
+                const resposta = await fetch('processos/agenda.php', { method: 'POST', body: dados });
+                let resultado;
+                try { resultado = await resposta.json(); }
+                catch { throw new Error('Não foi possível ler a resposta do servidor. Atualize a página para conferir a agenda.'); }
+                if (!resposta.ok || resultado.erro) throw new Error(resultado.erro || 'Não foi possível atualizar a agenda.');
+                if (!Array.isArray(resultado.consultas)) throw new Error('Resposta inesperada. Atualize a página para conferir a agenda.');
+                consultas = resultado.consultas;
+                renderizarResumo();
+            }
+            abrirAgenda.addEventListener('click', () => {
+                if (modalAtual) return;
+                limparFormulario();
+                titulo.textContent = 'Nova consulta ou exame';
+                abrirModal(modal, abrirAgenda, document.getElementById('tipoConsulta'));
+            });
+            fecharAgenda.addEventListener('click', () => fecharModal());
+            cancelarEdicao.addEventListener('click', () => fecharModal());
+            cancelarExclusao.addEventListener('click', () => fecharModal());
+            resumoConsultas.addEventListener('click', event => {
+                const botao = event.target.closest('button[data-acao]');
+                if (!botao || modalAtual) return;
+                const consulta = consultas.find(item => String(item.id_consulta) === botao.dataset.id);
+                if (!consulta) return;
+                if (botao.dataset.acao === 'editar') {
+                    limparFormulario();
+                    titulo.textContent = 'Editar consulta ou exame';
+                    document.getElementById('idConsulta').value = consulta.id_consulta;
+                    document.getElementById('tipoConsulta').value = consulta.tipo;
+                    document.getElementById('especialidade').value = consulta.especialidade;
+                    document.getElementById('medico').value = consulta.medico || '';
+                    document.getElementById('nomeLocal').value = consulta.nome_local || '';
+                    document.getElementById('dataConsulta').value = consulta.data;
+                    document.getElementById('horarioConsulta').value = consulta.horario.slice(0, 5);
+                    abrirModal(modal, botao, document.getElementById('especialidade'));
+                } else if (botao.dataset.acao === 'excluir') {
+                    consultaParaExcluir = consulta.id_consulta;
+                    const data = new Date(`${consulta.data}T00:00:00`).toLocaleDateString('pt-BR');
+                    descricaoExcluir.textContent = `Tem certeza que deseja excluir ${consulta.tipo.toLowerCase()} de ${consulta.especialidade}, em ${data} às ${consulta.horario.slice(0, 5)}? Esta ação não pode ser desfeita.`;
+                    erroExcluir.hidden = true;
+                    erroExcluir.textContent = '';
+                    abrirModal(modalExcluir, botao, cancelarExclusao);
                 }
             });
-            if (primeiroInvalido) {
-                primeiroInvalido.focus();
-                return;
-            }
-            const dados = new FormData(formulario);
-            dados.append("acao", "salvar");
-            const textoOriginal = botaoSalvar.textContent;
-            salvandoAgenda = true;
-            botaoSalvar.disabled = true;
-            botaoSalvar.textContent = "Salvando...";
-            try {
-                await enviarAgenda(dados);
-                voltarInicioModal();
-            } catch (erro) {
-                // Erros do servidor aparecem no formulário, sem alert.
-                erroAgenda.textContent =
-                    erro.message || "Não foi possível salvar. Tente novamente.";
-                erroAgenda.hidden = false;
-            } finally {
-                salvandoAgenda = false;
-                botaoSalvar.disabled = false;
-                botaoSalvar.textContent = textoOriginal;
-            }
-        });
+            formulario.addEventListener('submit', async event => {
+                event.preventDefault();
+                if (salvandoAgenda) return;
+                tentouSalvarAgenda = true;
+                erroAgenda.hidden = true;
+                let primeiroInvalido = null;
+                camposAgenda.forEach(campo => {
+                    if (!validarCampoAgenda(campo) && !primeiroInvalido) primeiroInvalido = campo;
+                });
+                if (primeiroInvalido) { primeiroInvalido.focus(); return; }
+                const dados = new FormData(formulario);
+                dados.append('acao', 'salvar');
+                salvandoAgenda = true;
+                [botaoSalvar, cancelarEdicao, fecharAgenda].forEach(b => b.disabled = true);
+                botaoSalvar.textContent = 'Salvando...';
+                try { await enviarAgenda(dados); fecharModal(true); }
+                catch (erro) { erroAgenda.textContent = erro.message || 'Não foi possível salvar. Tente novamente.'; erroAgenda.hidden = false; }
+                finally {
+                    salvandoAgenda = false;
+                    [botaoSalvar, cancelarEdicao, fecharAgenda].forEach(b => b.disabled = false);
+                    botaoSalvar.textContent = 'Salvar';
+                }
+            });
+            confirmarExcluir.addEventListener('click', async () => {
+                if (consultaParaExcluir === null || excluindoAgenda) return;
+                const dados = new FormData();
+                dados.append('acao', 'excluir');
+                dados.append('id_consulta', consultaParaExcluir);
+                excluindoAgenda = true;
+                confirmarExcluir.disabled = cancelarExclusao.disabled = true;
+                confirmarExcluir.textContent = 'Excluindo...';
+                erroExcluir.hidden = true;
+                try { await enviarAgenda(dados); fecharModal(true); }
+                catch (erro) { erroExcluir.textContent = erro.message || 'Não foi possível excluir. Tente novamente.'; erroExcluir.hidden = false; }
+                finally { excluindoAgenda = false; confirmarExcluir.disabled = cancelarExclusao.disabled = false; confirmarExcluir.textContent = 'Excluir'; }
+            });
+            renderizarResumo();
+        })();
+
     </script>
     <script>
         const botaoGerar = document.getElementById('gerarPlano');
