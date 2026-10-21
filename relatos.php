@@ -1,24 +1,5 @@
 <?php
-session_start();
-require_once 'conexao.php';
-
-try {
-    $sql = "SELECT
-            r.titulo,
-            r.conteudo,
-            r.data_publicacao,
-            r.anonimo,
-            u.nome,
-            u.foto_perfil
-        FROM relatos r
-        LEFT JOIN usuarios u
-            ON u.id_usuario = r.id_usuario
-        ORDER BY r.data_publicacao DESC";
-    $stmt = $pdo->query($sql);
-    $relatos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $relatos = [];
-}
+require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,7 +67,7 @@ try {
         <!-- Formulário -->
         <div class="topo-depoimentos">
 
-            <form class="form-relato" method="post" action="processos/processarelato.php">
+            <form id="formRelato" class="form-relato" method="post" action="api/stories">
 
 
                 <label>Título do relato</label>
@@ -106,6 +87,11 @@ try {
                         <input type="radio" name="anonimo" value="0" checked> Não
                     </label>
                 </div>
+
+                <label class="anonimo-box">
+                    <input type="checkbox" name="consentimento_publicacao" value="1" required>
+                    Concordo que este relato seja publicado após análise. Entendo que devo remover dados pessoais ou informações médicas que não quero compartilhar.
+                </label>
 
                 <button class="btn-relato" type="submit">
                     Enviar Relato
@@ -135,48 +121,7 @@ try {
         </div>
 
         <!-- Cards -->
-        <div class="lista-depoimentos">
-
-            <?php foreach ($relatos as $relato) { ?>
-
-                <div class="card-depoimento" data-depoimento>
-                    <div class="cabecalho-depoimento">
-
-                        <div class="avatar">
-                            <?php if (!$relato['anonimo'] && !empty($relato['foto_perfil'])): ?>
-                                <img src="<?= htmlspecialchars($relato['foto_perfil']) ?>" alt="Foto de perfil">
-                            <?php else: ?>
-                                <span class="avatar-placeholder">
-                                    <i class="fa-solid fa-user"></i>
-                                </span>
-                            <?php endif; ?>
-                        </div>
-
-                        <div>
-                            <h4>
-                                <?= $relato['anonimo'] ? '@Anônimo' : '@' . htmlspecialchars($relato['nome']) ?>
-                            </h4>
-
-                            <span>
-                                <?= date('d/m/Y', strtotime($relato['data_publicacao'])) ?>
-                            </span>
-                        </div>
-
-                    </div>
-
-                    <div class="texto-depoimento">
-
-                        <h3><?= htmlspecialchars($relato['titulo']) ?></h3>
-
-                        <p><?= nl2br(htmlspecialchars($relato['conteudo'])) ?></p>
-
-                    </div>
-
-                </div>
-
-            <?php } ?>
-
-        </div>
+        <div class="lista-depoimentos" id="listaDepoimentos" aria-live="polite"></div>
         <div class="rodape-depoimentos">
             <p id="contadorDepoimentos" aria-live="polite"></p>
 
@@ -190,6 +135,7 @@ try {
     </section>
 
     <?php include 'footer.php'; ?>
+    <script src="api/cliente.js"></script>
     <script>
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");
@@ -200,7 +146,7 @@ try {
             });
         }
 
-        const depoimentos = Array.from(
+        let depoimentos = Array.from(
             document.querySelectorAll("[data-depoimento]")
         );
 
@@ -209,6 +155,39 @@ try {
 
         const quantidadePorVez = 6;
         let quantidadeVisivel = Math.min(quantidadePorVez, depoimentos.length);
+
+        function textoSeguro(valor) {
+            return String(valor ?? '').replace(/[&<>"']/g, caractere => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caractere]));
+        }
+        async function carregarRelatos() {
+            const lista = document.getElementById('listaDepoimentos');
+            try {
+                const resultado = await VitalizeAPI.requisicao('/api/stories');
+                lista.innerHTML = (resultado.relatos || []).map(relato => {
+                    const nome = relato.anonimo ? '@Anônimo' : `@${textoSeguro(relato.nome || 'Usuário')}`;
+                    const avatar = !relato.anonimo && relato.foto_perfil
+                        ? `<img src="${textoSeguro(relato.foto_perfil)}" alt="Foto de perfil">`
+                        : '<span class="avatar-placeholder"><i class="fa-solid fa-user"></i></span>';
+                    const data = new Date(String(relato.data_publicacao).replace(' ', 'T')).toLocaleDateString('pt-BR');
+                    return `<div class="card-depoimento" data-depoimento><div class="cabecalho-depoimento"><div class="avatar">${avatar}</div><div><h4>${nome}</h4><span>${data}</span></div></div><div class="texto-depoimento"><h3>${textoSeguro(relato.titulo)}</h3><p style="white-space:pre-line">${textoSeguro(relato.conteudo)}</p></div></div>`;
+                }).join('');
+                depoimentos = Array.from(lista.querySelectorAll('[data-depoimento]'));
+                quantidadeVisivel = Math.min(quantidadePorVez, depoimentos.length);
+                atualizarDepoimentos();
+            } catch (erro) {
+                lista.textContent = erro.message || 'Não foi possível carregar os relatos.';
+            }
+        }
+        document.getElementById('formRelato').addEventListener('submit', async event => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const valores = Object.fromEntries(new FormData(form).entries());
+            try {
+                const resposta = await VitalizeAPI.requisicao('/api/stories', { method: 'POST', body: valores });
+                alert(resposta.mensagem || 'Relato enviado para análise.');
+                window.location.reload();
+            } catch (erro) { alert(erro.message || 'Não foi possível publicar o relato.'); }
+        });
 
         function atualizarDepoimentos() {
             depoimentos.forEach((card, indice) => {
@@ -255,6 +234,7 @@ try {
         });
 
         atualizarDepoimentos();
+        carregarRelatos();
     </script>
 </body>
 

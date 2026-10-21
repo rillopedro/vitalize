@@ -2244,6 +2244,100 @@ textarea {
     background: #f5eeff;
 }
 
+.sintomas .sintoma {
+    min-height: 44px;
+    justify-content: flex-start;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 7px rgba(74, 51, 91, .05);
+}
+
+.sintomas .sintoma .material-symbols-outlined {
+    color: currentColor;
+}
+
+.sintomas .sintoma.ativo {
+    color: #684197;
+    border-color: #9f78cf;
+    background: #f2eaff;
+    box-shadow: 0 0 0 2px rgba(177, 137, 232, .18);
+}
+
+.sintomas .sintoma:focus-visible {
+    outline: 3px solid #7953ad;
+    outline-offset: 2px;
+}
+
+.link-reuniao {
+    display: inline-flex;
+    margin-top: 5px;
+    color: #684197 !important;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.mensagem-sucesso,
+.mensagem-recuperacao {
+    padding: 12px 15px;
+    border-radius: 12px;
+    background: #e9f6ef;
+    color: #245c3d;
+    font-size: 14px;
+}
+
+.recuperacao-page {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: linear-gradient(110deg, #9ed9de, #b7c7e6, #d39ad8);
+}
+
+.recuperacao-card {
+    width: min(100%, 470px);
+    padding: 34px;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 16px 48px rgba(50, 42, 69, .14);
+}
+
+.recuperacao-card h1 {
+    margin: 10px 0 12px;
+    font-size: 30px;
+}
+
+.recuperacao-card > p {
+    color: #5d5964;
+    line-height: 1.55;
+}
+
+.recuperacao-card .login-logo {
+    display: block;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    margin: 18px auto;
+}
+
+.recuperacao-voltar {
+    color: #684197 !important;
+    font-size: 14px;
+}
+
+.recuperacao-card .login-input {
+    margin-bottom: 8px;
+}
+
+.recuperacao-card .login-btn {
+    width: 100%;
+}
+
+@media (max-width: 480px) {
+    .recuperacao-card { padding: 25px 21px; }
+}
+
 
 .refeicoes {
     display: flex;

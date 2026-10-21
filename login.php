@@ -1,5 +1,5 @@
-<?php 
-    require_once 'conexao.php';
+<?php
+    require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,8 +38,12 @@
                 <p class="mensagem-erro"><?= htmlspecialchars($_SESSION['erro_login']) ?></p>
                 <?php unset($_SESSION['erro_login']); ?>
             <?php endif; ?>
+            <?php if (!empty($_SESSION['mensagem_login'])): ?>
+                <p class="mensagem-sucesso"><?= htmlspecialchars($_SESSION['mensagem_login'], ENT_QUOTES, 'UTF-8') ?></p>
+                <?php unset($_SESSION['mensagem_login']); ?>
+            <?php endif; ?>
 
-            <form class="login-form" method="POST" action="processos/processalogin.php">
+            <form class="login-form" method="POST" action="api/auth/login">
                 <label>Email:</label>
                 <input type="email" class="login-input" name="email" required autocomplete="email">
 
@@ -48,7 +52,7 @@
 
                 <button class="login-btn">ENTRAR</button>
                 <p class="subcadastro">Não possui uma conta? <a class="sublink" href="cadastro.php">Cadastre-se</a> <br>
-                 <a class="sublink" href="">Esqueci minha senha</a>
+                 <a class="sublink" href="recuperar_senha.php">Esqueci minha senha</a>
                 </p>
 
 
@@ -56,6 +60,32 @@
 
         </div>
     </div>
+    <script src="api/cliente.js"></script>
+    <script>
+        const formularioLogin = document.querySelector('.login-form');
+        formularioLogin.addEventListener('submit', async event => {
+            event.preventDefault();
+            const botao = formularioLogin.querySelector('button[type="submit"], button:not([type])');
+            if (botao) botao.disabled = true;
+            try {
+                const dados = Object.fromEntries(new FormData(formularioLogin).entries());
+                await VitalizeAPI.requisicao('/api/auth/login', { method: 'POST', body: dados });
+                window.location.assign('pagperfil.php');
+            } catch (erro) {
+                alert(erro.message || 'Não foi possível entrar.');
+            } finally {
+                if (botao) botao.disabled = false;
+            }
+        });
+        const mensagemLoginApi = sessionStorage.getItem('vitalize_mensagem_login');
+        if (mensagemLoginApi) {
+            const aviso = document.createElement('p');
+            aviso.className = 'mensagem-sucesso';
+            aviso.textContent = mensagemLoginApi;
+            formularioLogin.before(aviso);
+            sessionStorage.removeItem('vitalize_mensagem_login');
+        }
+    </script>
     <script>
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");

@@ -1,17 +1,6 @@
 <?php
-session_start();
-require_once 'conexao.php';
+require_once __DIR__ . '/iniciar_sessao.php';
 $consultas = [];
-if (isset($_SESSION['id_usuario'])) {
-    $stmt = $pdo->prepare(
-        'SELECT id_consulta, tipo, especialidade, medico, nome_local, data, horario
-         FROM consultas
-         WHERE id_usuario = :id_usuario
-         ORDER BY data ASC, horario ASC, id_consulta ASC'
-    );
-    $stmt->execute([':id_usuario' => (int) $_SESSION['id_usuario']]);
-    $consultas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -25,7 +14,7 @@ if (isset($_SESSION['id_usuario'])) {
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css?v=10">
+    <link rel="stylesheet" href="css/style.css?v=11">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="icon" type="image/png" href="img/logov.png">
 </head>
@@ -232,6 +221,9 @@ if (isset($_SESSION['id_usuario'])) {
                                     <span>
                                         <?= htmlspecialchars($consulta['nome_local'] ?: 'Local não informado') ?>
                                     </span>
+                                    <?php if (!empty($consulta['link_reuniao']) && filter_var($consulta['link_reuniao'], FILTER_VALIDATE_URL) && in_array(strtolower((string) parse_url($consulta['link_reuniao'], PHP_URL_SCHEME)), ['https', 'http'], true)): ?>
+                                        <a class="link-reuniao" href="<?= htmlspecialchars($consulta['link_reuniao'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener noreferrer">Entrar na reunião</a>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="acoes-evento">
                                     <button type="button" class="acao-evento editar-evento" data-acao="editar"
@@ -289,6 +281,10 @@ if (isset($_SESSION['id_usuario'])) {
                     <label>Horário</label>
                     <input type="time" name="horario" id="horarioConsulta" required>
                 </div>
+                <div class="campo">
+                    <label for="linkReuniao">Link da reunião (opcional)</label>
+                    <input type="url" name="link_reuniao" id="linkReuniao" maxlength="2048" placeholder="https://...">
+                </div>
                 <div class="botoes-modal">
                     <button type="button" id="cancelarEdicao" class="btn-cancelar">
                         Cancelar
@@ -315,6 +311,7 @@ if (isset($_SESSION['id_usuario'])) {
         </div>
     </div>
 
+    <script src="api/cliente.js"></script>
     <script>
         (() => {
             const modal = document.getElementById('modalAgenda');
@@ -460,6 +457,12 @@ if (isset($_SESSION['id_usuario'])) {
                 el.textContent = String(texto ?? '');
                 return el.innerHTML;
             }
+            function urlReuniaoSegura(valor) {
+                try {
+                    const url = new URL(String(valor ?? ''));
+                    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+                } catch { return ''; }
+            }
             function renderizarResumo() {
                 if (!consultas.length) {
                     resumoConsultas.innerHTML = '<p class="agenda-vazia">Nenhuma consulta ou exame cadastrado.</p>';
@@ -468,10 +471,11 @@ if (isset($_SESSION['id_usuario'])) {
                 resumoConsultas.innerHTML = consultas.map(consulta => {
                     const mes = new Date(`${consulta.data}T00:00:00`).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '').toUpperCase();
                     const id = escaparAgenda(consulta.id_consulta);
+                    const linkReuniao = urlReuniaoSegura(consulta.link_reuniao);
                     return `<div class="consulta">
                 <div class="data-consulta"><strong>${escaparAgenda(consulta.data.slice(8, 10))}</strong><span>${escaparAgenda(mes)}</span></div>
                 <div class="info-consulta"><h4>${escaparAgenda(`${consulta.tipo} de ${consulta.especialidade}`)}</h4><p>${escaparAgenda(consulta.medico || 'Profissional não informado')}</p></div>
-                <div class="horario-consulta"><strong>${escaparAgenda(consulta.horario.slice(0, 5))}</strong><span>${escaparAgenda(consulta.nome_local || 'Local não informado')}</span></div>
+                <div class="horario-consulta"><strong>${escaparAgenda(consulta.horario.slice(0, 5))}</strong><span>${escaparAgenda(consulta.nome_local || 'Local não informado')}</span>${linkReuniao ? `<a class="link-reuniao" href="${escaparAgenda(linkReuniao)}" target="_blank" rel="noopener noreferrer">Entrar na reunião</a>` : ''}</div>
                 <div class="acoes-evento">
                     <button type="button" class="acao-evento editar-evento" data-acao="editar" data-id="${id}" aria-label="Editar consulta ou exame" title="Editar"><i class="fa-solid fa-pen" aria-hidden="true"></i></button>
                     <button type="button" class="acao-evento excluir-evento" data-acao="excluir" data-id="${id}" aria-label="Excluir consulta ou exame" title="Excluir"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
@@ -480,12 +484,20 @@ if (isset($_SESSION['id_usuario'])) {
                 }).join('');
             }
             async function enviarAgenda(dados) {
-                const resposta = await fetch('processos/agenda.php', { method: 'POST', body: dados });
-                let resultado;
-                try { resultado = await resposta.json(); }
-                catch { throw new Error('Não foi possível ler a resposta do servidor. Atualize a página para conferir a agenda.'); }
-                if (!resposta.ok || resultado.erro) throw new Error(resultado.erro || 'Não foi possível atualizar a agenda.');
-                if (!Array.isArray(resultado.consultas)) throw new Error('Resposta inesperada. Atualize a página para conferir a agenda.');
+                const valores = Object.fromEntries(dados.entries());
+                const acao = valores.acao;
+                const id = valores.id_consulta;
+                delete valores.acao;
+                delete valores.id_consulta;
+                if (acao === 'excluir') {
+                    await VitalizeAPI.requisicao(`/api/appointments/${encodeURIComponent(id)}`, { method: 'DELETE' });
+                } else {
+                    await VitalizeAPI.requisicao(id ? `/api/appointments/${encodeURIComponent(id)}` : '/api/appointments', {
+                        method: id ? 'PUT' : 'POST', body: valores
+                    });
+                }
+                const resultado = await VitalizeAPI.requisicao('/api/appointments');
+                if (!Array.isArray(resultado.consultas)) throw new Error('Resposta inesperada da API.');
                 consultas = resultado.consultas;
                 renderizarResumo();
             }
@@ -513,6 +525,7 @@ if (isset($_SESSION['id_usuario'])) {
                     document.getElementById('nomeLocal').value = consulta.nome_local || '';
                     document.getElementById('dataConsulta').value = consulta.data;
                     document.getElementById('horarioConsulta').value = consulta.horario.slice(0, 5);
+                    document.getElementById('linkReuniao').value = consulta.link_reuniao || '';
                     abrirModal(modal, botao, document.getElementById('especialidade'));
                 } else if (botao.dataset.acao === 'excluir') {
                     consultaParaExcluir = consulta.id_consulta;
@@ -560,6 +573,10 @@ if (isset($_SESSION['id_usuario'])) {
                 finally { excluindoAgenda = false; confirmarExcluir.disabled = cancelarExclusao.disabled = false; confirmarExcluir.textContent = 'Excluir'; }
             });
             renderizarResumo();
+            VitalizeAPI.requisicao('/api/appointments').then(resultado => {
+                consultas = Array.isArray(resultado.consultas) ? resultado.consultas : [];
+                renderizarResumo();
+            }).catch(() => {});
         })();
 
     </script>
@@ -588,13 +605,9 @@ if (isset($_SESSION['id_usuario'])) {
             botaoGerar.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Preparando...';
             resultadoIA.innerHTML = '<div class="ia-vazio"><p>Criando uma sugestão para você...</p></div>';
             try {
-                const resposta = await fetch('api/assistente_bem_estar.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ humor: humorSelecionado, sintomas, restricoes })
+                const dados = await VitalizeAPI.requisicao('/api/assistant', {
+                    method: 'POST', body: { humor: humorSelecionado, sintomas, restricoes }
                 });
-                const dados = await resposta.json();
-                if (!resposta.ok) throw new Error(dados.erro || 'Não foi possível gerar a sugestão.');
                 const itens = dados.itens.map(item => `
                     <li><strong>${escapar(item.nome)}</strong><span>${escapar(item.quantidade)}</span></li>
                 `).join('');
@@ -626,8 +639,10 @@ if (isset($_SESSION['id_usuario'])) {
             });
         });
         document.querySelectorAll('.sintoma').forEach(btn => {
+            btn.setAttribute('aria-pressed', btn.classList.contains('ativo') ? 'true' : 'false');
             btn.addEventListener('click', () => {
-                btn.classList.toggle('ativo');
+                const ativo = btn.classList.toggle('ativo');
+                btn.setAttribute('aria-pressed', ativo ? 'true' : 'false');
             });
         });
         const toggle = document.querySelector(".menu-toggle");

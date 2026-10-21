@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,7 +70,7 @@ session_start();
             <?php unset($_SESSION['erro_grupo']); ?>
         <?php endif; ?>
 
-        <form action="processos/cadastrargrupo.php" method="post" class="login-form" enctype="multipart/form-data">
+        <form id="formCadastroGrupo" action="api/groups" method="post" class="login-form" enctype="multipart/form-data">
             <div class="container-grupo">
                 <div class="upload-area">
 
@@ -141,6 +141,20 @@ session_start();
     </section>
 
     <?php include 'footer.php'; ?>
+    <script src="api/cliente.js"></script>
+    <script>
+        document.getElementById('formCadastroGrupo').addEventListener('submit', async event => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const dados = new FormData(form);
+            dados.set('contato', dados.get('telefone_grupo') || '');
+            try {
+                const resposta = await VitalizeAPI.requisicao('/api/groups', { method: 'POST', body: dados });
+                alert(resposta.mensagem || 'Grupo enviado para análise.');
+                window.location.assign('grupos.php');
+            } catch (erro) { alert(erro.message || 'Não foi possível cadastrar o grupo.'); }
+        });
+    </script>
     <script>
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");

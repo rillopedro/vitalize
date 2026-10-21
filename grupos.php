@@ -1,11 +1,5 @@
 <?php
-session_start();
-require_once __DIR__ . '/conexao.php';
-
-$sql = "SELECT id_grupo, nome_grupo, mais_info, foco, data_encontro, horario, link, contato AS telefone_grupo, imagem FROM grupos ORDER BY id_grupo DESC";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -60,43 +54,8 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h1 class="h1titulo">Cadastre-se em um grupo de apoio</h1>
         <div class="linha"></div>
 
-        <div class="cardsgrupos">
-            <?php if (empty($grupos)): ?>
-                <p style="width:100%; text-align:center; color:#666;">Nenhum grupo cadastrado ainda.</p>
-            <?php else: ?>
-                <?php foreach ($grupos as $grupo): ?>
-                    <div class="cardgrupos">
-                        <img src="<?= htmlspecialchars($grupo['imagem'] ?: 'img/apoio1.webp') ?>"
-                            alt="<?= htmlspecialchars($grupo['nome_grupo']) ?>">
-
-                        <div class="conteudocards">
-                            <span class="taggrupo"><?= htmlspecialchars($grupo['foco'] ?: 'Grupo de apoio') ?></span>
-                            <h3><?= htmlspecialchars($grupo['nome_grupo']) ?></h3>
-
-                            <div class="infosgrupo">
-                                <span><?= !empty($grupo['data_encontro']) ? htmlspecialchars(date('d/m/Y', strtotime($grupo['data_encontro']))) : 'Data a definir' ?></span>
-                                <span><?= !empty($grupo['horario']) ? htmlspecialchars(substr($grupo['horario'], 0, 5)) : 'Horário a definir' ?></span>
-                            </div>
-
-                            <p class="focogrupo">
-                                <?= htmlspecialchars($grupo['mais_info'] ?: 'Grupo de apoio para pessoas em tratamento.') ?>
-                            </p>
-
-                            <div class="botoescards">
-                                <button class="infogrupos" data-nome="<?= htmlspecialchars($grupo['nome_grupo'], ENT_QUOTES) ?>"
-                                    data-foco="<?= htmlspecialchars($grupo['foco'], ENT_QUOTES) ?>"
-                                    data-data="<?= !empty($grupo['data_encontro']) ? htmlspecialchars(date('d/m/Y', strtotime($grupo['data_encontro']))) : 'Data a definir' ?>"
-                                    data-horario="<?= !empty($grupo['horario']) ? htmlspecialchars(substr($grupo['horario'], 0, 5)) : 'Horário a definir' ?>"
-                                    data-info="<?= htmlspecialchars($grupo['mais_info'] ?: 'Sem descrição disponível.', ENT_QUOTES) ?>"
-                                    data-link="<?= htmlspecialchars($grupo['link'] ?: '#', ENT_QUOTES) ?>"
-                                    data-telefone="<?= htmlspecialchars($grupo['telefone_grupo'] ?: 'Não informado', ENT_QUOTES) ?>"
-                                    data-imagem="<?= htmlspecialchars($grupo['imagem'] ?: 'img/apoio1.webp', ENT_QUOTES) ?>">Mais
-                                    info</button>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
+        <div class="cardsgrupos" id="listaGrupos" aria-live="polite">
+            <p style="width:100%; text-align:center; color:#666;">Carregando grupos...</p>
         </div>
 
 
@@ -158,6 +117,7 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
     </div>
+    <script src="api/cliente.js"></script>
     <script>
         const modal = document.getElementById("modalInfo");
         const modalNome = document.getElementById("modalNomeGrupo");
@@ -186,6 +146,36 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         let linkGrupoAtual = "#";
         let nomeGrupoAtual = "Grupo de apoio";
+        let idGrupoAtual = null;
+
+        function escaparHtml(valor) {
+            return String(valor ?? '').replace(/[&<>"']/g, caractere => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caractere]));
+        }
+        function dataGrupo(valor) {
+            if (!valor) return 'Data a definir';
+            const partes = String(valor).slice(0, 10).split('-');
+            return partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : 'Data a definir';
+        }
+        async function carregarGrupos() {
+            const lista = document.getElementById('listaGrupos');
+            try {
+                const resposta = await VitalizeAPI.requisicao('/api/groups');
+                const grupos = resposta.grupos || [];
+                if (!grupos.length) { lista.innerHTML = '<p style="width:100%; text-align:center; color:#666;">Nenhum grupo cadastrado ainda.</p>'; return; }
+                lista.innerHTML = grupos.map(grupo => {
+                    const nome = escaparHtml(grupo.nome_grupo);
+                    const foco = escaparHtml(grupo.foco || 'Grupo de apoio');
+                    const data = dataGrupo(grupo.data_encontro);
+                    const horario = grupo.horario ? escaparHtml(String(grupo.horario).slice(0, 5)) : 'Horário a definir';
+                    const info = escaparHtml(grupo.mais_info || 'Grupo de apoio para pessoas em tratamento.');
+                    const link = escaparHtml(grupo.link || '#');
+                    const telefone = escaparHtml(grupo.telefone_grupo || 'Não informado');
+                    const imagem = escaparHtml(grupo.imagem || 'img/apoio1.webp');
+                    return `<div class="cardgrupos"><img src="${imagem}" alt="${nome}"><div class="conteudocards"><span class="taggrupo">${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><div class="botoescards"><button class="infogrupos" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></div>`;
+                }).join('');
+            } catch (erro) { lista.innerHTML = `<p role="alert">${escaparHtml(erro.message || 'Não foi possível carregar os grupos.')}</p>`; }
+        }
+        carregarGrupos();
 
         function abrirModal() {
             modal.classList.add("ativo");
@@ -218,8 +208,9 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 : '<i class="fa-regular fa-envelope"></i> Receber link por e-mail';
         }
 
-        document.querySelectorAll(".infogrupos").forEach(botao => {
-            botao.addEventListener("click", () => {
+        document.querySelector(".cardsgrupos").addEventListener("click", event => {
+            const botao = event.target.closest(".infogrupos");
+            if (!botao) return;
                 const nome =
                     botao.getAttribute("data-nome") ||
                     "Grupo";
@@ -254,6 +245,7 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 linkGrupoAtual = link;
                 nomeGrupoAtual = nome;
+                idGrupoAtual = Number(botao.dataset.idGrupo);
 
                 modalNome.textContent = nome;
                 modalFoco.textContent = "Foco: " + foco;
@@ -286,7 +278,6 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 atualizarBotaoInscricao();
                 abrirModal();
-            });
         });
 
         botaoInscricao.addEventListener("click", async () => {
@@ -304,46 +295,9 @@ $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 "mensagem-inscricao-grupo";
 
             try {
-                /*
-                 * Este endpoint será desenvolvido pelo integrante
-                 * responsável pelo backend.
-                 */
-                const resposta = await fetch(
-                    "enviar_link_grupo.php",
-                    {
-                        method: "POST",
+                const resultado = await VitalizeAPI.requisicao(`/api/groups/${idGrupoAtual}/share`, { method: 'POST', body: {} });
 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            link: linkGrupoAtual,
-                            nomeGrupo: nomeGrupoAtual
-                        })
-                    }
-                );
-
-                let resultado;
-
-                try {
-                    resultado = await resposta.json();
-                } catch {
-                    throw new Error(
-                        "O servidor retornou uma resposta inválida."
-                    );
-                }
-
-                if (!resposta.ok) {
-                    throw new Error(
-                        resultado.mensagem ||
-                        "Não foi possível enviar o link."
-                    );
-                }
-
-                mensagemInscricao.textContent =
-                    resultado.mensagem ||
-                    "Link enviado para o e-mail da sua conta.";
+                mensagemInscricao.textContent = resultado.mensagem || "Link enviado para o e-mail da sua conta.";
 
                 mensagemInscricao.classList.add("sucesso");
             } catch (erro) {

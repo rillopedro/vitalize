@@ -2,14 +2,18 @@
 
 function criar_pasta_upload(string $caminho): void
 {
-    if (!is_dir($caminho) && !mkdir($caminho, 0777, true) && !is_dir($caminho)) {
+    if (!is_dir($caminho) && !mkdir($caminho, 0750, true) && !is_dir($caminho)) {
         throw new RuntimeException('Não foi possível criar a pasta de uploads.');
     }
 }
 
 function salvar_arquivo_upload(array $arquivo, string $subpasta): string
 {
-    if (!isset($arquivo['name']) || $arquivo['error'] !== UPLOAD_ERR_OK) {
+    $pastasPermitidas = ['usuarios', 'grupos'];
+    if (!in_array($subpasta, $pastasPermitidas, true)) {
+        throw new RuntimeException('Destino de upload inválido.');
+    }
+    if (!isset($arquivo['name']) || ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
         throw new RuntimeException('Nenhum arquivo válido foi enviado.');
     }
 
@@ -18,7 +22,7 @@ function salvar_arquivo_upload(array $arquivo, string $subpasta): string
     }
 
     $tamanhoMaximo = 5 * 1024 * 1024;
-    if (($arquivo['size'] ?? 0) > $tamanhoMaximo) {
+    if (($arquivo['size'] ?? 0) < 1 || ($arquivo['size'] ?? 0) > $tamanhoMaximo) {
         throw new RuntimeException('A imagem deve ter no máximo 5 MB.');
     }
 
@@ -37,6 +41,11 @@ function salvar_arquivo_upload(array $arquivo, string $subpasta): string
         throw new RuntimeException('O arquivo enviado não é uma imagem válida.');
     }
 
+    $imagem = @getimagesize($arquivo['tmp_name']);
+    if ($imagem === false || ($imagem['mime'] ?? '') !== $mime || ($imagem[0] ?? 0) > 8000 || ($imagem[1] ?? 0) > 8000) {
+        throw new RuntimeException('A imagem está inválida ou excede as dimensões permitidas.');
+    }
+
     $extensao = $mimesPermitidos[$mime];
     $permitidas = ['jpg', 'jpeg', 'png', 'webp'];
 
@@ -44,7 +53,7 @@ function salvar_arquivo_upload(array $arquivo, string $subpasta): string
         throw new RuntimeException('Formato de imagem não suportado.');
     }
 
-    $nomeArquivo = uniqid('img_', true) . '.' . $extensao;
+    $nomeArquivo = bin2hex(random_bytes(20)) . '.' . $extensao;
     $baseDir = dirname(__DIR__);
     $pastaDestino = $baseDir . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . trim($subpasta, '/');
 

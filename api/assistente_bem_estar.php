@@ -27,7 +27,7 @@ if (mb_strlen($restricoes, 'UTF-8') > 500) responderErro(422, 'As restrições d
 $apiKey = getenv('GROQ_API_KEY') ?: '';
 if ($apiKey === '') responderErro(503, 'A IA ainda não foi configurada. Defina GROQ_API_KEY no servidor.');
 
-$model = getenv('GROQ_MODEL') ?: '';
+$model = getenv('GROQ_MODEL') ?: 'openai/gpt-oss-20b';
 if ($model === '') responderErro(503, 'O modelo da IA ainda não foi configurado no servidor.');
 
 $payload = [
@@ -55,7 +55,7 @@ $payload = [
             'type' => 'object',
             'properties' => [
                 'titulo' => ['type' => 'string'],
-                'itens' => ['type' => 'array', 'minItems' => 3, 'maxItems' => 5, 'items' => [
+                'itens' => ['type' => 'array', 'items' => [
                     'type' => 'object',
                     'properties' => ['nome' => ['type' => 'string'], 'quantidade' => ['type' => 'string']],
                     'required' => ['nome', 'quantidade'], 'additionalProperties' => false

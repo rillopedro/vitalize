@@ -38,7 +38,8 @@ CREATE TABLE `consultas` (
   `horario` time DEFAULT NULL,
   `medico` varchar(150) DEFAULT NULL,
   `nome_local` varchar(150) DEFAULT NULL,
-  `id_endereco` int(11) DEFAULT NULL
+  `id_endereco` int(11) DEFAULT NULL,
+  `link_reuniao` varchar(2048) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -74,7 +75,9 @@ CREATE TABLE `grupos` (
   `horario` time DEFAULT NULL,
   `link` varchar(150) DEFAULT NULL,
   `contato` varchar(150) DEFAULT NULL,
-  `imagem` varchar(255) DEFAULT NULL
+  `imagem` varchar(255) DEFAULT NULL,
+  `status_moderacao` enum('pendente','aprovado','recusado') NOT NULL DEFAULT 'pendente',
+  KEY `grupos_status_moderacao` (`status_moderacao`,`id_grupo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -89,7 +92,9 @@ CREATE TABLE `relatos` (
   `titulo` varchar(150) DEFAULT NULL,
   `conteudo` text NOT NULL,
   `data_publicacao` datetime DEFAULT current_timestamp(),
-  `anonimo` tinyint(1) NOT NULL DEFAULT 0
+  `anonimo` tinyint(1) NOT NULL DEFAULT 0,
+  `status_moderacao` enum('pendente','aprovado','recusado') NOT NULL DEFAULT 'pendente',
+  KEY `relatos_status_data` (`status_moderacao`,`data_publicacao`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -108,8 +113,28 @@ CREATE TABLE `usuarios` (
   `foto_perfil` varchar(255) DEFAULT NULL,
   `token_verificacao` varchar(255) DEFAULT NULL,
   `email_verificado` tinyint(1) DEFAULT 0,
+  `versao_sessao` int unsigned NOT NULL DEFAULT 0,
   `tipo` enum('usuario','admin') DEFAULT 'usuario',
   `data_cadastro` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Códigos temporários de recuperação de senha; um código ativo por conta.
+CREATE TABLE `codigos_recuperacao` (
+  `id_usuario` int(11) NOT NULL,
+  `codigo_hash` varchar(255) NOT NULL,
+  `expira_em` datetime NOT NULL,
+  `tentativas` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `solicitado_em` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id_usuario`),
+  CONSTRAINT `codigos_recuperacao_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `api_rate_limits` (
+  `chave` char(64) NOT NULL,
+  `janela_inicio` datetime NOT NULL,
+  `tentativas` int unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`chave`),
+  KEY `api_rate_limits_janela_inicio` (`janela_inicio`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --

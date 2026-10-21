@@ -1,0 +1,26 @@
+{
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "files.exclude": {
+    "**/.git": true,
+    "**/img/(1) Instagram.html": true,
+    "**/img/(1) Instagram_files": true,
+    "**/img/**/*.transferir": true,
+    "**/img/uploads/usuarios/**": true,
+    "**/img/uploads/grupos/**": true
+  },
+  "search.exclude": {
+    "**/.git/**": true,
+    "**/img/(1) Instagram.html": true,
+    "**/img/(1) Instagram_files/**": true,
+    "**/img/**/*.transferir": true,
+    "**/img/uploads/**": true
+  },
+  "[php]": {
+    "editor.tabSize": 4
+  }
+}

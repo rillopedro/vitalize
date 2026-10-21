@@ -1,37 +1,16 @@
 <?php
-session_start();
-
-require_once __DIR__ . '/conexao.php';
+require_once __DIR__ . '/iniciar_sessao.php';
 
 if (empty($_SESSION['id_usuario'])) {
     header('Location: login.php');
     exit();
 }
 
-$id_usuario = (int) $_SESSION['id_usuario'];
-
-$sql = "SELECT id_usuario, nome, email, sobrenome, telefone, foto_perfil FROM usuarios WHERE id_usuario = :id_usuario";
-$stmt = $pdo->prepare($sql);
-$stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
-$stmt->execute();
-
-$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$usuario) {
-    session_destroy();
-    header('Location: login.php');
-    exit();
-}
-
-$nome = $usuario['nome'] ?? '';
-$email = $usuario['email'] ?? '';
-$sobrenome = $usuario['sobrenome'] ?? '';
-$telefone = $usuario['telefone'] ?? '';
-$fotoPerfil = $usuario['foto_perfil'] ?? '';
-
-if (empty($fotoPerfil) && !empty($_SESSION['foto_perfil'])) {
-    $fotoPerfil = $_SESSION['foto_perfil'];
-}
+$nome = $_SESSION['nome'] ?? '';
+$email = $_SESSION['email'] ?? '';
+$sobrenome = $_SESSION['sobrenome'] ?? '';
+$telefone = $_SESSION['telefone'] ?? '';
+$fotoPerfil = $_SESSION['foto_perfil'] ?? '';
 $erroPerfil = $_SESSION['erro_perfil'] ?? '';
 $sucessoPerfil = $_SESSION['sucesso_perfil'] ?? '';
 
@@ -326,13 +305,13 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
                         <i class="fa-solid fa-pen"></i>
                         Alterar dados
                     </button>
-                    <form method="POST" action="processos/processalogout.php" style="margin:0;">
+                    <form method="POST" action="api/auth/logout" id="formLogout" style="margin:0;">
                         <button type="submit" class="btn-sairconta">
                             <i class="fa-solid fa-right-from-bracket"></i>
                             <span>Sair</span>
                         </button>
                     </form>
-                    <form method="POST" action="processos/deletarperfil.php" id="formExcluir" style="margin:0;">
+                    <form method="POST" action="api/me" id="formExcluir" style="margin:0;">
                         <button type="button" class="btn-excluirconta" id="abrirExcluir">
                             <i class="fa-solid fa-trash"></i>
                             <span>Excluir conta</span>
@@ -384,7 +363,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
 
             </div>
 
-            <form id="formPerfil" class="form-consulta" method="POST" action="processos/atualizaperfil.php"
+            <form id="formPerfil" class="form-consulta" method="POST" action="api/me"
                 enctype="multipart/form-data">
 
 
@@ -440,6 +419,12 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
+                    <small class="erro-campo"></small>
+                </div>
+
+                <div class="campo">
+                    <label for="senhaAtualPerfil">Senha atual (necessária para trocar a senha)</label>
+                    <input type="password" id="senhaAtualPerfil" name="senha_atual" autocomplete="current-password">
                     <small class="erro-campo"></small>
                 </div>
 
@@ -517,6 +502,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
 
     </div>
 
+    <script src="api/cliente.js"></script>
     <script>
         const modalPerfil = document.getElementById("modalPerfil");
         const formPerfil = document.getElementById("formPerfil");
@@ -774,7 +760,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
             abrirPerfil.focus();
         });
 
-        formPerfil.addEventListener("submit", event => {
+        formPerfil.addEventListener("submit", async event => {
             tentouSalvar = true;
 
             if (!validarFormulario()) {
@@ -786,6 +772,29 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
                 }
                 return;
             }
+            event.preventDefault();
+            try {
+                const dados = new FormData(formPerfil);
+                await VitalizeAPI.requisicao('/api/me', { method: 'POST', body: dados });
+                window.location.reload();
+            } catch (erro) {
+                alert(erro.message || 'Não foi possível atualizar o perfil.');
+            }
+        });
+
+        document.getElementById('formExcluir').addEventListener('submit', async event => {
+            event.preventDefault();
+            try {
+                await VitalizeAPI.requisicao('/api/me', { method: 'DELETE' });
+                window.location.assign('login.php');
+            } catch (erro) { alert(erro.message || 'Não foi possível excluir a conta.'); }
+        });
+        document.getElementById('formLogout').addEventListener('submit', async event => {
+            event.preventDefault();
+            try {
+                await VitalizeAPI.requisicao('/api/auth/logout', { method: 'POST', body: {} });
+                window.location.assign('login.php');
+            } catch (erro) { alert(erro.message || 'Não foi possível encerrar a sessão.'); }
         });
 
         <?php if ($erroPerfil !== ''): ?>

@@ -1,5 +1,5 @@
 <?php
-require_once 'conexao.php';
+require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +38,7 @@ require_once 'conexao.php';
                 <?php unset($_SESSION['erro_cadastro']); ?>
             <?php endif; ?>
 
-            <form action="processos/cadastrar.php" class="login-form" method="post">
+            <form action="api/auth/register" class="login-form" method="post">
                 <label>Nome:</label>
                 <input type="text" class="login-input" name="nome" placeholder="Digite seu nome" required
                     autocomplete="given-name">
@@ -126,7 +126,7 @@ require_once 'conexao.php';
 
 
         // VALIDAÇÃO DO FORMULÁRIO
-        form.addEventListener("submit", function (event) {
+        form.addEventListener("submit", async function (event) {
 
             const nome = document.querySelector('[name="nome"]');
             const sobrenome = document.querySelector('[name="sobrenome"]');
@@ -182,9 +182,19 @@ require_once 'conexao.php';
                 return;
             }
 
+            event.preventDefault();
+            try {
+                const dados = Object.fromEntries(new FormData(form).entries());
+                await VitalizeAPI.requisicao('/api/auth/register', { method: 'POST', body: dados });
+                window.location.assign('pagperfil.php');
+            } catch (erro) {
+                alert(erro.message || 'Não foi possível concluir o cadastro.');
+            }
+
         });
 
     </script>
+    <script src="api/cliente.js"></script>
 
 </body>
 
