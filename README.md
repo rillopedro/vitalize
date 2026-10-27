@@ -1,1 +1,1 @@
-(https://vitalize.onrender.com/)
+vitalize-production.up.railway.app
