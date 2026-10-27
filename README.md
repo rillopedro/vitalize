@@ -1,1 +1,1 @@
-vitalize-production.up.railway.app
+https://vitalize-production.up.railway.app/
