@@ -37,8 +37,8 @@ try {
         $telefone = trim((string) ($body['telefone'] ?? ''));
         $senha = (string) ($body['senha'] ?? '');
         if (isset($body['confirmar_senha']) && (string) $body['confirmar_senha'] !== $senha) api_responder(422, ['erro' => 'As senhas não coincidem.']);
-        if ($nome === '' || mb_strlen($nome) > 100 || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 150 || strlen($senha) < 6 || strlen($senha) > 72) {
-            api_responder(422, ['erro' => 'Informe nome, e-mail válido e senha com pelo menos 6 caracteres.']);
+        if ($nome === '' || mb_strlen($nome) > 100 || mb_strlen($sobrenome) > 100 || mb_strlen($telefone) > 20 || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 150 || strlen($senha) < 6 || strlen($senha) > 72) {
+            api_responder(422, ['erro' => 'Confira nome, sobrenome, telefone, e-mail e senha (de 6 a 72 caracteres).']);
         }
         api_aplicar_limite($pdo, 'register', $email, 5, 3600);
         $stmt = $pdo->prepare('INSERT INTO usuarios (nome, sobrenome, email, senha, telefone) VALUES (?, ?, ?, ?, ?)');
@@ -105,7 +105,7 @@ try {
         $senha = (string) ($body['senha'] ?? '');
         $senhaAtual = (string) ($body['senha_atual'] ?? '');
         if (isset($body['confirmar_senha']) && (string) $body['confirmar_senha'] !== $senha) api_responder(422, ['erro' => 'As senhas não coincidem.']);
-        if ($nome === '' || strlen($nome) > 100 || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 150 || ($senha !== '' && (strlen($senha) < 6 || strlen($senha) > 72))) api_responder(422, ['erro' => 'Confira nome, e-mail e senha.']);
+        if ($nome === '' || mb_strlen($nome) > 100 || mb_strlen($sobrenome) > 100 || mb_strlen($telefone) > 20 || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 150 || ($senha !== '' && (strlen($senha) < 6 || strlen($senha) > 72))) api_responder(422, ['erro' => 'Confira nome, e-mail e senha.']);
         if ($senha !== '') {
             $stmt = $pdo->prepare('SELECT senha, versao_sessao FROM usuarios WHERE id_usuario=?'); $stmt->execute([$id]); $credenciais = $stmt->fetch();
             if (!$credenciais || $senhaAtual === '' || !password_verify($senhaAtual, $credenciais['senha'])) api_responder(422, ['erro' => 'Informe sua senha atual corretamente para alterá-la.']);
@@ -154,9 +154,11 @@ try {
         $data = trim((string) ($body['data'] ?? ''));
         $hora = trim((string) ($body['horario'] ?? ''));
         $dt = DateTime::createFromFormat('!Y-m-d', $data); $hr = DateTime::createFromFormat('!H:i', $hora);
+        $medico = trim((string) ($body['medico'] ?? '')); $nomeLocal = trim((string) ($body['nome_local'] ?? ''));
+        if (mb_strlen($especialidade) > 150 || mb_strlen($medico) > 150 || mb_strlen($nomeLocal) > 150) api_responder(422, ['erro' => 'Os campos de especialidade, profissional e local devem ter até 150 caracteres.']);
         if (!in_array($tipo, ['Consulta', 'Exame'], true) || $especialidade === '' || !$dt || $dt->format('Y-m-d') !== $data || !$hr || $hr->format('H:i') !== $hora) api_responder(422, ['erro' => 'Confira tipo, especialidade, data e horário.']);
         $link = api_validar_link($body['link_reuniao'] ?? null);
-        $pdo->prepare('INSERT INTO consultas (id_usuario, tipo, especialidade, medico, nome_local, data, horario, link_reuniao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')->execute([$id, $tipo, $especialidade, trim((string) ($body['medico'] ?? '')) ?: null, trim((string) ($body['nome_local'] ?? '')) ?: null, $data, $hora . ':00', $link]);
+        $pdo->prepare('INSERT INTO consultas (id_usuario, tipo, especialidade, medico, nome_local, data, horario, link_reuniao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')->execute([$id, $tipo, $especialidade, $medico ?: null, $nomeLocal ?: null, $data, $hora . ':00', $link]);
         api_responder(201, ['mensagem' => 'Consulta adicionada.', 'id_consulta' => (int) $pdo->lastInsertId()]);
     }
     if (preg_match('#^/appointments/(\d+)$#', $path, $match) && $method === 'PUT') {
@@ -164,10 +166,12 @@ try {
         $tipo = trim((string) ($body['tipo'] ?? '')); $especialidade = trim((string) ($body['especialidade'] ?? ''));
         $data = trim((string) ($body['data'] ?? '')); $hora = trim((string) ($body['horario'] ?? ''));
         $dt = DateTime::createFromFormat('!Y-m-d', $data); $hr = DateTime::createFromFormat('!H:i', $hora);
+        $medico = trim((string) ($body['medico'] ?? '')); $nomeLocal = trim((string) ($body['nome_local'] ?? ''));
+        if (mb_strlen($especialidade) > 150 || mb_strlen($medico) > 150 || mb_strlen($nomeLocal) > 150) api_responder(422, ['erro' => 'Os campos de especialidade, profissional e local devem ter até 150 caracteres.']);
         if (!in_array($tipo, ['Consulta', 'Exame'], true) || $especialidade === '' || !$dt || $dt->format('Y-m-d') !== $data || !$hr || $hr->format('H:i') !== $hora) api_responder(422, ['erro' => 'Confira tipo, especialidade, data e horário.']);
         $link = api_validar_link($body['link_reuniao'] ?? null);
         $stmt = $pdo->prepare('UPDATE consultas SET tipo=?, especialidade=?, medico=?, nome_local=?, data=?, horario=?, link_reuniao=? WHERE id_consulta=? AND id_usuario=?');
-        $stmt->execute([$tipo, $especialidade, trim((string) ($body['medico'] ?? '')) ?: null, trim((string) ($body['nome_local'] ?? '')) ?: null, $data, $hora . ':00', $link, $idConsulta, $id]);
+        $stmt->execute([$tipo, $especialidade, $medico ?: null, $nomeLocal ?: null, $data, $hora . ':00', $link, $idConsulta, $id]);
         if ($stmt->rowCount() === 0) { $check = $pdo->prepare('SELECT 1 FROM consultas WHERE id_consulta=? AND id_usuario=?'); $check->execute([$idConsulta, $id]); if (!$check->fetchColumn()) api_responder(404, ['erro' => 'Consulta não encontrada.']); }
         api_responder(200, ['mensagem' => 'Consulta atualizada.']);
     }
@@ -187,6 +191,13 @@ try {
         api_aplicar_limite($pdo, 'group-create', (string) $_SESSION['id_usuario'], 5, 3600);
         $nome = trim((string) ($body['nome_grupo'] ?? $body['nome'] ?? ''));
         if ($nome === '' || mb_strlen($nome) > 150) api_responder(422, ['erro' => 'Informe um nome de grupo válido.']);
+        $responsavel = trim((string) ($body['responsavel'] ?? ''));
+        $maisInfo = trim((string) ($body['mais_info'] ?? ''));
+        $foco = trim((string) ($body['foco'] ?? ''));
+        $contato = trim((string) ($body['contato'] ?? $body['telefone_grupo'] ?? ''));
+        if ($responsavel === '' || mb_strlen($responsavel) > 150 || mb_strlen($maisInfo) > 150 || mb_strlen($foco) > 100 || mb_strlen($contato) > 150) {
+            api_responder(422, ['erro' => 'Informe o responsável e confira os limites: até 150 caracteres para responsável, detalhes e contato; 100 para foco.']);
+        }
         $data = trim((string) ($body['data_encontro'] ?? '')); $hora = trim((string) ($body['horario'] ?? ''));
         if ($data !== '') { $dataObj = DateTime::createFromFormat('!Y-m-d', $data); if (!$dataObj || $dataObj->format('Y-m-d') !== $data) api_responder(422, ['erro' => 'Informe uma data válida para o grupo.']); }
         if ($hora !== '') { $horaObj = DateTime::createFromFormat('!H:i', $hora); if (!$horaObj || $horaObj->format('H:i') !== $hora) api_responder(422, ['erro' => 'Informe um horário válido para o grupo.']); }
@@ -200,7 +211,7 @@ try {
             try { $foto = salvar_arquivo_upload($_FILES['imagem'], 'grupos'); } catch (Throwable $e) { api_responder(422, ['erro' => $e->getMessage()]); }
         }
         $stmt = $pdo->prepare("INSERT INTO grupos (id_criador, nome_grupo, responsavel, mais_info, foco, data_encontro, horario, link, contato, imagem, status_moderacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendente')");
-        $stmt->execute([(int) $_SESSION['id_usuario'], $nome, trim((string) ($body['responsavel'] ?? '')) ?: null, trim((string) ($body['mais_info'] ?? '')) ?: null, trim((string) ($body['foco'] ?? '')) ?: null, $data !== '' ? $data : null, $hora !== '' ? $hora . ':00' : null, $linkGrupo, trim((string) ($body['contato'] ?? $body['telefone_grupo'] ?? '')) ?: null, $foto]);
+        $stmt->execute([(int) $_SESSION['id_usuario'], $nome, $responsavel ?: null, $maisInfo ?: null, $foco ?: null, $data !== '' ? $data : null, $hora !== '' ? $hora . ':00' : null, $linkGrupo, $contato ?: null, $foto]);
         api_responder(201, ['mensagem' => 'Grupo enviado para análise.', 'id_grupo' => (int) $pdo->lastInsertId()]);
     }
     if (preg_match('#^/groups/(\d+)/share$#', $path, $match) && $method === 'POST') {

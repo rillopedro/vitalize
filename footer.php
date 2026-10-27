@@ -29,36 +29,36 @@
         <div class="footer-coluna">
             <h3>Desenvolvedores</h3>
 
-            <a href="https://github.com/katarina2008" target="_blank">
+            <a href="https://github.com/katarina2008" target="_blank" rel="noopener noreferrer">
                 <i class="fab fa-github"></i>
                 Katarina Vitória
             </a>
 
-            <a href="https://github.com/leticiavasconcelos1" target="_blank">
+            <a href="https://github.com/leticiavasconcelos1" target="_blank" rel="noopener noreferrer">
                 <i class="fab fa-github"></i>
                 Letícia Vasconcelos
             </a>
 
-            <a href="https://github.com/mayarasantanna2" target="_blank">
+            <a href="https://github.com/mayarasantanna2" target="_blank" rel="noopener noreferrer">
                 <i class="fab fa-github"></i>
                 Mayara Sant’Anna
             </a>
 
-            <a href="https://github.com/rillopedro" target="_blank">
+            <a href="https://github.com/rillopedro" target="_blank" rel="noopener noreferrer">
                 <i class="fab fa-github"></i>
                 Pedro Rillo
             </a>
 
-            <a href="LINK_GITHUB_VITORIA" target="_blank">
+            <span class="desenvolvedor-sem-link">
                 <i class="fab fa-github"></i>
                 Vitória Guedes
-            </a>
+            </span>
         </div>
 
         <div class="footer-coluna">
             <h3>Redes sociais</h3>
 
-            <a href="https://www.instagram.com/vitalize.tcc?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank">
+            <a href="https://www.instagram.com/vitalize.tcc?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer">
                 <i class="fab fa-instagram"></i>
                 Instagram
             </a>

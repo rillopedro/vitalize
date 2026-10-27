@@ -17,7 +17,7 @@ $sucessoPerfil = $_SESSION['sucesso_perfil'] ?? '';
 unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -502,7 +502,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
 
     </div>
 
-    <script src="api/cliente.js"></script>
+    <script src="api/cliente.js?v=20261027-2"></script>
     <script>
         const modalPerfil = document.getElementById("modalPerfil");
         const formPerfil = document.getElementById("formPerfil");

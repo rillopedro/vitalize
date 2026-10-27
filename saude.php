@@ -14,7 +14,7 @@ $consultas = [];
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css?v=11">
+    <link rel="stylesheet" href="css/style.css?v=12">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="icon" type="image/png" href="img/logov.png">
 </head>
@@ -122,7 +122,7 @@ $consultas = [];
             <div class="card">
                 <div class="cabecalho-card">
                     <div>
-                        <h3>Seu café da manhã com IA</h3>
+                        <h3>Seu cardapio diario com IA</h3>
                         <p class="subtitulo">Escolha seu humor e, se quiser, os sintomas.</p>
                     </div>
                     <button type="button" id="gerarPlano" class="btn-ia" disabled>
@@ -149,36 +149,33 @@ $consultas = [];
                 </div>
             </div>
             <!-- Dicas -->
-            <div class="card">
+            <div class="card card-dicas">
                 <div class="cabecalho-card">
-                    <h3>Dicas de rotina</h3>
+                    <div>
+                        <h3>Dicas de rotina</h3>
+                        <p class="subtitulo">Pequenos cuidados para hoje</p>
+                    </div>
+                    <span class="dicas-etiqueta"><i class="fa-regular fa-heart" aria-hidden="true"></i> Seu bem-estar</span>
                 </div>
                 <div class="dicas">
-                    <div class="dica">
-                        <div class="icone-dica">
-                            <i class="fa-solid fa-glass-water"></i>
-                        </div>
-                        <span>Beba bastante água ao longo do dia.</span>
-                    </div>
-                    <div class="dica">
-                        <div class="icone-dica">
-                            <i class="fa-solid fa-person-walking"></i>
-                        </div>
-                        <span>Faça atividades leves e respeite seus limites.</span>
-                    </div>
-                    <div class="dica">
-                        <div class="icone-dica">
-                            <i class="fa-solid fa-bed"></i>
-                        </div>
-                        <span>Descanse sempre que precisar.</span>
-                    </div>
-                    <div class="dica">
-                        <div class="icone-dica">
-                            <i class="fa-solid fa-pills"></i>
-                        </div>
-                        <span>Não se esqueça da sua medicação.</span>
-                    </div>
+                    <article class="dica">
+                        <div class="icone-dica"><i class="fa-solid fa-glass-water" aria-hidden="true"></i></div>
+                        <div class="texto-dica"><strong>Hidratação</strong><span>Beba água ao longo do dia.</span></div>
+                    </article>
+                    <article class="dica">
+                        <div class="icone-dica"><i class="fa-solid fa-person-walking" aria-hidden="true"></i></div>
+                        <div class="texto-dica"><strong>Movimento</strong><span>Faça atividades leves e respeite seus limites.</span></div>
+                    </article>
+                    <article class="dica">
+                        <div class="icone-dica"><i class="fa-solid fa-bed" aria-hidden="true"></i></div>
+                        <div class="texto-dica"><strong>Pausa</strong><span>Descanse sempre que precisar.</span></div>
+                    </article>
+                    <article class="dica">
+                        <div class="icone-dica"><i class="fa-solid fa-pills" aria-hidden="true"></i></div>
+                        <div class="texto-dica"><strong>Medicação</strong><span>Não se esqueça da sua medicação.</span></div>
+                    </article>
                 </div>
+                <p class="dicas-rodape"><i class="fa-regular fa-sun" aria-hidden="true"></i> Escolha uma dica para hoje e respeite o seu ritmo.</p>
             </div>
             <!-- Consultas -->
             <div class="card card-consultas">
@@ -263,15 +260,15 @@ $consultas = [];
                 </div>
                 <div class="campo">
                     <label>Especialidade</label>
-                    <input type="text" name="especialidade" id="especialidade" placeholder="Ex.: Oncologista" required>
+                    <input type="text" name="especialidade" id="especialidade" maxlength="150" placeholder="Ex.: Oncologista" required>
                 </div>
                 <div class="campo">
                     <label>Médico</label>
-                    <input type="text" name="medico" id="medico" placeholder="Nome do médico">
+                    <input type="text" name="medico" id="medico" maxlength="150" placeholder="Nome do médico">
                 </div>
                 <div class="campo">
                     <label>Local</label>
-                    <input type="text" name="nome_local" id="nomeLocal" placeholder="Hospital ou clínica">
+                    <input type="text" name="nome_local" id="nomeLocal" maxlength="150" placeholder="Hospital ou clínica">
                 </div>
                 <div class="campo">
                     <label>Data</label>
@@ -311,7 +308,7 @@ $consultas = [];
         </div>
     </div>
 
-    <script src="api/cliente.js"></script>
+    <script src="api/cliente.js?v=20261027-2"></script>
     <script>
         (() => {
             const modal = document.getElementById('modalAgenda');

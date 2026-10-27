@@ -2,7 +2,7 @@
 require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -40,15 +40,15 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
             <form action="api/auth/register" class="login-form" method="post">
                 <label>Nome:</label>
-                <input type="text" class="login-input" name="nome" placeholder="Digite seu nome" required
+                <input type="text" class="login-input" name="nome" maxlength="100" placeholder="Digite seu nome" required
                     autocomplete="given-name">
 
                 <label>Sobrenome:</label>
-                <input type="text" class="login-input" name="sobrenome" placeholder="Digite seu sobrenome"
+                <input type="text" class="login-input" name="sobrenome" maxlength="100" placeholder="Digite seu sobrenome"
                     autocomplete="family-name">
 
                 <label>Email:</label>
-                <input type="email" class="login-input" name="email" placeholder="exemplo@gmail.com" required
+                <input type="email" class="login-input" name="email" maxlength="150" placeholder="exemplo@gmail.com" required
                     autocomplete="email">
 
                 <label>Telefone:</label>
@@ -56,11 +56,11 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     maxlength="15" autocomplete="tel">
 
                 <label>Crie uma Senha:</label>
-                <input type="password" class="login-input" name="senha" id="senha" placeholder="Digite sua senha"
+                <input type="password" class="login-input" name="senha" id="senha" maxlength="72" placeholder="Digite sua senha"
                     required autocomplete="new-password">
 
                 <label>Repita a Senha:</label>
-                <input type="password" class="login-input" name="confirmar_senha" id="confirmar_senha"
+                <input type="password" class="login-input" name="confirmar_senha" id="confirmar_senha" maxlength="72"
                     placeholder="Repita sua senha" required autocomplete="new-password">
 
                 <button class="login-btn">Cadastrar</button>
@@ -194,7 +194,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
         });
 
     </script>
-    <script src="api/cliente.js"></script>
+    <script src="api/cliente.js?v=20261027-2"></script>
 
 </body>
 

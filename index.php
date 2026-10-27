@@ -2,7 +2,7 @@
 require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -232,7 +232,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
                         <h3>B12: vitamina essencial com uma relação complexa com o câncer</h3>
 
                         <a href="https://www.metropoles.com/saude/b12-vitamina-essencial-com-uma-relacao-complexa-com-o-cancer"
-                            target="_blank">
+                            target="_blank" rel="noopener noreferrer">
                             Ler mais
                         </a>
 
@@ -264,7 +264,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
 
                         <a href="https://ufpi.br/ultimas-noticias-ufpi/1107-destaques-ufpi/68024-conheca-o-oncottgen-primeiro-instituto-de-pesquisa-focado-no-tratamento-avancado-do-cancer-no-piaui"
-                            target="_blank">
+                            target="_blank" rel="noopener noreferrer">
                             Ler mais
                         </a>
 

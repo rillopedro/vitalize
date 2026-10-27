@@ -6,3 +6,6 @@
 # Arquivos locais alternativos de configuração
 config.local.php
 secrets.php
+
+# Arquivos enviados por usuários
+img/uploads/

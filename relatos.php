@@ -2,7 +2,7 @@
 require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -135,7 +135,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     </section>
 
     <?php include 'footer.php'; ?>
-    <script src="api/cliente.js"></script>
+    <script src="api/cliente.js?v=20261027-2"></script>
     <script>
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -90,7 +90,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     <h2>Dados do Grupo</h2>
 
                     <label>Nome do grupo*</label>
-                    <input type="text" name="nome" placeholder="Digite o nome do grupo" required>
+                    <input type="text" name="nome" maxlength="150" placeholder="Digite o nome do grupo" required>
 
                     <div class="linha-inputs">
                         <div>
@@ -107,7 +107,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     <div class="linha-inputs">
                         <div>
                             <label>Link do grupo</label>
-                            <input type="text" name="link" placeholder="https://...">
+                            <input type="text" name="link" maxlength="150" placeholder="https://...">
                         </div>
                     </div>
 
@@ -120,17 +120,17 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 <h2>Informações Adicionais</h2>
 
                 <label>Foco em:</label>
-                <input type="text" name="foco" placeholder="Ex.: Idosos, pacientes com...">
+                <input type="text" name="foco" maxlength="100" placeholder="Ex.: Idosos, pacientes com...">
 
                 <label>Responsável pelo grupo*</label>
-                <input type="text" name="responsavel" placeholder="Digite o nome do responsável" required>
+                <input type="text" name="responsavel" maxlength="150" placeholder="Digite o nome do responsável" required>
 
                 <label>Telefone do grupo</label>
                 <input type="tel" name="telefone_grupo" id="telefone_grupo" placeholder="(11) 99999-9999"
                     maxlength="15">
 
                 <label>Mais informações:</label>
-                <textarea name="mais_info" placeholder="Digite outras informações sobre o grupo..."></textarea>
+                <textarea name="mais_info" maxlength="150" placeholder="Digite outras informações sobre o grupo..."></textarea>
 
             </div>
 
@@ -141,7 +141,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     </section>
 
     <?php include 'footer.php'; ?>
-    <script src="api/cliente.js"></script>
+    <script src="api/cliente.js?v=20261027-2"></script>
     <script>
         document.getElementById('formCadastroGrupo').addEventListener('submit', async event => {
             event.preventDefault();

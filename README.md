@@ -16,6 +16,7 @@ Plataforma desenvolvida em equipe como Trabalho de Conclusão de Curso para apoi
 - Páginas e cadastro de grupos de apoio.
 - Relatos e conteúdo sobre saúde e doação de cabelo.
 - Agenda com link opcional para reuniões virtuais e área administrativa.
+- Login administrativo em `/login_admin.php`, disponível para contas autorizadas com `tipo='admin'`.
 - Endpoint de assistente de bem-estar com integração à API Groq.
 
 ## Executar localmente

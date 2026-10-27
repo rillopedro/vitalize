@@ -91,7 +91,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 </p>
 
                 <div id="modalContato">
-                    <p><strong>Link:</strong> <a href="#" target="_blank" id="modalLink"></a></p>
+                    <p><strong>Link:</strong> <a href="#" target="_blank" rel="noopener noreferrer" id="modalLink"></a></p>
                     <p><strong>Telefone:</strong> <span id="modalTelefone"></span></p>
                 </div>
 
@@ -117,7 +117,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
         </div>
 
     </div>
-    <script src="api/cliente.js"></script>
+    <script src="api/cliente.js?v=20261027-2"></script>
     <script>
         const modal = document.getElementById("modalInfo");
         const modalNome = document.getElementById("modalNomeGrupo");

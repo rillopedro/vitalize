@@ -1,13 +1,26 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/api/bootstrap.php';
+$idUsuario = filter_var($_SESSION['id_usuario'] ?? null, FILTER_VALIDATE_INT);
+if (!$idUsuario || $idUsuario < 1) {
+    header('Location: login_admin.php', true, 303);
+    exit;
+}
 try {
-    api_exigir_admin($pdo);
+    $stmt = $pdo->prepare('SELECT tipo, versao_sessao FROM usuarios WHERE id_usuario = ? LIMIT 1');
+    $stmt->execute([$idUsuario]);
+    $usuarioAtual = $stmt->fetch();
 } catch (Throwable $e) {
+    error_log('Vitalize: não foi possível validar o painel administrativo: ' . $e->getMessage());
     http_response_code(500);
     exit('Não foi possível validar o acesso administrativo.');
 }
+if (!$usuarioAtual || (int) ($_SESSION['versao_sessao'] ?? -1) !== (int) $usuarioAtual['versao_sessao'] || $usuarioAtual['tipo'] !== 'admin') {
+    header('Location: login_admin.php', true, 303);
+    exit;
+}
 header_remove('Content-Type');
+header('Content-Type: text/html; charset=utf-8');
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -34,7 +47,7 @@ header_remove('Content-Type');
         <p role="status" aria-live="polite" data-aviso></p>
     </section>
 </main>
-<script src="api/cliente.js"></script>
+<script src="api/cliente.js?v=20261027-2"></script>
 <script>
 (() => {
     const painel = document.querySelector('#painelAdm');

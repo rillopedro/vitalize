@@ -48,7 +48,7 @@ if (!in_array($etapa, ['email', 'codigo'], true)) $etapa = 'email';
             <?php endif; ?>
         </section>
     </main>
-    <script src="api/cliente.js"></script>
+    <script src="api/cliente.js?v=20261027-2"></script>
     <script>
         document.getElementById('formSolicitarCodigo')?.addEventListener('submit', async event => {
             event.preventDefault();

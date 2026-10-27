@@ -2,7 +2,7 @@
     require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -45,14 +45,15 @@
 
             <form class="login-form" method="POST" action="api/auth/login">
                 <label>Email:</label>
-                <input type="email" class="login-input" name="email" required autocomplete="email">
+                <input type="email" class="login-input" name="email" maxlength="150" required autocomplete="email">
 
                 <label>Senha:</label>
-                <input type="password" class="login-input" name="senha" required autocomplete="current-password">
+                <input type="password" class="login-input" name="senha" maxlength="72" required autocomplete="current-password">
 
                 <button class="login-btn">ENTRAR</button>
                 <p class="subcadastro">Não possui uma conta? <a class="sublink" href="cadastro.php">Cadastre-se</a> <br>
-                 <a class="sublink" href="recuperar_senha.php">Esqueci minha senha</a>
+                 <a class="sublink" href="recuperar_senha.php">Esqueci minha senha</a> <br>
+                 <a class="sublink" href="login_admin.php">Acesso administrativo</a>
                 </p>
 
 
@@ -60,7 +61,7 @@
 
         </div>
     </div>
-    <script src="api/cliente.js"></script>
+    <script src="api/cliente.js?v=20261027-2"></script>
     <script>
         const formularioLogin = document.querySelector('.login-form');
         formularioLogin.addEventListener('submit', async event => {

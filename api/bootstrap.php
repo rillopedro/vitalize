@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/iniciar_sessao.php';
 
+define('VITALIZE_API_REQUEST', true);
+
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
@@ -104,4 +106,3 @@ function api_data(PDO $pdo, int $idUsuario, bool $admin = false): array
     if ($admin && $tipo !== 'admin') api_responder(403, ['erro' => 'Acesso restrito a administradores.']);
     return ['tipo' => $tipo ?: 'usuario'];
 }
-
