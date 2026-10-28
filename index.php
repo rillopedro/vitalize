@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/navegacao.php';
+vitalize_exibir_aplicacao('index.php');
 require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
@@ -10,7 +12,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <title>Vitalize</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&amp;display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
@@ -27,18 +29,18 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
         <div class="nav-bar">
             <ul class="menu">
-                <li><a href="index.php">Início</a></li>
-                <li><a href="sobregrupos.php">Grupos</a></li>
-                <li><a href="doacao.php">Doação</a></li>
-                <li><a href="saude.php">Saúde</a></li>
-                <li><a href="relatos.php">Relatos</a></li>
-                <li><a href="sobre.php">Sobre</a></li>
+                <li><a href="conteudo.php?pagina=index">Início</a></li>
+                <li><a href="conteudo.php?pagina=sobregrupos">Grupos</a></li>
+                <li><a href="conteudo.php?pagina=doacao">Doação</a></li>
+                <li><a href="conteudo.php?pagina=saude">Saúde</a></li>
+                <li><a href="conteudo.php?pagina=relatos">Relatos</a></li>
+                <li><a href="conteudo.php?pagina=sobre">Sobre</a></li>
             </ul>
 
             <?php if (!empty($_SESSION['id_usuario'])): ?>
-                <a href="pagperfil.php" class="btnav">Perfil</a>
+                <a href="conteudo.php?pagina=pagperfil" class="btnav">Perfil</a>
             <?php else: ?>
-                <a href="login.php" class="btnav">Entrar</a>
+                <a href="conteudo.php?pagina=login" class="btnav">Entrar</a>
             <?php endif; ?>
             <button class="menu-toggle">
                 <i class="fas fa-bars"></i>
@@ -213,7 +215,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
         </div>
         <div style="align-items: center;" class="botoescards">
-            <a href="sobregrupos.php" class="adecorado">Saiba Mais</a>
+            <a href="conteudo.php?pagina=sobregrupos" class="adecorado">Saiba Mais</a>
         </div>
 
     </section>

@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/navegacao.php';
+vitalize_exibir_aplicacao('recuperar_senha.php');
 require_once __DIR__ . '/iniciar_sessao.php';
 $_SESSION['csrf_recuperacao'] ??= bin2hex(random_bytes(32));
 $mensagem = $_SESSION['mensagem_recuperacao'] ?? '';
@@ -18,7 +20,7 @@ if (!in_array($etapa, ['email', 'codigo'], true)) $etapa = 'email';
 <body>
     <main class="recuperacao-page">
         <section class="recuperacao-card">
-            <a href="login.php" class="recuperacao-voltar">← Voltar ao login</a>
+            <a href="conteudo.php?pagina=login" class="recuperacao-voltar">← Voltar ao login</a>
             <img src="img/logov.png" alt="Vitalize" class="login-logo">
             <h1>Recuperar senha</h1>
             <?php if ($mensagem !== ''): ?><p class="mensagem-recuperacao" role="status"><?= htmlspecialchars($mensagem, ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
@@ -44,7 +46,7 @@ if (!in_array($etapa, ['email', 'codigo'], true)) $etapa = 'email';
                     <input id="confirmarSenha" class="login-input" type="password" name="confirmar_senha" minlength="6" maxlength="72" autocomplete="new-password" required>
                     <button class="login-btn" type="submit">Redefinir senha</button>
                 </form>
-                <p class="subcadastro"><a class="sublink" href="recuperar_senha.php">Solicitar outro código</a></p>
+                <p class="subcadastro"><a class="sublink" href="conteudo.php?pagina=recuperar_senha">Solicitar outro código</a></p>
             <?php endif; ?>
         </section>
     </main>
@@ -57,7 +59,7 @@ if (!in_array($etapa, ['email', 'codigo'], true)) $etapa = 'email';
                 const dados = Object.fromEntries(new FormData(form).entries());
                 const resposta = await VitalizeAPI.requisicao('/api/password/forgot', { method: 'POST', body: dados });
                 sessionStorage.setItem('vitalize_mensagem_senha', resposta.mensagem || 'Confira seu e-mail e a caixa de spam.');
-                window.location.assign('recuperar_senha.php?etapa=codigo');
+                window.location.assign('conteudo.php?pagina=recuperar_senha&etapa=codigo');
             } catch (erro) { alert(erro.message || 'Não foi possível solicitar o código.'); }
         });
         document.getElementById('formRedefinirSenha')?.addEventListener('submit', async event => {
@@ -68,7 +70,7 @@ if (!in_array($etapa, ['email', 'codigo'], true)) $etapa = 'email';
             try {
                 const resposta = await VitalizeAPI.requisicao('/api/password/reset', { method: 'POST', body: dados });
                 sessionStorage.setItem('vitalize_mensagem_login', resposta.mensagem || 'Senha alterada.');
-                window.location.assign('login.php');
+                window.location.assign('conteudo.php?pagina=login');
             } catch (erro) { alert(erro.message || 'Não foi possível redefinir a senha.'); }
         });
         const mensagemRecuperacao = sessionStorage.getItem('vitalize_mensagem_senha');

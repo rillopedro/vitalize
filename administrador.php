@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/navegacao.php';
+vitalize_exibir_aplicacao('administrador.php');
 require_once __DIR__ . '/api/bootstrap.php';
 $idUsuario = filter_var($_SESSION['id_usuario'] ?? null, FILTER_VALIDATE_INT);
 if (!$idUsuario || $idUsuario < 1) {
-    header('Location: login_admin.php', true, 303);
+    header('Location: conteudo.php?pagina=login_admin', true, 303);
     exit;
 }
 try {
@@ -16,7 +18,7 @@ try {
     exit('Não foi possível validar o acesso administrativo.');
 }
 if (!$usuarioAtual || (int) ($_SESSION['versao_sessao'] ?? -1) !== (int) $usuarioAtual['versao_sessao'] || $usuarioAtual['tipo'] !== 'admin') {
-    header('Location: login_admin.php', true, 303);
+    header('Location: conteudo.php?pagina=login_admin', true, 303);
     exit;
 }
 header_remove('Content-Type');
@@ -33,7 +35,7 @@ header('Content-Type: text/html; charset=utf-8');
 </head>
 <body>
 <main class="pagina-adm" id="painelAdm">
-    <header class="cabecalho-adm"><div><h1>Painel administrativo</h1><p>Revise relatos e grupos antes da publicação.</p></div><a href="index.php">Voltar ao início</a></header>
+    <header class="cabecalho-adm"><div><h1>Painel administrativo</h1><p>Revise relatos e grupos antes da publicação.</p></div><a href="conteudo.php?pagina=index">Voltar ao início</a></header>
     <section class="moderacao-adm">
         <div class="topo-moderacao-adm">
             <div class="abas-adm" role="tablist" aria-label="Conteúdo pendente">

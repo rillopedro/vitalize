@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/navegacao.php';
+vitalize_exibir_aplicacao('cadastro.php');
 require_once __DIR__ . '/iniciar_sessao.php';
 ?>
 <!DOCTYPE html>
@@ -10,7 +12,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <title>Vitalize</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&amp;display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"><!--icone voltar-->
     <link rel="icon" type="image/png" href="img/logov.png">
@@ -23,7 +25,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <div class="cadastro-page">
         <div class="cadastro-card">
 
-            <a href="index.php" class="login-btn-voltar">
+            <a href="conteudo.php?pagina=index" class="login-btn-voltar">
                 <span class="material-symbols-outlined">
                     arrow_back_ios_new
                 </span>
@@ -65,7 +67,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
                 <button class="login-btn">Cadastrar</button>
 
-                <p class="subcadastro">Já tem uma conta? <a class="sublink" href="login.php">Clique Aqui</a> </p>
+                <p class="subcadastro">Já tem uma conta? <a class="sublink" href="conteudo.php?pagina=login">Clique Aqui</a> </p>
 
             </form>
 
@@ -186,7 +188,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
             try {
                 const dados = Object.fromEntries(new FormData(form).entries());
                 await VitalizeAPI.requisicao('/api/auth/register', { method: 'POST', body: dados });
-                window.location.assign('pagperfil.php');
+                window.location.assign('conteudo.php?pagina=pagperfil');
             } catch (erro) {
                 alert(erro.message || 'Não foi possível concluir o cadastro.');
             }

@@ -18,6 +18,14 @@ Plataforma desenvolvida em equipe como Trabalho de Conclusão de Curso para apoi
 - Agenda com link opcional para reuniões virtuais e área administrativa.
 - Endpoint de assistente de bem-estar com integração à API Groq.
 
+## Navegação com endereço fixo
+
+A entrada pública é a raiz do site. Uma tela principal em `navegacao.php` mantém o endereço do domínio enquanto carrega as páginas em um iframe da mesma origem por `conteudo.php?pagina=...`. A lista de telas permitidas é explícita; arquivos arbitrários não podem ser incluídos. A API continua em `api/`.
+
+`navegacao.js` mantém o título da tela e salva a última página no sessionStorage de cada aba para restaurá-la ao atualizar. Links antigos para páginas PHP também abrem essa estrutura. Os controles de acesso continuam nas páginas e na API. Os caminhos internos continuam visíveis nas requisições de rede: esta navegação muda o endereço apresentado ao visitante, não é uma proteção de acesso.
+
+Como todas as telas compartilham o mesmo endereço visível, copiar esse endereço compartilha a entrada do site, sem identificar a tela atual. A navegação exige JavaScript e não oferece URLs públicas distintas para indexar cada página. Não há migração para FastAPI nem configuração automática de domínio; para exibir `vitalize.com`, o domínio precisa estar conectado à hospedagem.
+
 ## Executar localmente
 
 Pré-requisitos: Git, MySQL/MariaDB e PHP 8.2 com `pdo_mysql`, `mysqli`, `mbstring` e `curl`. O Dockerfile usa PHP 8.2 com Apache.

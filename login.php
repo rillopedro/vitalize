@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/navegacao.php';
+vitalize_exibir_aplicacao('login.php');
     require_once __DIR__ . '/iniciar_sessao.php';
     // Lista fechada para impedir redirecionamentos externos.
     $retorno = ($_GET['retorno'] ?? '') === 'cadastrar_grupo.php' ? 'cadastrar_grupo.php' : 'pagperfil.php';
@@ -12,7 +14,7 @@
     <title>Vitalize</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&amp;display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logov.png">
@@ -26,7 +28,7 @@
     <div class="login-page">
         <div class="login-card">
 
-            <a href="index.php" class="login-btn-voltar">
+            <a href="conteudo.php?pagina=index" class="login-btn-voltar">
                 <span class="material-symbols-outlined">
                     arrow_back_ios_new
                 </span>
@@ -53,9 +55,9 @@
                 <input type="password" class="login-input" name="senha" maxlength="72" required autocomplete="current-password">
 
                 <button class="login-btn">ENTRAR</button>
-                <p class="subcadastro">Não possui uma conta? <a class="sublink" href="cadastro.php">Cadastre-se</a> <br>
-                 <a class="sublink" href="recuperar_senha.php">Esqueci minha senha</a> <br>
-                 <a class="sublink" href="login_admin.php">Acesso administrativo</a>
+                <p class="subcadastro">Não possui uma conta? <a class="sublink" href="conteudo.php?pagina=cadastro">Cadastre-se</a> <br>
+                 <a class="sublink" href="conteudo.php?pagina=recuperar_senha">Esqueci minha senha</a> <br>
+                 <a class="sublink" href="conteudo.php?pagina=login_admin">Acesso administrativo</a>
                 </p>
 
 
@@ -73,7 +75,7 @@
             try {
                 const dados = Object.fromEntries(new FormData(formularioLogin).entries());
                 await VitalizeAPI.requisicao('/api/auth/login', { method: 'POST', body: dados });
-                window.location.assign(<?= json_encode($retorno) ?>);
+                window.location.assign(<?= json_encode(vitalize_url_pagina($retorno)) ?>);
             } catch (erro) {
                 alert(erro.message || 'Não foi possível entrar.');
             } finally {

@@ -4,7 +4,7 @@
     <div class="footer-container">
 
         <div class="footer-brand">
-            <a href="index.php">
+            <a href="conteudo.php?pagina=index">
                 <img src="img/logobrancacomp.png" alt="Vitalize">
             </a>
 
@@ -18,12 +18,12 @@
         <div class="footer-coluna">
             <h3>Seções</h3>
 
-            <a href="index.php">Início</a>
-            <a href="sobregrupos.php">Grupos</a>
-            <a href="doacao.php">Doação</a>
-            <a href="saude.php">Saúde</a>
-            <a href="relatos.php">Relatos</a>
-            <a href="sobre.php">Sobre</a>
+            <a href="conteudo.php?pagina=index">Início</a>
+            <a href="conteudo.php?pagina=sobregrupos">Grupos</a>
+            <a href="conteudo.php?pagina=doacao">Doação</a>
+            <a href="conteudo.php?pagina=saude">Saúde</a>
+            <a href="conteudo.php?pagina=relatos">Relatos</a>
+            <a href="conteudo.php?pagina=sobre">Sobre</a>
         </div>
 
         <div class="footer-coluna">
