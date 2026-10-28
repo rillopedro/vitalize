@@ -83,13 +83,17 @@ header('Content-Type: text/html; charset=utf-8');
     painel.addEventListener('click', async evento => {
         const botao = evento.target.closest('[data-status][data-id]');
         if (!botao) return;
-        botao.disabled = true;
+        const tipoAcao = tipo;
+        const idAcao = botao.dataset.id;
+        const statusAcao = botao.dataset.status;
+        const botoesAcao = botao.closest('.acoes-adm').querySelectorAll('button');
+        botoesAcao.forEach(item => { item.disabled = true; });
         try {
-            await VitalizeAPI.requisicao(`/api/admin/moderation/${tipo}/${botao.dataset.id}`, {method:'PATCH', body:{status:botao.dataset.status}});
-            conteudos[tipo] = conteudos[tipo].filter(item => String(item.id) !== botao.dataset.id);
-            aviso.textContent = botao.dataset.status === 'aprovado' ? 'Conteúdo aprovado e publicado.' : 'Conteúdo recusado.';
+            await VitalizeAPI.requisicao(`/api/admin/moderation/${tipoAcao}/${idAcao}`, {method:'PATCH', body:{status:statusAcao}});
+            conteudos[tipoAcao] = conteudos[tipoAcao].filter(item => String(item.id) !== idAcao);
+            aviso.textContent = statusAcao === 'aprovado' ? 'Conteúdo aprovado e publicado.' : 'Conteúdo recusado.';
             renderizar();
-        } catch (erro) { botao.disabled = false; aviso.textContent = erro.message || 'Não foi possível atualizar o conteúdo.'; }
+        } catch (erro) { botoesAcao.forEach(item => { item.disabled = false; }); aviso.textContent = erro.message || 'Não foi possível atualizar o conteúdo.'; }
     });
     carregar();
 })();

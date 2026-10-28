@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . '/iniciar_sessao.php';
+if (empty($_SESSION['id_usuario'])) {
+    header('Location: login.php?retorno=cadastrar_grupo.php', true, 303);
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -94,12 +98,12 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
                     <div class="linha-inputs">
                         <div>
-                            <label>Data*</label>
+                            <label>Data (opcional)</label>
                             <input type="date" name="data_encontro">
                         </div>
 
                         <div>
-                            <label>Horário*</label>
+                            <label>Horário (opcional)</label>
                             <input type="time" name="horario">
                         </div>
                     </div>
@@ -142,19 +146,79 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
     <?php include 'footer.php'; ?>
     <script src="api/cliente.js?v=20261027-2"></script>
+
     <script>
-        document.getElementById('formCadastroGrupo').addEventListener('submit', async event => {
-            event.preventDefault();
-            const form = event.currentTarget;
-            const dados = new FormData(form);
-            dados.set('contato', dados.get('telefone_grupo') || '');
-            try {
-                const resposta = await VitalizeAPI.requisicao('/api/groups', { method: 'POST', body: dados });
-                alert(resposta.mensagem || 'Grupo enviado para análise.');
-                window.location.assign('grupos.php');
-            } catch (erro) { alert(erro.message || 'Não foi possível cadastrar o grupo.'); }
-        });
+        document.getElementById('formCadastroGrupo')
+            .addEventListener('submit', async event => {
+                event.preventDefault();
+
+                const form = event.currentTarget;
+                const botao = form.querySelector('button[type="submit"]');
+                if (botao.disabled) return;
+                const dados = new FormData(form);
+
+                dados.set(
+                    'contato',
+                    dados.get('telefone_grupo') || ''
+                );
+
+                const link = String(dados.get('link') || '').trim();
+
+                if (link) {
+                    const linkNormalizado = /^https?:\/\//i.test(link) ?
+                        link :
+                        'https://' + link;
+
+                    try {
+                        const url = new URL(linkNormalizado);
+
+                        if (
+                            !['http:', 'https:'].includes(url.protocol) ||
+                            !url.hostname.includes('.') ||
+                            url.username ||
+                            url.password
+                        ) {
+                            throw new Error('Link inválido');
+                        }
+
+                        dados.set('link', url.href);
+
+                    } catch {
+                        alert('Informe um link válido, como https://exemplo.com');
+                        return;
+                    }
+                } else {
+                    dados.delete('link');
+                }
+
+                botao.disabled = true;
+                try {
+                    const resposta = await VitalizeAPI.requisicao(
+                        '/api/groups', {
+                            method: 'POST',
+                            body: dados
+                        }
+                    );
+
+                    alert(
+                        resposta.mensagem ||
+                        'Grupo enviado para análise.'
+                    );
+
+                    window.location.assign('grupos.php');
+
+                } catch (erro) {
+                    console.error('Erro no cadastro:', erro);
+                    alert(
+                        erro.message ||
+                        'Não foi possível cadastrar o grupo.'
+                    );
+                } finally {
+                    botao.disabled = false;
+                }
+            });
     </script>
+
     <script>
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");
@@ -169,7 +233,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
         const telefone = document.getElementById("telefone_grupo");
 
         if (telefone) {
-            telefone.addEventListener("input", function () {
+            telefone.addEventListener("input", function() {
 
                 let valor = telefone.value.replace(/\D/g, "");
 
@@ -190,8 +254,9 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     );
 
                 } else {
+                    const padrao = valor.length <= 10 ? /^(\d{2})(\d{4})(\d{0,4})/ : /^(\d{2})(\d{5})(\d{0,4})/;
                     valor = valor.replace(
-                        /^(\d{2})(\d{5})(\d{0,4})/,
+                        padrao,
                         "($1) $2-$3"
                     );
                 }
@@ -204,14 +269,16 @@ require_once __DIR__ . '/iniciar_sessao.php';
         const imagem = document.getElementById("imagem");
         const preview = document.getElementById("preview");
 
-        imagem.addEventListener("change", function () {
+        imagem.addEventListener("change", function() {
 
             const arquivo = imagem.files[0];
 
+            preview.removeAttribute('src');
+            preview.style.display = 'none';
             if (arquivo) {
                 const leitor = new FileReader();
 
-                leitor.onload = function (e) {
+                leitor.onload = function(e) {
                     preview.src = e.target.result;
                     preview.style.display = "block";
                 };

@@ -1,5 +1,7 @@
 <?php
     require_once __DIR__ . '/iniciar_sessao.php';
+    // Lista fechada para impedir redirecionamentos externos.
+    $retorno = ($_GET['retorno'] ?? '') === 'cadastrar_grupo.php' ? 'cadastrar_grupo.php' : 'pagperfil.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -71,7 +73,7 @@
             try {
                 const dados = Object.fromEntries(new FormData(formularioLogin).entries());
                 await VitalizeAPI.requisicao('/api/auth/login', { method: 'POST', body: dados });
-                window.location.assign('pagperfil.php');
+                window.location.assign(<?= json_encode($retorno) ?>);
             } catch (erro) {
                 alert(erro.message || 'Não foi possível entrar.');
             } finally {

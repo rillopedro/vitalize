@@ -87,14 +87,42 @@ function api_usuario_publico(array $usuario): array
     return $usuario;
 }
 
-function api_validar_link(?string $url): ?string
+
+function api_validar_link(?string $url, int $maximo = 150): ?string
 {
     $url = trim((string) $url);
-    if ($url === '') return null;
-    $esquema = strtolower((string) parse_url($url, PHP_URL_SCHEME));
-    if (strlen($url) > 2048 || !filter_var($url, FILTER_VALIDATE_URL) || !in_array($esquema, ['http', 'https'], true) || parse_url($url, PHP_URL_USER) !== null) {
-        api_responder(422, ['erro' => 'Informe um link HTTP ou HTTPS válido.']);
+
+    // Link opcional
+    if ($url === '') {
+        return null;
     }
+
+    // Adiciona HTTPS quando o protocolo não foi informado
+    if (!preg_match('/^[a-z][a-z0-9+.-]*:\/\//i', $url)
+        && !str_contains($url, '://')) {
+        $url = 'https://' . $url;
+    }
+
+    $esquema = strtolower(
+        (string) parse_url($url, PHP_URL_SCHEME)
+    );
+
+    $host = parse_url($url, PHP_URL_HOST);
+
+    if (
+        strlen($url) > $maximo ||
+        !filter_var($url, FILTER_VALIDATE_URL) ||
+        !in_array($esquema, ['http', 'https'], true) ||
+        !is_string($host) ||
+        !str_contains($host, '.') ||
+        parse_url($url, PHP_URL_USER) !== null ||
+        parse_url($url, PHP_URL_PASS) !== null
+    ) {
+        api_responder(422, [
+            'erro' => 'Informe um link HTTP ou HTTPS válido.'
+        ]);
+    }
+
     return $url;
 }
 

@@ -77,7 +77,7 @@ try {
         api_responder(200, ['mensagem' => 'Login realizado.', 'usuario' => api_usuario_publico($usuario)]);
     }
     if ($method === 'POST' && $path === '/auth/logout') {
-        api_usuario();
+        // Encerrar também sessões expiradas ou já encerradas.
         $_SESSION = [];
         if (ini_get('session.use_cookies')) {
             $params = session_get_cookie_params();
@@ -157,7 +157,7 @@ try {
         $medico = trim((string) ($body['medico'] ?? '')); $nomeLocal = trim((string) ($body['nome_local'] ?? ''));
         if (mb_strlen($especialidade) > 150 || mb_strlen($medico) > 150 || mb_strlen($nomeLocal) > 150) api_responder(422, ['erro' => 'Os campos de especialidade, profissional e local devem ter até 150 caracteres.']);
         if (!in_array($tipo, ['Consulta', 'Exame'], true) || $especialidade === '' || !$dt || $dt->format('Y-m-d') !== $data || !$hr || $hr->format('H:i') !== $hora) api_responder(422, ['erro' => 'Confira tipo, especialidade, data e horário.']);
-        $link = api_validar_link($body['link_reuniao'] ?? null);
+        $link = api_validar_link($body['link_reuniao'] ?? null, 2048);
         $pdo->prepare('INSERT INTO consultas (id_usuario, tipo, especialidade, medico, nome_local, data, horario, link_reuniao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')->execute([$id, $tipo, $especialidade, $medico ?: null, $nomeLocal ?: null, $data, $hora . ':00', $link]);
         api_responder(201, ['mensagem' => 'Consulta adicionada.', 'id_consulta' => (int) $pdo->lastInsertId()]);
     }
@@ -169,7 +169,7 @@ try {
         $medico = trim((string) ($body['medico'] ?? '')); $nomeLocal = trim((string) ($body['nome_local'] ?? ''));
         if (mb_strlen($especialidade) > 150 || mb_strlen($medico) > 150 || mb_strlen($nomeLocal) > 150) api_responder(422, ['erro' => 'Os campos de especialidade, profissional e local devem ter até 150 caracteres.']);
         if (!in_array($tipo, ['Consulta', 'Exame'], true) || $especialidade === '' || !$dt || $dt->format('Y-m-d') !== $data || !$hr || $hr->format('H:i') !== $hora) api_responder(422, ['erro' => 'Confira tipo, especialidade, data e horário.']);
-        $link = api_validar_link($body['link_reuniao'] ?? null);
+        $link = api_validar_link($body['link_reuniao'] ?? null, 2048);
         $stmt = $pdo->prepare('UPDATE consultas SET tipo=?, especialidade=?, medico=?, nome_local=?, data=?, horario=?, link_reuniao=? WHERE id_consulta=? AND id_usuario=?');
         $stmt->execute([$tipo, $especialidade, $medico ?: null, $nomeLocal ?: null, $data, $hora . ':00', $link, $idConsulta, $id]);
         if ($stmt->rowCount() === 0) { $check = $pdo->prepare('SELECT 1 FROM consultas WHERE id_consulta=? AND id_usuario=?'); $check->execute([$idConsulta, $id]); if (!$check->fetchColumn()) api_responder(404, ['erro' => 'Consulta não encontrada.']); }
@@ -217,7 +217,7 @@ try {
     if (preg_match('#^/groups/(\d+)/share$#', $path, $match) && $method === 'POST') {
         $idUsuario = api_usuario();
         api_aplicar_limite($pdo, 'group-share', (string) $idUsuario, 5, 3600);
-        $stmt = $pdo->prepare('SELECT g.nome_grupo, g.link, u.nome, u.email FROM grupos g JOIN usuarios u ON u.id_usuario=? WHERE g.id_grupo=? LIMIT 1');
+        $stmt = $pdo->prepare("SELECT g.nome_grupo, g.link, u.nome, u.email FROM grupos g JOIN usuarios u ON u.id_usuario=? WHERE g.id_grupo=? AND g.status_moderacao='aprovado' LIMIT 1");
         $stmt->execute([$idUsuario, (int) $match[1]]);
         $dadosGrupo = $stmt->fetch();
         if (!$dadosGrupo) api_responder(404, ['erro' => 'Grupo não encontrado.']);
