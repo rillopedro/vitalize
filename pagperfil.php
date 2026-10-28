@@ -32,7 +32,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
 
     <link rel="stylesheet" href="css/style.css?v=8">
     <style>
-        
+
 /* =========================
    MODAL EXCLUIR CONTA
 ========================= */
@@ -269,7 +269,7 @@ unset($_SESSION['erro_perfil'], $_SESSION['sucesso_perfil']);
     <div class="painel">
 
         <div class="cabecalho-perfil">
-            <h1>Meu Perfl</h1>
+            <h1>Meu Perfil</h1>
             <p>Visualize e altere suas informações pessoais.</p>
 
             <?php if ($sucessoPerfil !== ''): ?>
