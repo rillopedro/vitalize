@@ -24,7 +24,7 @@ if (!in_array($humor, $humoresPermitidos, true)) responderErro(422, 'Selecione c
 
 if (mb_strlen($restricoes, 'UTF-8') > 500) responderErro(422, 'As restrições devem ter no máximo 500 caracteres.');
 
-$apiKey = getenv('GROQ_API_KEY') ?: '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';
+$apiKey = trim((string) (getenv('GROQ_API_KEY') ?: ''));
 if ($apiKey === '') responderErro(503, 'A IA ainda não foi configurada. Defina GROQ_API_KEY no servidor.');
 
 $model = getenv('GROQ_MODEL') ?: 'openai/gpt-oss-20b';
