@@ -65,7 +65,14 @@ header('Content-Type: text/html; charset=utf-8');
         painel.querySelector('[data-vazio]').hidden = conteudos[tipo].length > 0;
     }
     async function carregar() {
-        try { conteudos = await VitalizeAPI.requisicao('/api/admin/moderation'); renderizar(); }
+        try {
+            const resposta = await VitalizeAPI.requisicao('/api/admin/moderation');
+            conteudos = {
+                stories: Array.isArray(resposta.relatos) ? resposta.relatos : (Array.isArray(resposta.stories) ? resposta.stories : []),
+                groups: Array.isArray(resposta.grupos) ? resposta.grupos : (Array.isArray(resposta.groups) ? resposta.groups : [])
+            };
+            renderizar();
+        }
         catch (erro) { aviso.textContent = erro.message || 'Não foi possível carregar a moderação.'; }
     }
     painel.querySelectorAll('[data-tipo]').forEach(botao => botao.addEventListener('click', () => {
