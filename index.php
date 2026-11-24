@@ -92,7 +92,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
             <div class="mapa">
 
-                <p class="mapa-hint">Os marcadores mostram Ribeirão Pires, Santo André e a referência municipal de Mauá. Use “Ver no mapa” para destacar cada local.</p>
+                <p class="mapa-hint">Os marcadores mostram os serviços em Ribeirão Pires e Santo André e referências municipais de parceiros. Os pontos aproximados não indicam endereços ou locais atuais de coleta.</p>
                 <div id="mapaVitalize" role="region" aria-label="Mapa com os locais de atendimento e parceiros do Vitalize"></div>
 
             </div>
@@ -142,8 +142,9 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 <div class="card-clinica parceiro-local">
                     <span class="tag-local">Parceiro de apoio</span>
                     <h3>Doe Lenço, Doe Alegria</h3>
-                    <p>Projeto parceiro sem sede pública confirmada. Ações e pontos de coleta podem variar; consulte o perfil antes de se deslocar.</p>
+                    <p>Referência municipal em Ribeirão Pires. O projeto não tem endereço fixo confirmado; pontos de coleta podem variar, então consulte o perfil antes de se deslocar.</p>
                     <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="doelenco" href="https://www.google.com/maps/search/?api=1&amp;query=Ribeir%C3%A3o+Pires+SP" target="_blank" rel="noopener noreferrer">Ver região no mapa</a>
                         <a class="acao-clinica secundaria" href="https://www.instagram.com/doelencodoealegria/" target="_blank" rel="noopener noreferrer">Instagram do parceiro</a>
                     </div>
                 </div>
@@ -180,6 +181,12 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 nome: 'Mauá — parceiros do Vitalize',
                 endereco: 'Referência no município. O endereço exato do Salão Absoluto e do Instituto Romatt não foi confirmado; este marcador é aproximado.',
                 link: 'https://www.google.com/maps/search/?api=1&query=Mau%C3%A1+SP'
+            },
+            doelenco: {
+                coords: [-23.71056, -46.41333],
+                nome: 'Doe Lenço, Doe Alegria — referência municipal',
+                endereco: 'Referência aproximada em Ribeirão Pires. O endereço do projeto e os pontos atuais de coleta não foram confirmados.',
+                link: 'https://www.google.com/maps/search/?api=1&query=Ribeir%C3%A3o+Pires+SP'
             }
         };
 
