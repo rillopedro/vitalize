@@ -15,6 +15,6 @@ WORKDIR /var/www/html
 
 RUN chown -R www-data:www-data /var/www/html
 
-EXPOSE 8080
+EXPOSE 80
 
-CMD ["bash", "-lc", "PORT=${PORT:-8080}; sed -i 's/^Listen 80$/Listen '"$PORT"'/' /etc/apache2/ports.conf; sed -i 's/<VirtualHost \\*:80>/<VirtualHost *:'"$PORT"'>/' /etc/apache2/sites-available/000-default.conf; a2dismod mpm_event mpm_worker >/dev/null 2>&1 || true; rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.*; a2enmod mpm_prefork >/dev/null 2>&1 || true; apache2ctl -t; exec apache2-foreground"]
+CMD ["bash", "-lc", "php migrations/20261124_demo_conteudo.php || exit $?; a2dismod mpm_event mpm_worker >/dev/null 2>&1 || true; rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.*; a2enmod mpm_prefork >/dev/null 2>&1 || true; apache2ctl -t; exec apache2-foreground"]
