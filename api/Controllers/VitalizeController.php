@@ -183,8 +183,8 @@ try {
 
     // Grupos de apoio
     if ($path === '/groups' && $method === 'GET') {
-        $stmt = $pdo->query("SELECT id_grupo, nome_grupo, responsavel, mais_info, foco, data_encontro, horario, link, contato AS telefone_grupo, imagem FROM grupos WHERE status_moderacao='aprovado' AND is_demo=0 ORDER BY id_grupo DESC");
-        $demos = $pdo->query("SELECT id_grupo, nome_grupo, responsavel, mais_info, foco, data_encontro, horario, link, contato AS telefone_grupo, imagem FROM grupos WHERE status_moderacao='aprovado' AND is_demo=1 ORDER BY RAND() LIMIT 6");
+        $stmt = $pdo->query("SELECT id_grupo, nome_grupo, responsavel, mais_info, foco, data_encontro, horario, link, contato AS telefone_grupo, imagem FROM grupos WHERE status_moderacao='aprovado' AND is_demo=0 AND (data_encontro IS NULL OR data_encontro >= CURDATE()) ORDER BY id_grupo DESC");
+        $demos = $pdo->query("SELECT id_grupo, nome_grupo, responsavel, mais_info, foco, data_encontro, horario, link, contato AS telefone_grupo, imagem FROM grupos WHERE status_moderacao='aprovado' AND is_demo=1 AND (data_encontro IS NULL OR data_encontro >= CURDATE()) ORDER BY RAND() LIMIT 6");
         api_responder(200, ['grupos' => $stmt->fetchAll(), 'grupos_demo' => $demos->fetchAll()]);
     }
     if ($path === '/groups' && $method === 'POST') {
