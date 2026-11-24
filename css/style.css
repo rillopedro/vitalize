@@ -1588,6 +1588,41 @@ textarea {
     line-height: 1.5;
 }
 
+/* Mapa: texto e cartões de localização */
+.clinicas .conteudo-clinicas { align-items: flex-start; gap: 24px; }
+.clinicas .mapa { min-width: 0; }
+.clinicas .mapa-hint { max-width: 760px; margin: 0 0 14px; color: #59666a; font-size: .96rem; line-height: 1.55; }
+.clinicas .lista-clinicas { width: min(390px, 100%); max-height: 560px; overflow-y: auto; padding: 2px 5px 8px 2px; }
+.clinicas .card-clinica { width: 100%; box-sizing: border-box; align-items: flex-start; gap: 10px; padding: 18px; border: 1px solid #e9e8ed; border-radius: 16px; box-shadow: 0 5px 16px rgba(28, 38, 48, .07); }
+.clinicas .card-clinica:hover { transform: translateY(-2px); }
+.clinicas .tag-local { max-width: 100%; box-sizing: border-box; color: #28635d; line-height: 1.4; white-space: normal; }
+.clinicas .card-clinica h3 { color: #303b40; font-size: 1.1rem; line-height: 1.3; overflow-wrap: anywhere; }
+.clinicas .card-clinica p { width: 100%; color: #536168; font-size: .93rem; line-height: 1.55; overflow-wrap: anywhere; }
+.clinicas .card-clinica .endereco-local { font-weight: 600; color: #35484c; }
+.clinicas .acoes-clinica { width: 100%; gap: 8px; }
+.clinicas .acao-clinica { min-height: 40px; box-sizing: border-box; padding: 9px 12px; font-size: .87rem; line-height: 1.3; text-align: center; }
+.clinicas button.acao-clinica { border: 0; cursor: pointer; }
+.clinicas .popup-local { width: min(290px, 70vw); padding: 2px; color: #344248; font-family: inherit; }
+.clinicas .popup-local__tipo { display: inline-block; margin: 0 0 7px; padding: 4px 8px; border-radius: 999px; background: #e7f5f3; color: #28635d; font-size: .76rem; font-weight: 700; line-height: 1.35; }
+.clinicas .popup-local__titulo { display: block; margin: 0 0 7px; color: #303b40; font-size: 1rem; line-height: 1.3; }
+.clinicas .popup-local__endereco,
+.clinicas .popup-local__detalhe { margin: 0 0 7px; color: #536168; font-size: .87rem; line-height: 1.45; overflow-wrap: anywhere; }
+.clinicas .popup-local__parceiros { margin: 6px 0 9px; padding-left: 18px; color: #536168; font-size: .84rem; line-height: 1.5; }
+.clinicas .popup-local__link,
+.clinicas .popup-local__fonte { display: inline-block; margin: 3px 8px 0 0; color: #684ba8; font-size: .86rem; font-weight: 700; text-decoration: underline; }
+.clinicas .mapa-erro { display: grid; width: 100%; height: 100%; min-height: 240px; box-sizing: border-box; place-items: center; margin: 0; padding: 24px; border-radius: 20px; background: #f3f4f6; color: #536168; line-height: 1.55; text-align: center; }
+
+@media (max-width: 900px) {
+    .clinicas .conteudo-clinicas { flex-direction: column; }
+    .clinicas .mapa, .clinicas .lista-clinicas { width: 100%; }
+    .clinicas .lista-clinicas { max-height: none; overflow: visible; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+    .clinicas .lista-clinicas { grid-template-columns: 1fr; }
+    .clinicas .acoes-clinica { flex-direction: column; }
+    .clinicas .acao-clinica { width: 100%; }
+}
+
 .acoes-clinica {
     display: flex;
     flex-wrap: wrap;
