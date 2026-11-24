@@ -17,8 +17,8 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="css/style.css?v=13">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 
 <body>
@@ -92,134 +92,111 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
             <div class="mapa">
 
-                <p class="mapa-hint">Selecione uma unidade ou parceiro para destacar a localização. Quando o endereço exato não é público, o mapa mostra apenas uma referência do município.</p>
+                <p class="mapa-hint">Os marcadores mostram Ribeirão Pires, Santo André e a referência municipal de Mauá. Use “Ver no mapa” para destacar cada local.</p>
                 <div id="mapaVitalize" role="region" aria-label="Mapa com os locais de atendimento e parceiros do Vitalize"></div>
 
             </div>
 
-            <div class="lista-clinicas" id="listaLocaisVitalize" aria-live="polite"></div>
+            <div class="lista-clinicas">
+
+                <div class="card-clinica">
+                    <span class="tag-local">Atendimento especializado · SUS</span>
+                    <h3>CEM + CAISM</h3>
+                    <p>Av. Humberto de Campos, 70 — Suíssa, Ribeirão Pires. Atendimento especializado e diagnóstico; acesso encaminhado pela UBS/USF.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="cem" href="https://www.google.com/maps/search/?api=1&amp;query=Centro+de+Especialidades+M%C3%A9dicas+Av.+Humberto+de+Campos+70+Ribeir%C3%A3o+Pires" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
+                        <a class="acao-clinica secundaria" href="https://www.ribeiraopires.sp.gov.br/portal/secretarias-paginas/16/enderecos-uteis/" target="_blank" rel="noopener noreferrer">Informações oficiais</a>
+                    </div>
+                </div>
+
+                <div class="card-clinica">
+                    <span class="tag-local">Oncologia · SUS</span>
+                    <h3>Hospital Estadual Mário Covas</h3>
+                    <p>Rua Dr. Henrique Calderazzo, 321 — Santo André. Atendimento oncológico regulado pelo SUS.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="hemc" href="https://www.google.com/maps/search/?api=1&amp;query=Hospital+Estadual+M%C3%A1rio+Covas+Santo+Andr%C3%A9" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
+                        <a class="acao-clinica secundaria" href="https://hemc.org.br/fale-conosco/" target="_blank" rel="noopener noreferrer">Contato oficial</a>
+                    </div>
+                </div>
+
+                <div class="card-clinica parceiro-local">
+                    <span class="tag-local">Parceiro Vitalize</span>
+                    <h3>Salão de Beleza Absoluto</h3>
+                    <p>Mauá – SP. O perfil informa a cidade, mas não publica o endereço completo.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="maua" href="https://www.google.com/maps/search/?api=1&amp;query=Sal%C3%A3o+de+Beleza+Absoluto+Mau%C3%A1+SP" target="_blank" rel="noopener noreferrer">Ver região no mapa</a>
+                        <a class="acao-clinica secundaria" href="https://www.instagram.com/salaodebelezaabsoluto/" target="_blank" rel="noopener noreferrer">Consultar o parceiro</a>
+                    </div>
+                </div>
+
+                <div class="card-clinica parceiro-local">
+                    <span class="tag-local">Parceiro de apoio</span>
+                    <h3>Instituto Romatt de Combate ao Câncer</h3>
+                    <p>Parceiro de Mauá. O marcador indica apenas a referência do município; o endereço do Instituto não foi confirmado.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="maua" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto+Romatt+Mau%C3%A1+SP" target="_blank" rel="noopener noreferrer">Ver região no mapa</a>
+                        <a class="acao-clinica secundaria" href="https://www.instagram.com/ircc.br/" target="_blank" rel="noopener noreferrer">Instagram do parceiro</a>
+                    </div>
+                </div>
+
+                <div class="card-clinica parceiro-local">
+                    <span class="tag-local">Parceiro de apoio</span>
+                    <h3>Doe Lenço, Doe Alegria</h3>
+                    <p>Projeto parceiro sem sede pública confirmada. Ações e pontos de coleta podem variar; consulte o perfil antes de se deslocar.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica secundaria" href="https://www.instagram.com/doelencodoealegria/" target="_blank" rel="noopener noreferrer">Instagram do parceiro</a>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
 
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
-        (() => {
-            const elementoMapa = document.getElementById('mapaVitalize');
-            const listaLocais = document.getElementById('listaLocaisVitalize');
-            const locaisMapa = {
-                cem: {
-                    nome: 'CEM + CAISM', tipo: 'Unidade pública de saúde',
-                    endereco: 'Avenida Humberto de Campos, 70 — Suíssa, Ribeirão Pires — SP, 09424-600',
-                    detalhe: 'Atendimento especializado. O acesso é feito por encaminhamento da UBS/USF.',
-                    consulta: 'Centro de Especialidades Médicas, Avenida Humberto de Campos 70, Ribeirão Pires, SP',
-                    coords: [-23.71196, -46.41790],
-                    fonte: 'https://www.ribeiraopires.sp.gov.br/portal/secretarias-paginas/16/enderecos-uteis/',
-                    fonteTexto: 'Endereço oficial'
-                },
-                hemc: {
-                    nome: 'Hospital Estadual Mário Covas', tipo: 'Hospital público · Oncologia',
-                    endereco: 'Rua Dr. Henrique Calderazzo, 321 — Santo André — SP, 09190-615',
-                    detalhe: 'Consulte o hospital para confirmar os serviços e o fluxo de atendimento.',
-                    consulta: 'Hospital Estadual Mário Covas, Rua Doutor Henrique Calderazzo 321, Santo André, SP',
-                    coords: [-23.67093, -46.53299],
-                    fonte: 'https://hemc.org.br/fale-conosco/',
-                    fonteTexto: 'Contato oficial'
-                },
-                maua: {
-                    nome: 'Referência municipal — Mauá', tipo: 'Parceiros Vitalize · localização aproximada',
-                    endereco: 'Mauá — SP. Este ponto indica somente o município, não o endereço de atendimento dos parceiros.',
-                    detalhe: 'Confirme o endereço e o local da ação diretamente com cada parceiro antes de se deslocar.',
-                    consulta: 'Mauá, SP, Brasil', coords: [-23.66667, -46.46111],
-                    fonte: null, fonteTexto: ''
-                }
-            };
-            const parceiros = [
-                { nome: 'Salão de Beleza Absoluto', categoria: 'Parceiro Vitalize', descricao: 'Endereço completo não confirmado. O marcador indica apenas Mauá.', instagram: 'https://www.instagram.com/salaodebelezaabsoluto/' },
-                { nome: 'Instituto Romatt de Combate ao Câncer', categoria: 'Parceiro de apoio', descricao: 'O marcador indica Mauá como referência municipal; confirme o local de atendimento antes de ir.', instagram: 'https://www.instagram.com/ircc.br/' },
-                { nome: 'Doe Lenço, Doe Alegria', categoria: 'Parceiro de apoio', descricao: 'Ações e pontos de coleta podem variar. O marcador é uma referência municipal, não uma sede fixa.', instagram: 'https://www.instagram.com/doelencodoealegria/' }
-            ];
-            const escapar = valor => String(valor ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-            const urlMapa = local => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(local.consulta)}`;
+        const mapaVitalize = L.map('mapaVitalize', { scrollWheelZoom: false });
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(mapaVitalize);
 
-            function cardLocal(localId, local, categoria, nome, descricao, fonte, fonteTexto) {
-                return `<article class="card-clinica ${categoria.includes('Parceiro') ? 'parceiro-local' : ''}"><span class="tag-local">${escapar(categoria)}</span><h3>${escapar(nome)}</h3><p class="endereco-local">${escapar(local.endereco)}</p><p class="descricao-local">${escapar(descricao)}</p><div class="acoes-clinica"><button class="acao-clinica" type="button" data-location-id="${escapar(localId)}">Destacar no mapa</button><a class="acao-clinica secundaria" href="${urlMapa(local)}" target="_blank" rel="noopener noreferrer">Abrir no Google Maps</a>${fonte ? `<a class="acao-clinica secundaria" href="${escapar(fonte)}" target="_blank" rel="noopener noreferrer">${escapar(fonteTexto)}</a>` : ''}</div></article>`;
+        const locaisVitalize = {
+            cem: {
+                coords: [-23.71196, -46.41790],
+                nome: 'CEM + CAISM',
+                endereco: 'Av. Humberto de Campos, 70 — Suíssa, Ribeirão Pires',
+                link: 'https://www.google.com/maps/search/?api=1&query=Centro+de+Especialidades+M%C3%A9dicas+Av.+Humberto+de+Campos+70+Ribeir%C3%A3o+Pires'
+            },
+            hemc: {
+                coords: [-23.67093, -46.53299],
+                nome: 'Hospital Estadual Mário Covas',
+                endereco: 'Rua Dr. Henrique Calderazzo, 321 — Santo André',
+                link: 'https://www.google.com/maps/search/?api=1&query=Hospital+Estadual+M%C3%A1rio+Covas+Santo+Andr%C3%A9'
+            },
+            maua: {
+                coords: [-23.66667, -46.46111],
+                nome: 'Mauá — parceiros do Vitalize',
+                endereco: 'Referência no município. O endereço exato do Salão Absoluto e do Instituto Romatt não foi confirmado; este marcador é aproximado.',
+                link: 'https://www.google.com/maps/search/?api=1&query=Mau%C3%A1+SP'
             }
+        };
 
-            function popupLocal(local) {
-                const caixa = document.createElement('div');
-                caixa.className = 'popup-local';
-                const etiqueta = document.createElement('span');
-                etiqueta.className = 'popup-local__tipo'; etiqueta.textContent = local.tipo;
-                const titulo = document.createElement('strong');
-                titulo.className = 'popup-local__titulo'; titulo.textContent = local.nome;
-                const endereco = document.createElement('p');
-                endereco.className = 'popup-local__endereco'; endereco.textContent = local.endereco;
-                const detalhe = document.createElement('p');
-                detalhe.className = 'popup-local__detalhe'; detalhe.textContent = local.detalhe;
-                const link = document.createElement('a');
-                link.href = urlMapa(local); link.target = '_blank'; link.rel = 'noopener noreferrer';
-                link.className = 'popup-local__link'; link.textContent = 'Abrir no Google Maps';
-                caixa.append(etiqueta, titulo, endereco, detalhe);
-                if (local.fonte) {
-                    const fonte = document.createElement('a');
-                    fonte.href = local.fonte; fonte.target = '_blank'; fonte.rel = 'noopener noreferrer';
-                    fonte.className = 'popup-local__fonte'; fonte.textContent = local.fonteTexto;
-                    caixa.append(fonte);
-                }
-                caixa.append(link);
-                if (localIdMaua(local)) {
-                    const lista = document.createElement('ul'); lista.className = 'popup-local__parceiros';
-                    parceiros.forEach(parceiro => {
-                        const item = document.createElement('li'); item.textContent = parceiro.nome;
-                        lista.append(item);
-                    });
-                    caixa.append(lista);
-                }
-                return caixa;
-            }
+        Object.entries(locaisVitalize).forEach(([id, local]) => {
+            local.marker = L.marker(local.coords).addTo(mapaVitalize);
+            local.marker.bindPopup(`<strong>${local.nome}</strong><br>${local.endereco}<br><a href="${local.link}" target="_blank" rel="noopener noreferrer">Abrir no Google Maps</a>`);
+        });
+        mapaVitalize.fitBounds(Object.values(locaisVitalize).map(local => local.coords), { padding: [28, 28] });
 
-            function localIdMaua(local) { return local === locaisMapa.maua; }
-            function mostrarErroMapa(mensagem) {
-                elementoMapa.innerHTML = `<p class="mapa-erro" role="status">${escapar(mensagem)}</p>`;
-            }
-
-            listaLocais.innerHTML = [
-                cardLocal('cem', locaisMapa.cem, locaisMapa.cem.tipo, locaisMapa.cem.nome, locaisMapa.cem.detalhe, locaisMapa.cem.fonte, locaisMapa.cem.fonteTexto),
-                cardLocal('hemc', locaisMapa.hemc, locaisMapa.hemc.tipo, locaisMapa.hemc.nome, locaisMapa.hemc.detalhe, locaisMapa.hemc.fonte, locaisMapa.hemc.fonteTexto),
-                ...parceiros.map(parceiro => cardLocal('maua', locaisMapa.maua, parceiro.categoria, parceiro.nome, parceiro.descricao, parceiro.instagram, 'Instagram do parceiro'))
-            ].join('');
-
-            if (typeof L === 'undefined') {
-                mostrarErroMapa('O mapa não carregou. Use os links “Abrir no Google Maps” ao lado para consultar as localizações.');
-                return;
-            }
-
-            try {
-                const mapaVitalize = L.map(elementoMapa, { scrollWheelZoom: false });
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                }).addTo(mapaVitalize);
-                Object.values(locaisMapa).forEach(local => {
-                    local.marker = L.marker(local.coords).addTo(mapaVitalize).bindPopup(popupLocal(local), { maxWidth: 320 });
-                });
-                mapaVitalize.fitBounds(Object.values(locaisMapa).map(local => local.coords), { padding: [28, 28] });
-                requestAnimationFrame(() => requestAnimationFrame(() => mapaVitalize.invalidateSize()));
-                listaLocais.addEventListener('click', event => {
-                    const botao = event.target.closest('[data-location-id]');
-                    if (!botao) return;
-                    const local = locaisMapa[botao.dataset.locationId];
-                    if (!local) return;
-                    mapaVitalize.setView(local.coords, botao.dataset.locationId === 'maua' ? 13 : 16);
-                    local.marker.openPopup();
-                });
-            } catch (erro) {
-                mostrarErroMapa('Não foi possível inicializar o mapa. Os endereços e links do Google Maps continuam disponíveis ao lado.');
-                console.error('Falha ao iniciar o mapa Vitalize:', erro);
-            }
-        })();
+        document.querySelectorAll('.acao-clinica[data-location-id]').forEach(link => {
+            link.addEventListener('click', () => {
+                const local = locaisVitalize[link.dataset.locationId];
+                if (!local) return;
+                mapaVitalize.setView(local.coords, 15);
+                local.marker.openPopup();
+            });
+        });
     </script>
 
 
