@@ -81,67 +81,47 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
     <section class="parceiras">
 
-        <h2 class="h2titulo">Cabeleireiras Parceiras</h2>
+        <h2 class="h2titulo">Parceiros do Vitalize</h2>
 
         <p class="subtitulo">
-            Conheça profissionais parceiras que ajudam no processo de corte e doação.
+            Conheça quem apoia o projeto e visite os perfis dos nossos parceiros.
         </p>
 
         <div class="cards-parceiras">
 
             <div class="card-salao">
-                <img src="img/salao.webp">
+                <img src="img/parceiro-ircc.jpg" alt="Foto de perfil do Instituto Romatt de Combate ao Câncer">
 
                 <div class="info-salao">
-                    <h3>Studio Ana Hair</h3>
-
-                    <span> Ribeirão Pires - SP</span>
-
-                    <div class="tag">Parceira solidária</div>
-
-                    <button>Entrar em contato</button>
+                    <h3>Instituto Romatt de Combate ao Câncer</h3>
+                    <span>@ircc.br</span>
+                    <p>Instituto com projetos de apoio e combate ao câncer.</p>
+                    <div class="tag">Instituto parceiro</div>
+                    <a class="botao-parceiro" href="https://www.instagram.com/ircc.br/" target="_blank" rel="noopener noreferrer">Ver no Instagram</a>
                 </div>
             </div>
 
             <div class="card-salao">
-                <img src="img/salao2.jpg">
+                <img src="img/parceiro-doe-lenco.jpg" alt="Foto de perfil do projeto Doe Lenço, Doe Alegria">
 
                 <div class="info-salao">
-                    <h3>Espaço Bella Hair</h3>
-
-                    <span> Santo André - SP</span>
-
-                    <div class="tag">Parceira solidária</div>
-
-                    <button>Entrar em contato</button>
+                    <h3>Doe Lenço, Doe Alegria</h3>
+                    <span>@doelencodoealegria</span>
+                    <p>Projeto de mobilização e apoio na luta contra o câncer.</p>
+                    <div class="tag">Projeto parceiro</div>
+                    <a class="botao-parceiro" href="https://www.instagram.com/doelencodoealegria/" target="_blank" rel="noopener noreferrer">Ver no Instagram</a>
                 </div>
             </div>
 
             <div class="card-salao">
-                <img src="img/salao3.jpg">
+                <img src="img/parceiro-absoluto.jpg" alt="Foto de perfil do Salão de Beleza Absoluto">
 
                 <div class="info-salao">
-                    <h3>Espaço Sarah Hair</h3>
-
-                    <span> Mauá- SP</span>
-
-                    <div class="tag">Parceira solidária</div>
-
-                    <button>Entrar em contato</button>
-                </div>
-            </div>
-
-            <div class="card-salao">
-                <img src="img/salao4.jpg">
-
-                <div class="info-salao">
-                    <h3>Espaço Carla Hair</h3>
-
-                    <span> Ribeirão Pires - SP</span>
-
-                    <div class="tag">Parceira solidária</div>
-
-                    <button>Entrar em contato</button>
+                    <h3>Salão de Beleza Absoluto</h3>
+                    <span>@salaodebelezaabsoluto</span>
+                    <p>Cuidado, beleza e autoestima, com atendimento com hora marcada.</p>
+                    <div class="tag">Salão parceiro</div>
+                    <a class="botao-parceiro" href="https://www.instagram.com/salaodebelezaabsoluto/" target="_blank" rel="noopener noreferrer">Ver no Instagram</a>
                 </div>
             </div>
 
@@ -163,3 +143,4 @@ require_once __DIR__ . '/iniciar_sessao.php';
 </body>
 
 </html>
+

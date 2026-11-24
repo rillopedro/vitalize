@@ -18,6 +18,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link rel="icon" type="image/png" href="img/logov.png">
 
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 
 <body>
@@ -84,37 +85,67 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <section class="clinicas">
 
         <h2 class="h2titulo">
-            Atendimento <span>perto de você</span>
+            Rede de atendimento <span>e parceiros</span>
         </h2>
 
         <div class="conteudo-clinicas">
 
             <div class="mapa">
 
-                <iframe src="https://maps.google.com/maps?q=ribeirao%20pires&t=&z=13&ie=UTF8&iwloc=&output=embed">
-                </iframe>
+                <p class="mapa-hint">Os marcadores mostram Ribeirão Pires, Santo André e a referência municipal de Mauá. Use “Ver no mapa” para destacar cada local.</p>
+                <div id="mapaVitalize" role="region" aria-label="Mapa com os locais de atendimento e parceiros do Vitalize"></div>
 
             </div>
 
             <div class="lista-clinicas">
 
                 <div class="card-clinica">
-                    <h3>Instituto Vida Plena</h3>
-                    <button>Ver rota</button>
+                    <span class="tag-local">Atendimento especializado · SUS</span>
+                    <h3>CEM + CAISM</h3>
+                    <p>Av. Humberto de Campos, 70 — Suíssa, Ribeirão Pires. Atendimento especializado e diagnóstico; acesso encaminhado pela UBS/USF.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="cem" href="https://www.google.com/maps/search/?api=1&amp;query=Centro+de+Especialidades+M%C3%A9dicas+Av.+Humberto+de+Campos+70+Ribeir%C3%A3o+Pires" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
+                        <a class="acao-clinica secundaria" href="https://www.ribeiraopires.sp.gov.br/portal/secretarias-paginas/16/enderecos-uteis/" target="_blank" rel="noopener noreferrer">Informações oficiais</a>
+                    </div>
                 </div>
 
                 <div class="card-clinica">
-                    <h3>Clínica Renascer</h3>
-                    <button>Ver rota</button>
+                    <span class="tag-local">Oncologia · SUS</span>
+                    <h3>Hospital Estadual Mário Covas</h3>
+                    <p>Rua Dr. Henrique Calderazzo, 321 — Santo André. Atendimento oncológico regulado pelo SUS.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="hemc" href="https://www.google.com/maps/search/?api=1&amp;query=Hospital+Estadual+M%C3%A1rio+Covas+Santo+Andr%C3%A9" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
+                        <a class="acao-clinica secundaria" href="https://hemc.org.br/fale-conosco/" target="_blank" rel="noopener noreferrer">Contato oficial</a>
+                    </div>
                 </div>
 
-                <div class="card-clinica">
-                    <h3>OncoCare</h3>
-                    <button>Ver rota</button>
+                <div class="card-clinica parceiro-local">
+                    <span class="tag-local">Parceiro Vitalize</span>
+                    <h3>Salão de Beleza Absoluto</h3>
+                    <p>Mauá – SP. O perfil informa a cidade, mas não publica o endereço completo.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="maua" href="https://www.google.com/maps/search/?api=1&amp;query=Sal%C3%A3o+de+Beleza+Absoluto+Mau%C3%A1+SP" target="_blank" rel="noopener noreferrer">Ver região no mapa</a>
+                        <a class="acao-clinica secundaria" href="https://www.instagram.com/salaodebelezaabsoluto/" target="_blank" rel="noopener noreferrer">Consultar o parceiro</a>
+                    </div>
                 </div>
-                <div class="card-clinica">
-                    <h3>Clínica Esperança</h3>
-                    <button>Ver rota</button>
+
+                <div class="card-clinica parceiro-local">
+                    <span class="tag-local">Parceiro de apoio</span>
+                    <h3>Instituto Romatt de Combate ao Câncer</h3>
+                    <p>Parceiro de Mauá. O marcador indica apenas a referência do município; o endereço do Instituto não foi confirmado.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="maua" href="https://www.google.com/maps/search/?api=1&amp;query=Instituto+Romatt+Mau%C3%A1+SP" target="_blank" rel="noopener noreferrer">Ver região no mapa</a>
+                        <a class="acao-clinica secundaria" href="https://www.instagram.com/ircc.br/" target="_blank" rel="noopener noreferrer">Instagram do parceiro</a>
+                    </div>
+                </div>
+
+                <div class="card-clinica parceiro-local">
+                    <span class="tag-local">Parceiro de apoio</span>
+                    <h3>Doe Lenço, Doe Alegria</h3>
+                    <p>Projeto parceiro sem sede pública confirmada. Ações e pontos de coleta podem variar; consulte o perfil antes de se deslocar.</p>
+                    <div class="acoes-clinica">
+                        <a class="acao-clinica secundaria" href="https://www.instagram.com/doelencodoealegria/" target="_blank" rel="noopener noreferrer">Instagram do parceiro</a>
+                    </div>
                 </div>
 
             </div>
@@ -122,6 +153,51 @@ require_once __DIR__ . '/iniciar_sessao.php';
         </div>
 
     </section>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        const mapaVitalize = L.map('mapaVitalize', { scrollWheelZoom: false });
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(mapaVitalize);
+
+        const locaisVitalize = {
+            cem: {
+                coords: [-23.71196, -46.41790],
+                nome: 'CEM + CAISM',
+                endereco: 'Av. Humberto de Campos, 70 — Suíssa, Ribeirão Pires',
+                link: 'https://www.google.com/maps/search/?api=1&query=Centro+de+Especialidades+M%C3%A9dicas+Av.+Humberto+de+Campos+70+Ribeir%C3%A3o+Pires'
+            },
+            hemc: {
+                coords: [-23.67093, -46.53299],
+                nome: 'Hospital Estadual Mário Covas',
+                endereco: 'Rua Dr. Henrique Calderazzo, 321 — Santo André',
+                link: 'https://www.google.com/maps/search/?api=1&query=Hospital+Estadual+M%C3%A1rio+Covas+Santo+Andr%C3%A9'
+            },
+            maua: {
+                coords: [-23.66667, -46.46111],
+                nome: 'Mauá — parceiros do Vitalize',
+                endereco: 'Referência no município. O endereço exato do Salão Absoluto e do Instituto Romatt não foi confirmado; este marcador é aproximado.',
+                link: 'https://www.google.com/maps/search/?api=1&query=Mau%C3%A1+SP'
+            }
+        };
+
+        Object.entries(locaisVitalize).forEach(([id, local]) => {
+            local.marker = L.marker(local.coords).addTo(mapaVitalize);
+            local.marker.bindPopup(`<strong>${local.nome}</strong><br>${local.endereco}<br><a href="${local.link}" target="_blank" rel="noopener noreferrer">Abrir no Google Maps</a>`);
+        });
+        mapaVitalize.fitBounds(Object.values(locaisVitalize).map(local => local.coords), { padding: [28, 28] });
+
+        document.querySelectorAll('.acao-clinica[data-location-id]').forEach(link => {
+            link.addEventListener('click', () => {
+                const local = locaisVitalize[link.dataset.locationId];
+                if (!local) return;
+                mapaVitalize.setView(local.coords, 15);
+                local.marker.openPopup();
+            });
+        });
+    </script>
 
 
 
@@ -132,93 +208,30 @@ require_once __DIR__ . '/iniciar_sessao.php';
         <h2 class="h2titulo">Grupos de apoio</h2>
 
 
-        <div class="cardsgrupos">
+        <div class="cardsgrupos" id="gruposDestaque" aria-live="polite">
+
+            <p class="estado-vazio">Carregando grupos de apoio…</p>
 
 
 
-            <div class="cardgrupos">
-
-                <img src="img/apoio1.webp" alt="">
-
-                <div class="conteudocards">
-
-                    <span class="taggrupo">Mulheres em tratamento</span>
-
-                    <h3>Florescer Juntos</h3>
-
-                    <div class="infosgrupo">
-                        <span>25/06/2026</span>
-                        <span>19h00</span>
-                    </div>
-
-                    <p class="focogrupo">
-                        Mulheres com câncer de mama.
-                    </p>
-
-
-                </div>
-
-            </div>
-
-
-
-            <div class="cardgrupos">
-
-                <img src="img/apoio2.jpg" alt="">
-
-                <div class="conteudocards">
-
-                    <span class="taggrupo">Pacientes em tratamento</span>
-
-                    <h3>Asas da Esperança</h3>
-
-                    <div class="infosgrupo">
-                        <span>02/07/2026</span>
-                        <span>20h00</span>
-                    </div>
-
-                    <p class="focogrupo">
-                        Pacientes oncológicos em geral.
-                    </p>
-
-
-                </div>
-
-            </div>
-
-
-
-            <div class="cardgrupos">
-
-                <img src="img/apoio3.jpg" alt="">
-
-                <div class="conteudocards">
-
-                    <span class="taggrupo">18 a 25 anos</span>
-
-                    <h3>Jovens em Movimento</h3>
-
-                    <div class="infosgrupo">
-                        <span>10/07/2026</span>
-                        <span>18h00</span>
-                    </div>
-
-                    <p class="focogrupo">
-                        Jovens em tratamento oncológico.
-                    </p>
-
-
-
-                </div>
-
-            </div>
-
-        </div>
         <div style="align-items: center;" class="botoescards">
             <a href="conteudo.php?pagina=sobregrupos" class="adecorado">Saiba Mais</a>
         </div>
 
     </section>
+
+    <script src="api/cliente.js?v=20261124-1"></script>
+    <script>
+        (async () => {
+            const alvo = document.getElementById('gruposDestaque');
+            const seguro = valor => String(valor ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+            try {
+                const resposta = await VitalizeAPI.requisicao('/api/groups');
+                const todos = [...(resposta.grupos || []).map(g => ({...g, demo:false})), ...(resposta.grupos_demo || []).map(g => ({...g, demo:true}))].sort(() => Math.random() - 0.5).slice(0, 3);
+                alvo.innerHTML = `${todos.some(g => g.demo) ? '<div class="aviso-demo" role="note"><strong>Modelos fictícios para apresentação.</strong> Registros aleatórios cadastrados no banco; atividades demonstrativas.</div>' : ''}${todos.map(g => `<article class="cardgrupos"><img src="${seguro(g.imagem || 'img/apoio1.webp')}" alt="Imagem ilustrativa de ${seguro(g.nome_grupo)}"><div class="conteudocards"><span class="taggrupo">${seguro(g.foco || 'Grupo de apoio')}</span><h3>${seguro(g.nome_grupo)}</h3><div class="infosgrupo"><span>${g.data_encontro ? new Date(`${g.data_encontro}T12:00:00`).toLocaleDateString('pt-BR') : 'Data a definir'}</span><span>${seguro((g.horario || '').slice(0,5) || 'Horário a definir')}</span></div><p class="focogrupo">${seguro(g.mais_info || '')}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${seguro(g.responsavel || 'Não informado')}</li><li><strong>Contato:</strong> ${seguro(g.telefone_grupo || 'Não informado')}</li></ul><a class="infogrupos link-ficha-demo" href="conteudo.php?pagina=grupos">Ver ficha completa</a></div></article>`).join('') || '<p class="estado-vazio">Nenhum grupo publicado no momento.</p>'}`;
+            } catch (e) { alvo.innerHTML = '<p class="estado-vazio">Não foi possível carregar grupos de apoio.</p>'; }
+        })();
+    </script>
 
     <section class="noticias-home">
 
@@ -291,3 +304,4 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
 
 </html>
+
