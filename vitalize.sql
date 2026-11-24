@@ -77,6 +77,9 @@ CREATE TABLE `grupos` (
   `contato` varchar(150) DEFAULT NULL,
   `imagem` varchar(255) DEFAULT NULL,
   `status_moderacao` enum('pendente','aprovado','recusado') NOT NULL DEFAULT 'pendente',
+  `is_demo` tinyint(1) NOT NULL DEFAULT 0,
+  `codigo_demo` varchar(40) DEFAULT NULL,
+  UNIQUE KEY `grupos_codigo_demo` (`codigo_demo`),
   KEY `grupos_status_moderacao` (`status_moderacao`,`id_grupo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -95,6 +98,25 @@ CREATE TABLE `relatos` (
   `anonimo` tinyint(1) NOT NULL DEFAULT 0,
   `status_moderacao` enum('pendente','aprovado','recusado') NOT NULL DEFAULT 'pendente',
   KEY `relatos_status_data` (`status_moderacao`,`data_publicacao`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Registros fictícios de demonstração, separados dos relatos de usuários
+-- --------------------------------------------------------
+CREATE TABLE `relatos_demo` (
+  `id_demo` int(11) NOT NULL AUTO_INCREMENT,
+  `codigo_demo` varchar(40) NOT NULL,
+  `nome_autor` varchar(100) NOT NULL,
+  `perfil` varchar(120) NOT NULL,
+  `cidade` varchar(120) NOT NULL,
+  `data_publicacao` date NOT NULL,
+  `tema` varchar(100) NOT NULL,
+  `titulo` varchar(150) NOT NULL,
+  `conteudo` text NOT NULL,
+  `ativo` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id_demo`),
+  UNIQUE KEY `relatos_demo_codigo` (`codigo_demo`),
+  KEY `relatos_demo_ativo` (`ativo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

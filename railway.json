@@ -1,5 +1,11 @@
 {
+  "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "builder": "DOCKERFILE"
+  },
+  "deploy": {
+    "preDeployCommand": ["php", "migrations/20261124_demo_conteudo.php"],
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 120
   }
 }

@@ -97,7 +97,13 @@ Consulte [`api/README.md`](api/README.md) para a lista de rotas, métodos, auten
 docker build -t vitalize .
 ```
 
-Para executar a imagem, forneça as variáveis de banco e publique a porta 80 do contêiner. O banco é externo à imagem; o Dockerfile não cria nem importa o MySQL. Em Docker, `127.0.0.1` aponta para o próprio contêiner: use um host de banco alcançável por ele.
+Para executar a imagem, forneça as variáveis de banco e publique a porta 8080 do contêiner. O servidor Apache usa a variável `PORT` fornecida pela plataforma e mantém 8080 como padrão local. O banco é externo à imagem; o Dockerfile não cria nem importa o MySQL. Em Docker, `127.0.0.1` aponta para o próprio contêiner: use um host de banco alcançável por ele.
+
+### Railway
+
+O serviço usa o `Dockerfile` da raiz, executa `migrations/20261124_demo_conteudo.php` como pre-deploy idempotente e verifica a raiz do site após iniciar. Crie um serviço MySQL no mesmo projeto/ambiente e disponibilize ao serviço web `MYSQLHOST`, `MYSQLPORT`, `MYSQLDATABASE`, `MYSQLUSER` e `MYSQLPASSWORD` (ou `MYSQL_URL`/`DATABASE_URL`). Não grave credenciais no repositório. O pre-deploy cria a tabela de exemplos, marca os grupos demonstrativos e atualiza os seis grupos e seis relatos fictícios sem duplicá-los.
+
+Se usuários enviarem imagens, anexe um Railway Volume ao serviço web em `/var/www/html/img/uploads` para persistir os arquivos entre implantações. Sem volume, uploads no filesystem do contêiner são efêmeros. Configurar o volume e as variáveis de conexão no painel Railway ainda é necessário; este repositório está preparado, mas não foi implantado.
 
 ## Equipe
 

@@ -84,8 +84,11 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 <h3 id="modalFoco">Foco: ...</h3>
 
                 <div class="modal-dados">
+                    <span id="modalData">Frequência</span>
                     <span id="modalHorario">Horário</span>
-                    <span id="modalData">Data</span>
+                    <span id="modalModalidade">Formato</span>
+                    <span id="modalLocal">Local</span>
+                    <span id="modalResponsavel">Responsável</span>
                 </div>
 
                 <p class="modal-texto" id="modalDescricao">
@@ -94,7 +97,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
                 <div id="modalContato">
                     <p><strong>Link:</strong> <a href="#" target="_blank" rel="noopener noreferrer" id="modalLink"></a></p>
-                    <p><strong>Telefone:</strong> <span id="modalTelefone"></span></p>
+                    <p><strong id="labelContatoGrupo">Contato:</strong> <span id="modalTelefone"></span></p>
                 </div>
 
                 <h4>
@@ -103,7 +106,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
 
                 <div class="inscricao-grupo">
-                    <p>
+                    <p id="textoInscricaoGrupo">
                         Quer participar? Enviaremos o link para o e-mail da sua conta.
                     </p>
 
@@ -126,6 +129,9 @@ require_once __DIR__ . '/iniciar_sessao.php';
         const modalFoco = document.getElementById("modalFoco");
         const modalHorario = document.getElementById("modalHorario");
         const modalData = document.getElementById("modalData");
+        const modalModalidade = document.getElementById("modalModalidade");
+        const modalLocal = document.getElementById("modalLocal");
+        const modalResponsavel = document.getElementById("modalResponsavel");
         const modalDescricao = document.getElementById("modalDescricao");
         const modalLink = document.getElementById("modalLink");
         const modalTelefone = document.getElementById("modalTelefone");
@@ -142,6 +148,8 @@ require_once __DIR__ . '/iniciar_sessao.php';
         const mensagemInscricao = document.getElementById(
             "mensagemInscricaoGrupo"
         );
+        const textoInscricaoGrupo = document.getElementById("textoInscricaoGrupo");
+        const labelContatoGrupo = document.getElementById("labelContatoGrupo");
 
         const toggle = document.querySelector(".menu-toggle");
         const menu = document.querySelector(".menu");
@@ -149,6 +157,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
         let linkGrupoAtual = "#";
         let nomeGrupoAtual = "Grupo de apoio";
         let idGrupoAtual = null;
+        let grupoAtualDemonstracao = false;
 
         function escaparHtml(valor) {
             return String(valor ?? '').replace(/[&<>"']/g, caractere => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caractere]));
@@ -162,9 +171,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
             const lista = document.getElementById('listaGrupos');
             try {
                 const resposta = await VitalizeAPI.requisicao('/api/groups');
-                const grupos = resposta.grupos || [];
-                if (!grupos.length) { lista.innerHTML = '<p style="width:100%; text-align:center; color:#666;">Nenhum grupo cadastrado ainda.</p>'; return; }
-                lista.innerHTML = grupos.map(grupo => {
+                const renderizar = (grupo, ehDemo) => {
                     const nome = escaparHtml(grupo.nome_grupo);
                     const foco = escaparHtml(grupo.foco || 'Grupo de apoio');
                     const data = dataGrupo(grupo.data_encontro);
@@ -172,10 +179,16 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     const info = escaparHtml(grupo.mais_info || 'Grupo de apoio para pessoas em tratamento.');
                     const link = escaparHtml(grupo.link || '#');
                     const telefone = escaparHtml(grupo.telefone_grupo || 'Não informado');
+                    const responsavel = escaparHtml(grupo.responsavel || 'Não informado');
                     const imagem = escaparHtml(grupo.imagem || 'img/apoio1.webp');
-                    return `<div class="cardgrupos"><img src="${imagem}" alt="${nome}"><div class="conteudocards"><span class="taggrupo">${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><div class="botoescards"><button class="infogrupos" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></div>`;
-                }).join('');
-            } catch (erro) { lista.innerHTML = `<p role="alert">${escaparHtml(erro.message || 'Não foi possível carregar os grupos.')}</p>`; }
+                    return `<article class="cardgrupos"><img src="${imagem}" alt="Imagem do grupo ${nome}"><div class="conteudocards"><span class="taggrupo">${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${responsavel}</li><li><strong>Contato:</strong> ${telefone}</li></ul><div class="botoescards"><button class="infogrupos" data-demo="${ehDemo ? '1' : '0'}" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-modalidade="Detalhes na ficha" data-local="Consulte os detalhes antes de participar" data-responsavel="${responsavel}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></article>`;
+                };
+                const reais = (resposta.grupos || []).map(grupo => renderizar(grupo, false));
+                const demos = (resposta.grupos_demo || []).map(grupo => renderizar(grupo, true));
+                lista.innerHTML = `${reais.join('')}${demos.length ? `<div class="aviso-demo" role="note"><strong>Modelos fictícios para demonstração</strong><br>Os exemplos vêm do banco de dados e são selecionados aleatoriamente.</div>${demos.join('')}` : ''}${!reais.length && !demos.length ? '<p class="estado-vazio">Nenhum grupo publicado no momento.</p>' : ''}`;
+            } catch (erro) {
+                lista.innerHTML = `<p class="estado-vazio" role="alert">Não foi possível carregar grupos: ${escaparHtml(erro.message || 'erro de conexão')}.</p>`;
+            }
         }
         carregarGrupos();
 
@@ -206,7 +219,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
             );
 
             botaoInscricao.innerHTML = semLink
-                ? '<i class="fa-solid fa-link-slash"></i> Link indisponível'
+                ? `<i class="fa-solid fa-link-slash"></i> ${grupoAtualDemonstracao ? 'Inscrições fictícias desativadas' : 'Link indisponível'}`
                 : '<i class="fa-regular fa-envelope"></i> Receber link por e-mail';
         }
 
@@ -229,6 +242,10 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     botao.getAttribute("data-horario") ||
                     "Horário a definir";
 
+                const modalidade = botao.getAttribute("data-modalidade") || "Não informada";
+                const local = botao.getAttribute("data-local") || "Não informado";
+                const responsavel = botao.getAttribute("data-responsavel") || "Não informado";
+
                 const info =
                     botao.getAttribute("data-info") ||
                     "Descrição não disponível.";
@@ -248,11 +265,19 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 linkGrupoAtual = link;
                 nomeGrupoAtual = nome;
                 idGrupoAtual = Number(botao.dataset.idGrupo);
+                grupoAtualDemonstracao = botao.dataset.demo === "1";
+                labelContatoGrupo.textContent = grupoAtualDemonstracao ? "Contato fictício:" : "Contato:";
+                textoInscricaoGrupo.textContent = grupoAtualDemonstracao
+                    ? "Esta ficha é demonstrativa; as inscrições não estão disponíveis."
+                    : "Quer participar? Enviaremos o link para o e-mail da sua conta.";
 
                 modalNome.textContent = nome;
                 modalFoco.textContent = "Foco: " + foco;
-                modalData.textContent = data;
+                modalData.textContent = "Frequência: " + data;
                 modalHorario.textContent = horario;
+                modalModalidade.textContent = "Formato: " + modalidade;
+                modalLocal.textContent = "Local: " + local;
+                modalResponsavel.textContent = "Responsável: " + responsavel;
                 modalDescricao.textContent = info;
                 modalTelefone.textContent = telefone;
 
