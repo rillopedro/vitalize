@@ -1874,6 +1874,22 @@ textarea {
 
 }
 
+/* Garante a hierarquia dos cartões mesmo em viewports estreitos */
+.clinicas .lista-clinicas { display: flex !important; flex-direction: column !important; align-items: stretch !important; }
+.clinicas .card-clinica { display: flex !important; flex-direction: column !important; align-items: stretch !important; width: 100%; min-width: 0; text-align: left; }
+.clinicas .tag-local { align-self: flex-start; width: fit-content; }
+.clinicas .card-clinica h3,
+.clinicas .card-clinica p,
+.clinicas .card-clinica .acoes-clinica { flex: 0 0 auto; width: 100%; min-width: 0; }
+@media (max-width: 900px) {
+    .clinicas .conteudo-clinicas { flex-direction: column; }
+    .clinicas .mapa, .clinicas .lista-clinicas { width: 100%; }
+}
+@media (max-width: 768px) {
+    .clinicas .card-clinica { align-items: stretch; text-align: left; }
+    .clinicas .acoes-clinica { flex-direction: column; align-items: stretch; }
+}
+
 
 .ateste {
     display: flex;
