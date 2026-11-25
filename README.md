@@ -116,3 +116,4 @@ Projeto acadêmico em desenvolvimento. A disponibilidade da demonstração depen
 ## Contato
 
 [Pedro Henrique Rillo — GitHub](https://github.com/rillopedro) · [LinkedIn](https://www.linkedin.com/in/pedro-henrique-rillo-de-carvalho-24a5b7258/)
+

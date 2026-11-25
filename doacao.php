@@ -128,7 +128,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
         </div>
 
     </section>
-    
+
       <?php include 'footer.php'; ?>
 
     <script>
@@ -143,3 +143,4 @@ require_once __DIR__ . '/iniciar_sessao.php';
 </body>
 
 </html>
+
