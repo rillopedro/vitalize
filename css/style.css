@@ -1538,7 +1538,11 @@ textarea {
 .card-clinica { width: 100%; }
 .parceiro-local { border: 1px solid #d8c9ed; }
 .aviso-demo { flex: 1 0 100%; padding: 16px 20px; border-left: 4px solid #7c5aa6; border-radius: 10px; background: #f5f0fa; color: #443553; line-height: 1.5; }
-.cardsgrupos > .aviso-demo { grid-column: 1 / -1; }
+#listaGrupos { display: block; width: 100%; margin: 0 auto; }
+#listaGrupos > .secao-grupos { width: min(90%, 1200px); margin: 0 auto 52px; }
+.titulo-secao-grupos { margin: 0 0 20px; color: #34484a; font-size: clamp(1.35rem, 2.4vw, 1.8rem); text-align: left; }
+.grade-grupos { width: 100%; max-width: none; margin: 0 auto; align-items: stretch; grid-auto-rows: 1fr; }
+#listaGrupos .aviso-demo { display: block; width: 100%; margin: 0 0 22px; box-sizing: border-box; }
 .cardsgrupos { align-items: stretch; grid-auto-rows: 1fr; }
 .cardgrupos { display: flex; flex-direction: column; height: 100%; margin-bottom: 0; border: 1px solid #eceaf0; }
 .cardgrupos img { flex: 0 0 220px; }
