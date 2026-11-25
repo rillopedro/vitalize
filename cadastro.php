@@ -17,7 +17,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"><!--icone voltar-->
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="css/style.css?v=20261124-layout-3">
+    <link rel="stylesheet" href="css/style.css?v=20261125-css-fix-1">
 
 </head>
 

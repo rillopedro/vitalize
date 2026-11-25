@@ -30,7 +30,7 @@ header('Content-Type: text/html; charset=utf-8');
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Moderação | Vitalize</title>
-    <link rel="stylesheet" href="css/style.css?v=20261124-layout-3">
+    <link rel="stylesheet" href="css/style.css?v=20261125-css-fix-1">
     <link rel="icon" href="img/logov.png">
 </head>
 <body>

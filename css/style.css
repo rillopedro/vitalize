@@ -1554,8 +1554,8 @@ textarea {
 .dados-grupo-meta li { min-width: 0; }
 .dados-grupo-meta strong { color: #34484a; }
 .cardgrupos .botoescards { width: 100%; margin-top: auto; padding-top: 2px; }
-.cardgrupos .infogrupos {
-.cardgrupos .infogrupos:hover {
+.cardgrupos .infogrupos { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; padding: 11px 16px; border: 0; border-radius: 12px; background: #e9e3f3; color: #55427c; font-size: .94rem; font-weight: 650; line-height: 1.35; text-align: center; text-decoration: none; cursor: pointer; }
+.cardgrupos .infogrupos:hover { background: #ded4ed; }
 @media (max-width: 768px) {
     .cardgrupos img { flex-basis: 200px; }
     .conteudocards { padding: 20px; }
