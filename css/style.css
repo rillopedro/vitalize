@@ -5322,3 +5322,9 @@ body.modal-aberto {
 .clinicas .card-clinica > * { max-width:100%; overflow-wrap:anywhere; }
 .clinicas .card-clinica .acoes-clinica { width:100%; }
 @media (max-width:1024px) { .clinicas .conteudo-clinicas { grid-template-columns:minmax(0,1fr); } .clinicas .lista-clinicas { max-height:none; overflow:visible; } }
+
+
+/* Ação de exclusão de conteúdo publicado no painel administrativo. */
+.botao-apagar-adm { background:#fff0f0; color:#a21d2b; border:1px solid #f0c5ca; }
+.botao-apagar-adm:hover { background:#a21d2b; color:#fff; }
+.abas-situacao-adm { margin-bottom:18px; }
