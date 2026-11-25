@@ -1522,7 +1522,7 @@ textarea {
     margin: 0;
 }
 
-.tag-local, .selo-demo {
+.tag-local {
     display: inline-flex;
     align-items: center;
     width: fit-content;
@@ -1537,12 +1537,10 @@ textarea {
 .lista-clinicas { width: min(390px, 100%); max-height: 560px; overflow-y: auto; padding: 4px; }
 .card-clinica { width: 100%; }
 .parceiro-local { border: 1px solid #d8c9ed; }
-.aviso-demo { flex: 1 0 100%; padding: 16px 20px; border-left: 4px solid #7c5aa6; border-radius: 10px; background: #f5f0fa; color: #443553; line-height: 1.5; }
 #listaGrupos { display: block; width: 100%; margin: 0 auto; }
 #listaGrupos > .secao-grupos { width: min(90%, 1200px); margin: 0 auto 52px; }
 .titulo-secao-grupos { margin: 0 0 20px; color: #34484a; font-size: clamp(1.35rem, 2.4vw, 1.8rem); text-align: left; }
 .grade-grupos { width: 100%; max-width: none; margin: 0 auto; align-items: stretch; grid-auto-rows: 1fr; }
-#listaGrupos .aviso-demo { display: block; width: 100%; margin: 0 0 22px; box-sizing: border-box; }
 .cardsgrupos { align-items: stretch; grid-auto-rows: 1fr; }
 .cardgrupos { display: flex; flex-direction: column; height: 100%; margin-bottom: 0; border: 1px solid #eceaf0; }
 .cardgrupos img { flex: 0 0 220px; }
@@ -1556,10 +1554,8 @@ textarea {
 .dados-grupo-meta li { min-width: 0; }
 .dados-grupo-meta strong { color: #34484a; }
 .cardgrupos .botoescards { width: 100%; margin-top: auto; padding-top: 2px; }
-.cardgrupos .infogrupos,
-.cardgrupos .link-ficha-demo { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; padding: 11px 16px; border: 0; border-radius: 12px; background: #e9e3f3; color: #55427c; font-size: .94rem; font-weight: 650; line-height: 1.35; text-align: center; text-decoration: none; cursor: pointer; }
-.cardgrupos .infogrupos:hover,
-.cardgrupos .link-ficha-demo:hover { background: #ded4ed; }
+.cardgrupos .infogrupos {
+.cardgrupos .infogrupos:hover {
 @media (max-width: 768px) {
     .cardgrupos img { flex-basis: 200px; }
     .conteudocards { padding: 20px; }
@@ -1570,21 +1566,6 @@ textarea {
     .conteudocards { padding: 18px; }
     .conteudocards h3 { font-size: 1.3rem; }
 }
-.lista-depoimentos > .aviso-demo { width: 100%; box-sizing: border-box; }
-.card-demo { position: relative; }
-.card-demo .selo-demo { margin-top: 8px; }
-.card-demo-relato { position: relative; }
-.card-demo-relato .selo-demo { margin-top: 12px; }
-.dados-demo-grupo { list-style: none; margin: 0 0 12px; padding: 0; color: #586267; line-height: 1.6; }
-.dados-demo-grupo strong { color: #34484a; }
-.link-ficha-demo { display: inline-block; text-decoration: none; }
-.modelos-relatos { margin-top: 52px; }
-.modelos-relatos > h2 { margin-bottom: 20px; font-size: clamp(1.6rem, 3vw, 2.1rem); }
-.modelos-relatos > .aviso-demo { margin-bottom: 24px; }
-.modelos-relatos .lista-depoimentos { margin-bottom: 0; }
-.tag-relato-demo { display: inline-block; margin-bottom: 10px; padding: 5px 11px; border-radius: 999px; background: #f1edf8; color: #684ba8; font-size: .84rem; font-weight: 600; }
-.card-demo-relato .cabecalho-depoimento h4 { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
-.card-demo-relato .selo-demo { margin: 0; }
 .estado-vazio { width: 100%; padding: 18px 20px; border-radius: 12px; background: #f5f6f8; color: #59666a; }
 
 .card-clinica p {

@@ -183,9 +183,9 @@ try {
 
     // Grupos de apoio
     if ($path === '/groups' && $method === 'GET') {
-        $stmt = $pdo->query("SELECT id_grupo, nome_grupo, responsavel, mais_info, foco, data_encontro, horario, link, contato AS telefone_grupo, imagem FROM grupos WHERE status_moderacao='aprovado' AND is_demo=0 AND (data_encontro IS NULL OR data_encontro >= CURDATE()) ORDER BY id_grupo DESC");
-        $demos = $pdo->query("SELECT id_grupo, nome_grupo, responsavel, mais_info, foco, data_encontro, horario, link, contato AS telefone_grupo, imagem FROM grupos WHERE status_moderacao='aprovado' AND is_demo=1 AND (data_encontro IS NULL OR data_encontro >= CURDATE()) ORDER BY RAND() LIMIT 6");
-        api_responder(200, ['grupos' => $stmt->fetchAll(), 'grupos_demo' => $demos->fetchAll()]);
+        $stmt = $pdo->query("SELECT id_grupo, nome_grupo, responsavel, mais_info, foco, data_encontro, horario, link, contato AS telefone_grupo, imagem FROM grupos WHERE status_moderacao='aprovado' AND (data_encontro IS NULL OR data_encontro >= CURDATE()) ORDER BY id_grupo DESC");
+
+        api_responder(200, ['grupos' => $stmt->fetchAll()]);
     }
     if ($path === '/groups' && $method === 'POST') {
         api_usuario();
@@ -236,8 +236,8 @@ try {
     // Relatos comunitários
     if ($path === '/stories' && $method === 'GET') {
         $stmt = $pdo->query("SELECT r.id_relato, r.titulo, r.conteudo, r.data_publicacao, r.anonimo, CASE WHEN r.anonimo = 1 THEN NULL ELSE u.nome END AS nome, CASE WHEN r.anonimo = 1 THEN NULL ELSE u.foto_perfil END AS foto_perfil FROM relatos r LEFT JOIN usuarios u ON u.id_usuario = r.id_usuario WHERE r.status_moderacao='aprovado' ORDER BY r.data_publicacao DESC LIMIT 200");
-        $demos = $pdo->query("SELECT nome_autor AS nome, perfil, cidade, data_publicacao, tema, titulo, conteudo FROM relatos_demo WHERE ativo=1 ORDER BY RAND() LIMIT 3");
-        api_responder(200, ['relatos' => $stmt->fetchAll(), 'relatos_demo' => $demos->fetchAll()]);
+
+        api_responder(200, ['relatos' => $stmt->fetchAll()]);
     }
     if ($path === '/stories' && $method === 'POST') {
         $id = api_usuario(); $titulo = trim((string) ($body['titulo'] ?? '')); $conteudo = trim((string) ($body['conteudo'] ?? ''));

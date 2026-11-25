@@ -157,7 +157,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
         let linkGrupoAtual = "#";
         let nomeGrupoAtual = "Grupo de apoio";
         let idGrupoAtual = null;
-        let grupoAtualDemonstracao = false;
+
 
         function escaparHtml(valor) {
             return String(valor ?? '').replace(/[&<>"']/g, caractere => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caractere]));
@@ -171,7 +171,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
             const lista = document.getElementById('listaGrupos');
             try {
                 const resposta = await VitalizeAPI.requisicao('/api/groups');
-                const renderizar = (grupo, ehDemo) => {
+                const renderizar = grupo => {
                     const nome = escaparHtml(grupo.nome_grupo);
                     const foco = escaparHtml(grupo.foco || 'Grupo de apoio');
                     const data = dataGrupo(grupo.data_encontro);
@@ -181,17 +181,14 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     const telefone = escaparHtml(grupo.telefone_grupo || 'Não informado');
                     const responsavel = escaparHtml(grupo.responsavel || 'Não informado');
                     const imagem = escaparHtml(grupo.imagem || 'img/apoio1.webp');
-                    return `<article class="cardgrupos"><img src="${imagem}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem do grupo ${nome}"><div class="conteudocards"><span class="taggrupo">${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${responsavel}</li><li><strong>Contato:</strong> ${telefone}</li></ul><div class="botoescards"><button class="infogrupos" data-demo="${ehDemo ? '1' : '0'}" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-modalidade="Detalhes na ficha" data-local="Consulte os detalhes antes de participar" data-responsavel="${responsavel}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></article>`;
+                    return `<article class="cardgrupos"><img src="${imagem}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem do grupo ${nome}"><div class="conteudocards"><span class="taggrupo">${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${responsavel}</li><li><strong>Contato:</strong> ${telefone}</li></ul><div class="botoescards"><button class="infogrupos" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-modalidade="Detalhes na ficha" data-local="Consulte os detalhes antes de participar" data-responsavel="${responsavel}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></article>`;
                 };
-                const reais = (resposta.grupos || []).map(grupo => renderizar(grupo, false));
-                const demos = (resposta.grupos_demo || []).map(grupo => renderizar(grupo, true));
-                const secaoDemos = demos.length
-                    ? `<section class="secao-grupos"><h2 class="titulo-secao-grupos">Modelos para apresentação</h2><div class="aviso-demo" role="note"><strong>Exemplos fictícios cadastrados no banco de dados.</strong><br>Os modelos exibidos são selecionados aleatoriamente.</div><div class="cardsgrupos grade-grupos">${demos.join('')}</div></section>`
-                    : '';
+                const reais = (resposta.grupos || []).map(renderizar);
+
                 const secaoReais = reais.length
                     ? `<section class="secao-grupos"><h2 class="titulo-secao-grupos">Grupos da comunidade</h2><div class="cardsgrupos grade-grupos">${reais.join('')}</div></section>`
                     : '';
-                lista.innerHTML = `${secaoDemos}${secaoReais}${!reais.length && !demos.length ? '<p class="estado-vazio">Nenhum grupo publicado no momento.</p>' : ''}`;
+                lista.innerHTML = `${secaoReais}${!reais.length ? '<p class="estado-vazio">Nenhum grupo publicado no momento.</p>' : ''}`;
             } catch (erro) {
                 lista.innerHTML = `<p class="estado-vazio" role="alert">Não foi possível carregar grupos: ${escaparHtml(erro.message || 'erro de conexão')}.</p>`;
             }
@@ -225,7 +222,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
             );
 
             botaoInscricao.innerHTML = semLink
-                ? `<i class="fa-solid fa-link-slash"></i> ${grupoAtualDemonstracao ? 'Inscrições fictícias desativadas' : 'Link indisponível'}`
+                ? '<i class="fa-solid fa-link-slash"></i> Link indisponível'
                 : '<i class="fa-regular fa-envelope"></i> Receber link por e-mail';
         }
 
@@ -271,11 +268,9 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 linkGrupoAtual = link;
                 nomeGrupoAtual = nome;
                 idGrupoAtual = Number(botao.dataset.idGrupo);
-                grupoAtualDemonstracao = botao.dataset.demo === "1";
-                labelContatoGrupo.textContent = grupoAtualDemonstracao ? "Contato fictício:" : "Contato:";
-                textoInscricaoGrupo.textContent = grupoAtualDemonstracao
-                    ? "Esta ficha é demonstrativa; as inscrições não estão disponíveis."
-                    : "Quer participar? Enviaremos o link para o e-mail da sua conta.";
+
+                labelContatoGrupo.textContent = "Contato:";
+                textoInscricaoGrupo.textContent = "Quer participar? Enviaremos o link para o e-mail da sua conta.";
 
                 modalNome.textContent = nome;
                 modalFoco.textContent = "Foco: " + foco;

@@ -133,8 +133,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
             </button>
         </div>
 
-        <section class="modelos-relatos" aria-labelledby="tituloModelosRelatos"><h2 id="tituloModelosRelatos">Relatos de demonstração</h2><div class="aviso-demo" role="note"><strong>Personagens e histórias fictícias.</strong> Registros preenchidos do banco, escolhidos aleatoriamente; não enviados por usuários reais.</div><div class="lista-depoimentos" id="listaRelatosDemo" aria-live="polite"></div>
-        </section>
+
 
 
     </section>
@@ -164,21 +163,14 @@ require_once __DIR__ . '/iniciar_sessao.php';
         function textoSeguro(valor) {
             return String(valor ?? '').replace(/[&<>"']/g, caractere => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caractere]));
         }
-        function carregarRelatosDemo(relatos) {
-            const alvo = document.getElementById('listaRelatosDemo');
-            alvo.innerHTML = relatos.map(relato => {
-                const data = relato.data_publicacao ? new Date(String(relato.data_publicacao).slice(0,10)+'T12:00:00').toLocaleDateString('pt-BR') : '';
-                return `<article class="card-depoimento card-demo-relato"><div class="cabecalho-depoimento"><div class="avatar"><span class="avatar-placeholder"><i class="fa-solid fa-user"></i></span></div><div><h4>${textoSeguro(relato.nome)} <span class="selo-demo">Personagem fictícia</span></h4><span>${textoSeguro(relato.perfil)} · ${textoSeguro(relato.cidade)} · ${data}</span></div></div><div class="texto-depoimento"><span class="tag-relato-demo">${textoSeguro(relato.tema)}</span><h3>${textoSeguro(relato.titulo)}</h3><p style="white-space:pre-line">${textoSeguro(relato.conteudo)}</p></div></article>`;
-            }).join('') || '<p class="estado-vazio">Nenhum relato demonstrativo cadastrado.</p>';
-        }
         async function carregarRelatos() {
             const lista = document.getElementById('listaDepoimentos');
             try {
                 const resultado = await VitalizeAPI.requisicao('/api/stories');
                 const relatos = resultado.relatos || [];
-                carregarRelatosDemo(resultado.relatos_demo || []);
+
                 if (!relatos.length) {
-                    lista.innerHTML = '<p class="estado-vazio">Ainda não há relatos reais publicados.</p>';
+                    lista.innerHTML = '<p class="estado-vazio">Ainda não há relatos publicados.</p>';
                     depoimentos = [];
                     quantidadeVisivel = 0;
                     atualizarDepoimentos();
