@@ -30,13 +30,17 @@ header('Content-Type: text/html; charset=utf-8');
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Moderação | Vitalize</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261124-layout-3">
     <link rel="icon" href="img/logov.png">
 </head>
 <body>
 <main class="pagina-adm" id="painelAdm">
     <header class="cabecalho-adm"><div><h1>Painel administrativo</h1><p>Revise relatos e grupos antes da publicação.</p></div><a href="conteudo.php?pagina=index">Voltar ao início</a></header>
     <section class="moderacao-adm">
+        <div class="abas-adm abas-situacao-adm" role="tablist" aria-label="Situação do conteúdo">
+            <button class="aba-adm ativa" type="button" role="tab" aria-selected="true" data-modo="pendentes">Pendentes</button>
+            <button class="aba-adm" type="button" role="tab" aria-selected="false" data-modo="publicados">Publicados</button>
+        </div>
         <div class="topo-moderacao-adm">
             <div class="abas-adm" role="tablist" aria-label="Conteúdo pendente">
                 <button class="aba-adm ativa" type="button" role="tab" aria-selected="true" data-tipo="stories">Relatos <span data-total="stories">0</span></button>
@@ -55,20 +59,25 @@ header('Content-Type: text/html; charset=utf-8');
     const painel = document.querySelector('#painelAdm');
     const aviso = painel.querySelector('[data-aviso]');
     let tipo = 'stories';
+    let modo = 'pendentes';
     let conteudos = { stories: [], groups: [] };
     const escapar = valor => String(valor ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     function renderizar() {
         for (const chave of ['stories', 'groups']) {
             painel.querySelector(`[data-total="${chave}"]`).textContent = conteudos[chave].length;
             const lista = painel.querySelector(`[data-lista="${chave}"]`);
-            lista.innerHTML = conteudos[chave].map(item => `<article class="item-adm"><div class="corpo-item-adm"><div class="autor-adm"><strong>${escapar(item.autor || 'Anônimo')}</strong><time>${escapar(item.data || '')}</time></div><h2>${escapar(item.titulo)}</h2><p>${escapar(item.conteudo || '')}</p></div><div class="acoes-adm"><button class="botao-adm botao-aprovar-adm" type="button" data-status="aprovado" data-id="${Number(item.id)}">Aprovar</button><button class="botao-adm botao-recusar-adm" type="button" data-status="recusado" data-id="${Number(item.id)}">Recusar</button></div></article>`).join('');
+            lista.innerHTML = conteudos[chave].map(item => `<article class="item-adm"><div class="corpo-item-adm"><div class="autor-adm"><strong>${escapar(item.autor || 'Anônimo')}</strong><time>${escapar(item.data || '')}</time></div><h2>${escapar(item.titulo)}</h2><p>${escapar(item.conteudo || '')}</p></div><div class="acoes-adm">${modo === 'pendentes' ? `<button class="botao-adm botao-aprovar-adm" type="button" data-status="aprovado" data-id="${Number(item.id)}">Aprovar</button><button class="botao-adm botao-recusar-adm" type="button" data-status="recusado" data-id="${Number(item.id)}">Recusar</button>` : `<button class="botao-adm botao-apagar-adm" type="button" data-excluir="true" data-id="${Number(item.id)}">Apagar</button>`}</div></article>`).join('');
             lista.hidden = chave !== tipo;
         }
-        painel.querySelector('[data-vazio]').hidden = conteudos[tipo].length > 0;
+        const vazio = painel.querySelector('[data-vazio]');
+        vazio.textContent = modo === 'publicados' ? 'Nenhum conteúdo publicado nesta categoria.' : 'Nenhum conteúdo pendente.';
+        vazio.hidden = conteudos[tipo].length > 0;
     }
     async function carregar() {
         try {
-            const resposta = await VitalizeAPI.requisicao('/api/admin/moderation');
+            aviso.textContent = '';
+            const rota = modo === 'publicados' ? '/api/admin/content' : '/api/admin/moderation';
+            const resposta = await VitalizeAPI.requisicao(rota);
             conteudos = {
                 stories: Array.isArray(resposta.relatos) ? resposta.relatos : (Array.isArray(resposta.stories) ? resposta.stories : []),
                 groups: Array.isArray(resposta.grupos) ? resposta.grupos : (Array.isArray(resposta.groups) ? resposta.groups : [])
@@ -77,12 +86,32 @@ header('Content-Type: text/html; charset=utf-8');
         }
         catch (erro) { aviso.textContent = erro.message || 'Não foi possível carregar a moderação.'; }
     }
+    painel.querySelectorAll('[data-modo]').forEach(botao => botao.addEventListener('click', () => {
+        modo = botao.dataset.modo;
+        painel.querySelectorAll('[data-modo]').forEach(item => { const ativo = item === botao; item.classList.toggle('ativa', ativo); item.setAttribute('aria-selected', String(ativo)); });
+        carregar();
+    }));
     painel.querySelectorAll('[data-tipo]').forEach(botao => botao.addEventListener('click', () => {
         tipo = botao.dataset.tipo;
         painel.querySelectorAll('[data-tipo]').forEach(item => { const ativa = item === botao; item.classList.toggle('ativa', ativa); item.setAttribute('aria-selected', String(ativa)); });
         renderizar();
     }));
     painel.addEventListener('click', async evento => {
+        const botaoApagar = evento.target.closest('[data-excluir][data-id]');
+        if (botaoApagar) {
+            const idApagar = botaoApagar.dataset.id;
+            const registro = conteudos[tipo].find(item => String(item.id) === idApagar);
+            if (!registro || !window.confirm('Apagar definitivamente "' + String(registro.titulo || 'este conteúdo') + '"? Esta ação não pode ser desfeita.')) return;
+            const botoes = botaoApagar.closest('.acoes-adm').querySelectorAll('button');
+            botoes.forEach(item => { item.disabled = true; });
+            try {
+                await VitalizeAPI.requisicao(`/api/admin/content/${tipo}/${idApagar}`, {method:'DELETE'});
+                conteudos[tipo] = conteudos[tipo].filter(item => String(item.id) !== idApagar);
+                aviso.textContent = 'Conteúdo apagado.';
+                renderizar();
+            } catch (erro) { botoes.forEach(item => { item.disabled = false; }); aviso.textContent = erro.message || 'Não foi possível apagar o conteúdo.'; }
+            return;
+        }
         const botao = evento.target.closest('[data-status][data-id]');
         if (!botao) return;
         const tipoAcao = tipo;

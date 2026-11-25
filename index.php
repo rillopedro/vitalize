@@ -17,7 +17,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261124-layout-3">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 
@@ -92,7 +92,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
 
             <div class="mapa">
 
-                <p class="mapa-hint">Os marcadores mostram Ribeirão Pires, Santo André e a referência municipal de Mauá. Use “Ver no mapa” para destacar cada local.</p>
+                <p class="mapa-hint">Os marcadores mostram os serviços em Ribeirão Pires e Santo André e referências municipais de parceiros. Os pontos aproximados não indicam endereços ou locais atuais de coleta.</p>
                 <div id="mapaVitalize" role="region" aria-label="Mapa com os locais de atendimento e parceiros do Vitalize"></div>
 
             </div>
@@ -142,8 +142,9 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 <div class="card-clinica parceiro-local">
                     <span class="tag-local">Parceiro de apoio</span>
                     <h3>Doe Lenço, Doe Alegria</h3>
-                    <p>Projeto parceiro sem sede pública confirmada. Ações e pontos de coleta podem variar; consulte o perfil antes de se deslocar.</p>
+                    <p>Referência municipal em Ribeirão Pires. O projeto não tem endereço fixo confirmado; pontos de coleta podem variar, então consulte o perfil antes de se deslocar.</p>
                     <div class="acoes-clinica">
+                        <a class="acao-clinica" data-location-id="doelenco" href="https://www.google.com/maps/search/?api=1&amp;query=Ribeir%C3%A3o+Pires+SP" target="_blank" rel="noopener noreferrer">Ver região no mapa</a>
                         <a class="acao-clinica secundaria" href="https://www.instagram.com/doelencodoealegria/" target="_blank" rel="noopener noreferrer">Instagram do parceiro</a>
                     </div>
                 </div>
@@ -180,6 +181,12 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 nome: 'Mauá — parceiros do Vitalize',
                 endereco: 'Referência no município. O endereço exato do Salão Absoluto e do Instituto Romatt não foi confirmado; este marcador é aproximado.',
                 link: 'https://www.google.com/maps/search/?api=1&query=Mau%C3%A1+SP'
+            },
+            doelenco: {
+                coords: [-23.71056, -46.41333],
+                nome: 'Doe Lenço, Doe Alegria — referência municipal',
+                endereco: 'Referência aproximada em Ribeirão Pires. O endereço do projeto e os pontos atuais de coleta não foram confirmados.',
+                link: 'https://www.google.com/maps/search/?api=1&query=Ribeir%C3%A3o+Pires+SP'
             }
         };
 
@@ -227,8 +234,11 @@ require_once __DIR__ . '/iniciar_sessao.php';
             const seguro = valor => String(valor ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
             try {
                 const resposta = await VitalizeAPI.requisicao('/api/groups');
-                const todos = [...(resposta.grupos || []).map(g => ({...g, demo:false})), ...(resposta.grupos_demo || []).map(g => ({...g, demo:true}))].sort(() => Math.random() - 0.5).slice(0, 3);
-                alvo.innerHTML = `${todos.some(g => g.demo) ? '<div class="aviso-demo" role="note"><strong>Modelos fictícios para apresentação.</strong> Registros aleatórios cadastrados no banco; atividades demonstrativas.</div>' : ''}${todos.map(g => `<article class="cardgrupos"><img src="${seguro(g.imagem || 'img/apoio1.webp')}" alt="Imagem ilustrativa de ${seguro(g.nome_grupo)}"><div class="conteudocards"><span class="taggrupo">${seguro(g.foco || 'Grupo de apoio')}</span><h3>${seguro(g.nome_grupo)}</h3><div class="infosgrupo"><span>${g.data_encontro ? new Date(`${g.data_encontro}T12:00:00`).toLocaleDateString('pt-BR') : 'Data a definir'}</span><span>${seguro((g.horario || '').slice(0,5) || 'Horário a definir')}</span></div><p class="focogrupo">${seguro(g.mais_info || '')}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${seguro(g.responsavel || 'Não informado')}</li><li><strong>Contato:</strong> ${seguro(g.telefone_grupo || 'Não informado')}</li></ul><a class="infogrupos link-ficha-demo" href="conteudo.php?pagina=grupos">Ver ficha completa</a></div></article>`).join('') || '<p class="estado-vazio">Nenhum grupo publicado no momento.</p>'}`;
+                const todos = (resposta.grupos_demo || []).map(g => ({...g, demo:true})).slice(0, 3);
+                const avisoDemo = todos.length
+                    ? '<div class="aviso-demo" role="note"><strong>Modelos fictícios para apresentação.</strong><br>Registros aleatórios cadastrados no banco; atividades demonstrativas.</div>'
+                    : '';
+                alvo.innerHTML = `${avisoDemo}${todos.map(g => `<article class="cardgrupos"><img src="${seguro(g.imagem || 'img/apoio1.webp')}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem ilustrativa de ${seguro(g.nome_grupo)}"><div class="conteudocards"><span class="taggrupo">${seguro(g.foco || 'Grupo de apoio')}</span><h3>${seguro(g.nome_grupo)}</h3><div class="infosgrupo"><span>${g.data_encontro ? new Date(`${g.data_encontro}T12:00:00`).toLocaleDateString('pt-BR') : 'Data a definir'}</span><span>${seguro((g.horario || '').slice(0,5) || 'Horário a definir')}</span></div><p class="focogrupo">${seguro(g.mais_info || '')}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${seguro(g.responsavel || 'Não informado')}</li><li><strong>Contato:</strong> ${seguro(g.telefone_grupo || 'Não informado')}</li></ul><a class="infogrupos link-ficha-demo" href="conteudo.php?pagina=grupos">Ver ficha completa</a></div></article>`).join('') || '<p class="estado-vazio">Nenhum grupo demonstrativo disponível.</p>'}`;
             } catch (e) { alvo.innerHTML = '<p class="estado-vazio">Não foi possível carregar grupos de apoio.</p>'; }
         })();
     </script>

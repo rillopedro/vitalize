@@ -17,7 +17,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261124-layout-3">
 </head>
 
 <body>
@@ -99,12 +99,6 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 <p>17 Anos</p>
             </div>
 
-            <div class="card-integrante">
-                <img src="img/vitoria.jpeg" alt="Integrante 3">
-                <h3>Vitória Guedes</h3>
-                <p>18 Anos</p>
-            </div>
-
         </div>
     </section>
 
@@ -127,7 +121,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
         </div>
 
     </section>
-    
+
        <?php include 'footer.php'; ?>
 
     <script>

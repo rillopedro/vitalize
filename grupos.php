@@ -17,7 +17,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261124-layout-3">
 </head>
 
 <body>
@@ -56,7 +56,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
         <h1 class="h1titulo">Cadastre-se em um grupo de apoio</h1>
         <div class="linha"></div>
 
-        <div class="cardsgrupos" id="listaGrupos" aria-live="polite">
+        <div id="listaGrupos" aria-live="polite">
             <p style="width:100%; text-align:center; color:#666;">Carregando grupos...</p>
         </div>
 
@@ -181,11 +181,17 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     const telefone = escaparHtml(grupo.telefone_grupo || 'Não informado');
                     const responsavel = escaparHtml(grupo.responsavel || 'Não informado');
                     const imagem = escaparHtml(grupo.imagem || 'img/apoio1.webp');
-                    return `<article class="cardgrupos"><img src="${imagem}" alt="Imagem do grupo ${nome}"><div class="conteudocards"><span class="taggrupo">${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${responsavel}</li><li><strong>Contato:</strong> ${telefone}</li></ul><div class="botoescards"><button class="infogrupos" data-demo="${ehDemo ? '1' : '0'}" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-modalidade="Detalhes na ficha" data-local="Consulte os detalhes antes de participar" data-responsavel="${responsavel}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></article>`;
+                    return `<article class="cardgrupos"><img src="${imagem}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem do grupo ${nome}"><div class="conteudocards"><span class="taggrupo">${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${responsavel}</li><li><strong>Contato:</strong> ${telefone}</li></ul><div class="botoescards"><button class="infogrupos" data-demo="${ehDemo ? '1' : '0'}" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-modalidade="Detalhes na ficha" data-local="Consulte os detalhes antes de participar" data-responsavel="${responsavel}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></article>`;
                 };
                 const reais = (resposta.grupos || []).map(grupo => renderizar(grupo, false));
                 const demos = (resposta.grupos_demo || []).map(grupo => renderizar(grupo, true));
-                lista.innerHTML = `${reais.join('')}${demos.length ? `<div class="aviso-demo" role="note"><strong>Modelos fictícios para demonstração</strong><br>Os exemplos vêm do banco de dados e são selecionados aleatoriamente.</div>${demos.join('')}` : ''}${!reais.length && !demos.length ? '<p class="estado-vazio">Nenhum grupo publicado no momento.</p>' : ''}`;
+                const secaoDemos = demos.length
+                    ? `<section class="secao-grupos"><h2 class="titulo-secao-grupos">Modelos para apresentação</h2><div class="aviso-demo" role="note"><strong>Exemplos fictícios cadastrados no banco de dados.</strong><br>Os modelos exibidos são selecionados aleatoriamente.</div><div class="cardsgrupos grade-grupos">${demos.join('')}</div></section>`
+                    : '';
+                const secaoReais = reais.length
+                    ? `<section class="secao-grupos"><h2 class="titulo-secao-grupos">Grupos da comunidade</h2><div class="cardsgrupos grade-grupos">${reais.join('')}</div></section>`
+                    : '';
+                lista.innerHTML = `${secaoDemos}${secaoReais}${!reais.length && !demos.length ? '<p class="estado-vazio">Nenhum grupo publicado no momento.</p>' : ''}`;
             } catch (erro) {
                 lista.innerHTML = `<p class="estado-vazio" role="alert">Não foi possível carregar grupos: ${escaparHtml(erro.message || 'erro de conexão')}.</p>`;
             }
@@ -223,7 +229,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 : '<i class="fa-regular fa-envelope"></i> Receber link por e-mail';
         }
 
-        document.querySelector(".cardsgrupos").addEventListener("click", event => {
+        document.getElementById("listaGrupos").addEventListener("click", event => {
             const botao = event.target.closest(".infogrupos");
             if (!botao) return;
                 const nome =

@@ -1538,7 +1538,11 @@ textarea {
 .card-clinica { width: 100%; }
 .parceiro-local { border: 1px solid #d8c9ed; }
 .aviso-demo { flex: 1 0 100%; padding: 16px 20px; border-left: 4px solid #7c5aa6; border-radius: 10px; background: #f5f0fa; color: #443553; line-height: 1.5; }
-.cardsgrupos > .aviso-demo { grid-column: 1 / -1; }
+#listaGrupos { display: block; width: 100%; margin: 0 auto; }
+#listaGrupos > .secao-grupos { width: min(90%, 1200px); margin: 0 auto 52px; }
+.titulo-secao-grupos { margin: 0 0 20px; color: #34484a; font-size: clamp(1.35rem, 2.4vw, 1.8rem); text-align: left; }
+.grade-grupos { width: 100%; max-width: none; margin: 0 auto; align-items: stretch; grid-auto-rows: 1fr; }
+#listaGrupos .aviso-demo { display: block; width: 100%; margin: 0 0 22px; box-sizing: border-box; }
 .cardsgrupos { align-items: stretch; grid-auto-rows: 1fr; }
 .cardgrupos { display: flex; flex-direction: column; height: 100%; margin-bottom: 0; border: 1px solid #eceaf0; }
 .cardgrupos img { flex: 0 0 220px; }
@@ -1586,6 +1590,57 @@ textarea {
 .card-clinica p {
     color: #666;
     line-height: 1.5;
+}
+
+/* Evita que estilos antigos em cache comprimam os cards em colunas internas. */
+.clinicas .conteudo-clinicas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
+    align-items: start;
+    gap: 30px;
+}
+
+.clinicas .mapa,
+.clinicas .lista-clinicas {
+    min-width: 0;
+}
+
+.clinicas .lista-clinicas {
+    display: flex;
+    width: 100%;
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.clinicas .card-clinica {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+
+.clinicas .card-clinica > * {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.clinicas .card-clinica .acoes-clinica {
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .clinicas .conteudo-clinicas {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .clinicas .lista-clinicas {
+        max-height: none;
+        overflow: visible;
+    }
 }
 
 .acoes-clinica {
@@ -4237,6 +4292,20 @@ textarea {
 .botao-recusar-adm {
     color: #c92f34;
     background: #fde9ea;
+}
+
+.botao-apagar-adm {
+    color: #ffffff;
+    background: #c92f34;
+}
+
+.botao-apagar-adm:hover {
+    background: #a9252a;
+}
+
+.abas-situacao-adm {
+    margin-bottom: 18px;
+    border-bottom: 1px solid #e7e4f0;
 }
 
 /* GRUPOS DE APOIO */
