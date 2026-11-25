@@ -20,7 +20,7 @@ vitalize_exibir_aplicacao('login.php');
     <link rel="icon" type="image/png" href="img/logov.png">
 
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261124-layout-3">
 
 </head>
 

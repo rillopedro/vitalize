@@ -17,7 +17,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261124-layout-3">
 </head>
 
 <body>
@@ -56,7 +56,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
         <h1 class="h1titulo">Cadastre-se em um grupo de apoio</h1>
         <div class="linha"></div>
 
-        <div class="cardsgrupos" id="listaGrupos" aria-live="polite">
+        <div id="listaGrupos" aria-live="polite">
             <p style="width:100%; text-align:center; color:#666;">Carregando grupos...</p>
         </div>
 
@@ -229,7 +229,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 : '<i class="fa-regular fa-envelope"></i> Receber link por e-mail';
         }
 
-        document.querySelector(".cardsgrupos").addEventListener("click", event => {
+        document.getElementById("listaGrupos").addEventListener("click", event => {
             const botao = event.target.closest(".infogrupos");
             if (!botao) return;
                 const nome =

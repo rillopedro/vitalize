@@ -5312,3 +5312,13 @@ body.modal-aberto {
     }
 }
 
+
+
+/* Layout estável para os cartões de clínicas e parceiros. */
+.clinicas .conteudo-clinicas { display:grid; grid-template-columns:minmax(0,1fr) minmax(320px,390px); align-items:start; gap:30px; }
+.clinicas .mapa, .clinicas .lista-clinicas { min-width:0; }
+.clinicas .lista-clinicas { display:flex; width:100%; flex:none; flex-direction:column; align-items:stretch; }
+.clinicas .card-clinica { display:flex; width:100%; min-width:0; flex:0 0 auto; flex-direction:column; align-items:flex-start; box-sizing:border-box; }
+.clinicas .card-clinica > * { max-width:100%; overflow-wrap:anywhere; }
+.clinicas .card-clinica .acoes-clinica { width:100%; }
+@media (max-width:1024px) { .clinicas .conteudo-clinicas { grid-template-columns:minmax(0,1fr); } .clinicas .lista-clinicas { max-height:none; overflow:visible; } }
