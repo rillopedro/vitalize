@@ -185,7 +185,13 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 };
                 const reais = (resposta.grupos || []).map(grupo => renderizar(grupo, false));
                 const demos = (resposta.grupos_demo || []).map(grupo => renderizar(grupo, true));
-                lista.innerHTML = `${reais.join('')}${demos.length ? `<div class="aviso-demo" role="note"><strong>Modelos fictícios para demonstração</strong><br>Os exemplos vêm do banco de dados e são selecionados aleatoriamente.</div>${demos.join('')}` : ''}${!reais.length && !demos.length ? '<p class="estado-vazio">Nenhum grupo publicado no momento.</p>' : ''}`;
+                const secaoDemos = demos.length
+                    ? `<section class="secao-grupos"><h2 class="titulo-secao-grupos">Modelos para apresentação</h2><div class="aviso-demo" role="note"><strong>Exemplos fictícios cadastrados no banco de dados.</strong><br>Os modelos exibidos são selecionados aleatoriamente.</div><div class="cardsgrupos grade-grupos">${demos.join('')}</div></section>`
+                    : '';
+                const secaoReais = reais.length
+                    ? `<section class="secao-grupos"><h2 class="titulo-secao-grupos">Grupos da comunidade</h2><div class="cardsgrupos grade-grupos">${reais.join('')}</div></section>`
+                    : '';
+                lista.innerHTML = `${secaoDemos}${secaoReais}${!reais.length && !demos.length ? '<p class="estado-vazio">Nenhum grupo publicado no momento.</p>' : ''}`;
             } catch (erro) {
                 lista.innerHTML = `<p class="estado-vazio" role="alert">Não foi possível carregar grupos: ${escaparHtml(erro.message || 'erro de conexão')}.</p>`;
             }
