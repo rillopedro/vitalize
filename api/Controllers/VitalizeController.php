@@ -256,6 +256,22 @@ try {
         $grupos = $pdo->query("SELECT id_grupo AS id, nome_grupo AS titulo, mais_info AS conteudo, data_encontro AS data, responsavel AS autor FROM grupos WHERE status_moderacao='pendente' ORDER BY id_grupo ASC LIMIT 200")->fetchAll();
         api_responder(200, ['relatos' => $relatos, 'grupos' => $grupos]);
     }
+    if ($path === '/admin/content' && $method === 'GET') {
+        api_exigir_admin($pdo);
+        $relatos = $pdo->query("SELECT r.id_relato AS id, r.titulo, r.conteudo, r.data_publicacao AS data, CASE WHEN r.anonimo=1 THEN 'Anônimo' ELSE u.nome END AS autor FROM relatos r LEFT JOIN usuarios u ON u.id_usuario=r.id_usuario WHERE r.status_moderacao='aprovado' ORDER BY r.data_publicacao DESC LIMIT 200")->fetchAll();
+        $grupos = $pdo->query("SELECT id_grupo AS id, nome_grupo AS titulo, mais_info AS conteudo, data_encontro AS data, responsavel AS autor FROM grupos WHERE status_moderacao='aprovado' AND is_demo=0 ORDER BY id_grupo DESC LIMIT 200")->fetchAll();
+        api_responder(200, ['relatos' => $relatos, 'grupos' => $grupos]);
+    }
+    if (preg_match('#^/admin/content/(stories|groups)/(\\d+)$#', $path, $match) && $method === 'DELETE') {
+        api_exigir_admin($pdo);
+        $tabela = $match[1] === 'stories' ? 'relatos' : 'grupos';
+        $coluna = $match[1] === 'stories' ? 'id_relato' : 'id_grupo';
+        $filtroDemo = $match[1] === 'groups' ? ' AND is_demo=0' : '';
+        $stmt = $pdo->prepare("DELETE FROM {$tabela} WHERE {$coluna}=? AND status_moderacao='aprovado'{$filtroDemo}");
+        $stmt->execute([(int) $match[2]]);
+        if (!$stmt->rowCount()) api_responder(404, ['erro' => 'Conteúdo publicado não encontrado.']);
+        api_responder(200, ['mensagem' => 'Conteúdo apagado.']);
+    }
     if (preg_match('#^/admin/moderation/(stories|groups)/(\\d+)$#', $path, $match) && $method === 'PATCH') {
         api_exigir_admin($pdo);
         $status = (string) ($body['status'] ?? '');
