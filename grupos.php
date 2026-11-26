@@ -17,7 +17,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="css/style.css?v=20261125-css-fix-1">
+    <link rel="stylesheet" href="css/style.css?v=20261126-cards-consent">
 </head>
 
 <body>
@@ -162,6 +162,15 @@ require_once __DIR__ . '/iniciar_sessao.php';
         function escaparHtml(valor) {
             return String(valor ?? '').replace(/[&<>"']/g, caractere => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caractere]));
         }
+        function urlImagemGrupo(valor) {
+            const caminho = String(valor ?? '').trim().replace(/\\/g, '/');
+            if (!caminho) return 'img/apoio1.webp';
+            if (/^https?:\/\//i.test(caminho) || caminho.startsWith('/')) return caminho;
+            if (caminho.startsWith('img/')) return caminho;
+            if (caminho.startsWith('uploads/')) return `img/${caminho}`;
+            if (/^[a-z0-9_.-]+\.(?:jpe?g|png|webp)$/i.test(caminho)) return `img/uploads/grupos/${encodeURIComponent(caminho)}`;
+            return 'img/apoio1.webp';
+        }
         function dataGrupo(valor) {
             if (!valor) return 'Data a definir';
             const partes = String(valor).slice(0, 10).split('-');
@@ -173,15 +182,15 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 const resposta = await VitalizeAPI.requisicao('/api/groups');
                 const renderizar = grupo => {
                     const nome = escaparHtml(grupo.nome_grupo);
-                    const foco = escaparHtml(grupo.foco || 'Grupo de apoio');
+                    const foco = escaparHtml(grupo.foco || 'Foco não informado');
                     const data = dataGrupo(grupo.data_encontro);
                     const horario = grupo.horario ? escaparHtml(String(grupo.horario).slice(0, 5)) : 'Horário a definir';
                     const info = escaparHtml(grupo.mais_info || 'Grupo de apoio para pessoas em tratamento.');
                     const link = escaparHtml(grupo.link || '#');
                     const telefone = escaparHtml(grupo.telefone_grupo || 'Não informado');
                     const responsavel = escaparHtml(grupo.responsavel || 'Não informado');
-                    const imagem = escaparHtml(grupo.imagem || 'img/apoio1.webp');
-                    return `<article class="cardgrupos"><img src="${imagem}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem do grupo ${nome}"><div class="conteudocards"><span class="taggrupo">${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${responsavel}</li><li><strong>Contato:</strong> ${telefone}</li></ul><div class="botoescards"><button class="infogrupos" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-modalidade="Detalhes na ficha" data-local="Consulte os detalhes antes de participar" data-responsavel="${responsavel}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></article>`;
+                    const imagem = escaparHtml(urlImagemGrupo(grupo.imagem));
+                    return `<article class="cardgrupos"><img src="${imagem}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem do grupo ${nome}"><div class="conteudocards"><span class="taggrupo">Foco: ${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${responsavel}</li><li><strong>Contato:</strong> ${telefone}</li></ul><div class="botoescards"><button class="infogrupos" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-modalidade="Detalhes na ficha" data-local="Consulte os detalhes antes de participar" data-responsavel="${responsavel}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></article>`;
                 };
                 const reais = (resposta.grupos || []).map(renderizar);
 

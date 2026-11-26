@@ -17,7 +17,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="img/logov.png">
 
-    <link rel="stylesheet" href="css/style.css?v=20261125-css-fix-1">
+    <link rel="stylesheet" href="css/style.css?v=20261126-cards-consent">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 
@@ -232,10 +232,19 @@ require_once __DIR__ . '/iniciar_sessao.php';
         (async () => {
             const alvo = document.getElementById('gruposDestaque');
             const seguro = valor => String(valor ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+            const urlImagemGrupo = valor => {
+                const caminho = String(valor ?? '').trim().replace(/\\/g, '/');
+                if (!caminho) return 'img/apoio1.webp';
+                if (/^https?:\/\//i.test(caminho) || caminho.startsWith('/')) return caminho;
+                if (caminho.startsWith('img/')) return caminho;
+                if (caminho.startsWith('uploads/')) return `img/${caminho}`;
+                if (/^[a-z0-9_.-]+\.(?:jpe?g|png|webp)$/i.test(caminho)) return `img/uploads/grupos/${encodeURIComponent(caminho)}`;
+                return 'img/apoio1.webp';
+            };
             try {
                 const resposta = await VitalizeAPI.requisicao('/api/groups');
                 const todos = (resposta.grupos || []).slice(0, 3);
-                alvo.innerHTML = `${todos.map(g => `<article class="cardgrupos"><img src="${seguro(g.imagem || 'img/apoio1.webp')}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem do grupo ${seguro(g.nome_grupo)}"><div class="conteudocards"><span class="taggrupo">${seguro(g.foco || 'Grupo de apoio')}</span><h3>${seguro(g.nome_grupo)}</h3><div class="infosgrupo"><span>${g.data_encontro ? new Date(`${g.data_encontro}T12:00:00`).toLocaleDateString('pt-BR') : 'Data a definir'}</span><span>${seguro((g.horario || '').slice(0,5) || 'Horário a definir')}</span></div><p class="focogrupo">${seguro(g.mais_info || '')}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${seguro(g.responsavel || 'Não informado')}</li><li><strong>Contato:</strong> ${seguro(g.telefone_grupo || 'Não informado')}</li></ul><a class="infogrupos" href="conteudo.php?pagina=grupos">Ver grupos e detalhes</a></div></article>`).join('') || '<p class="estado-vazio">Nenhum grupo de apoio publicado no momento.</p>'}`;
+                alvo.innerHTML = `${todos.map(g => `<article class="cardgrupos"><img src="${seguro(urlImagemGrupo(g.imagem))}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem do grupo ${seguro(g.nome_grupo)}"><div class="conteudocards"><span class="taggrupo">Foco: ${seguro(g.foco || 'Foco não informado')}</span><h3>${seguro(g.nome_grupo)}</h3><div class="infosgrupo"><span>${g.data_encontro ? new Date(`${g.data_encontro}T12:00:00`).toLocaleDateString('pt-BR') : 'Data a definir'}</span><span>${seguro((g.horario || '').slice(0,5) || 'Horário a definir')}</span></div><p class="focogrupo">${seguro(g.mais_info || '')}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${seguro(g.responsavel || 'Não informado')}</li><li><strong>Contato:</strong> ${seguro(g.telefone_grupo || 'Não informado')}</li></ul><a class="infogrupos" href="conteudo.php?pagina=grupos">Ver grupos e detalhes</a></div></article>`).join('') || '<p class="estado-vazio">Nenhum grupo de apoio publicado no momento.</p>'}`;
             } catch (e) { alvo.innerHTML = '<p class="estado-vazio">Não foi possível carregar grupos de apoio.</p>'; }
         })();
     </script>

@@ -2000,6 +2000,44 @@ textarea {
     accent-color: #b189e8;
 }
 
+.consentimento-publicacao {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+    margin: 8px 0 24px;
+    padding: 16px 18px;
+    border: 1px solid #d9d0e8;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.consentimento-publicacao > input {
+    width: 18px;
+    height: 18px;
+    margin: 3px 0 0;
+    accent-color: #7656a5;
+}
+
+.consentimento-publicacao > label {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    color: #4e4858;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.consentimento-publicacao strong {
+    color: #46345f;
+    font-size: 15px;
+    font-weight: 650;
+}
+
+.consentimento-publicacao span {
+    font-size: 14px;
+}
+
 /* BOTÃO */
 .form-relato .btn-relato {
     width: 100%;

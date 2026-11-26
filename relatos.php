@@ -18,7 +18,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
     <link rel="icon" type="image/png" href="img/logov.png">
 
 
-    <link rel="stylesheet" href="css/style.css?v=20261125-css-fix-1">
+    <link rel="stylesheet" href="css/style.css?v=20261126-cards-consent">
 
 </head>
 
@@ -90,10 +90,13 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     </label>
                 </div>
 
-                <label class="anonimo-box">
-                    <input type="checkbox" name="consentimento_publicacao" value="1" required>
-                    Concordo que este relato seja publicado após análise. Entendo que devo remover dados pessoais ou informações médicas que não quero compartilhar.
-                </label>
+                <div class="consentimento-publicacao">
+                    <input id="consentimentoPublicacao" type="checkbox" name="consentimento_publicacao" value="1" required aria-describedby="textoConsentimentoPublicacao">
+                    <label for="consentimentoPublicacao">
+                        <strong>Autorização para publicação</strong>
+                        <span id="textoConsentimentoPublicacao">Autorizo a publicação deste relato depois da análise da equipe Vitalize. Se escolher o modo anônimo, meu nome e minha foto não serão exibidos. Vou retirar do texto dados pessoais ou informações que não quero tornar públicas.</span>
+                    </label>
+                </div>
 
                 <button class="btn-relato" type="submit">
                     Enviar Relato
