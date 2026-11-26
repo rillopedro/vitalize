@@ -232,19 +232,41 @@ require_once __DIR__ . '/iniciar_sessao.php';
         (async () => {
             const alvo = document.getElementById('gruposDestaque');
             const seguro = valor => String(valor ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-            const urlImagemGrupo = valor => {
+            const imagensAlternativasGrupo = [
+                'img/grupos/grupo-01.webp', 'img/grupos/grupo-02.webp',
+                'img/grupos/grupo-03.webp', 'img/grupos/grupo-04.webp',
+                'img/grupos/grupo-05.webp', 'img/grupos/grupo-06.webp'
+            ];
+            const chaveImagem = caminho => new URL(caminho, document.baseURI).pathname.toLocaleLowerCase();
+            const imagemAlternativaGrupo = (grupo, usadas) => {
+                const inicio = (Math.max(1, Number(grupo.id_grupo) || 1) - 1) % imagensAlternativasGrupo.length;
+                for (let passo = 0; passo < imagensAlternativasGrupo.length; passo++) {
+                    const imagem = imagensAlternativasGrupo[(inicio + passo) % imagensAlternativasGrupo.length];
+                    if (!usadas.has(chaveImagem(imagem))) return imagem;
+                }
+                return imagensAlternativasGrupo[inicio];
+            };
+            const urlImagemGrupo = (valor, alternativa) => {
                 const caminho = String(valor ?? '').trim().replace(/\\/g, '/');
-                if (!caminho) return 'img/apoio1.webp';
+                if (!caminho || caminho === 'img/apoio1.webp') return alternativa;
                 if (/^https?:\/\//i.test(caminho) || caminho.startsWith('/')) return caminho;
                 if (caminho.startsWith('img/')) return caminho;
                 if (caminho.startsWith('uploads/')) return `img/${caminho}`;
                 if (/^[a-z0-9_.-]+\.(?:jpe?g|png|webp)$/i.test(caminho)) return `img/uploads/grupos/${encodeURIComponent(caminho)}`;
-                return 'img/apoio1.webp';
+                return alternativa;
             };
             try {
                 const resposta = await VitalizeAPI.requisicao('/api/groups');
                 const todos = (resposta.grupos || []).slice(0, 3);
-                alvo.innerHTML = `${todos.map(g => `<article class="cardgrupos"><img src="${seguro(urlImagemGrupo(g.imagem))}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem do grupo ${seguro(g.nome_grupo)}"><div class="conteudocards"><span class="taggrupo">Foco: ${seguro(g.foco || 'Foco não informado')}</span><h3>${seguro(g.nome_grupo)}</h3><div class="infosgrupo"><span>${g.data_encontro ? new Date(`${g.data_encontro}T12:00:00`).toLocaleDateString('pt-BR') : 'Data a definir'}</span><span>${seguro((g.horario || '').slice(0,5) || 'Horário a definir')}</span></div><p class="focogrupo">${seguro(g.mais_info || '')}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${seguro(g.responsavel || 'Não informado')}</li><li><strong>Contato:</strong> ${seguro(g.telefone_grupo || 'Não informado')}</li></ul><a class="infogrupos" href="conteudo.php?pagina=grupos">Ver grupos e detalhes</a></div></article>`).join('') || '<p class="estado-vazio">Nenhum grupo de apoio publicado no momento.</p>'}`;
+                const imagensUsadas = new Set();
+                alvo.innerHTML = `${todos.map(g => {
+                    const alternativa = imagemAlternativaGrupo(g, imagensUsadas);
+                    imagensUsadas.add(chaveImagem(alternativa));
+                    let foto = urlImagemGrupo(g.imagem, alternativa);
+                    if (imagensUsadas.has(chaveImagem(foto))) foto = alternativa;
+                    imagensUsadas.add(chaveImagem(foto));
+                    return `<article class="cardgrupos"><img src="${seguro(foto)}" data-fallback="${alternativa}" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Imagem do grupo ${seguro(g.nome_grupo)}"><div class="conteudocards"><span class="taggrupo">Foco: ${seguro(g.foco || 'Foco não informado')}</span><h3>${seguro(g.nome_grupo)}</h3><div class="infosgrupo"><span>${g.data_encontro ? new Date(`${g.data_encontro}T12:00:00`).toLocaleDateString('pt-BR') : 'Data a definir'}</span><span>${seguro((g.horario || '').slice(0,5) || 'Horário a definir')}</span></div><p class="focogrupo">${seguro(g.mais_info || '')}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${seguro(g.responsavel || 'Não informado')}</li><li><strong>Contato:</strong> ${seguro(g.telefone_grupo || 'Não informado')}</li></ul><a class="infogrupos" href="conteudo.php?pagina=grupos">Ver grupos e detalhes</a></div></article>`;
+                }).join('') || '<p class="estado-vazio">Nenhum grupo de apoio publicado no momento.</p>'}`;
             } catch (e) { alvo.innerHTML = '<p class="estado-vazio">Não foi possível carregar grupos de apoio.</p>'; }
         })();
     </script>

@@ -180,11 +180,39 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     botaoVerMais.hidden = true;
                     return;
                 }
+                const fotosPerfilDemo = {
+                    alex: 'img/perfis/alex.webp',
+                    ana: 'img/perfis/ana-clara.webp',
+                    'ana clara': 'img/perfis/ana-clara.webp',
+                    camila: 'img/perfis/camila.webp',
+                    diego: 'img/perfis/diego.webp',
+                    julia: 'img/perfis/julia.webp',
+                    lucas: 'img/perfis/lucas.webp',
+                    sasuke: 'img/perfis/sasuke.webp'
+                };
+                const nomeNormalizado = valor => String(valor ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLocaleLowerCase('pt-BR');
+                const fotoDemoDoAutor = nome => {
+                    const normalizado = nomeNormalizado(nome);
+                    return fotosPerfilDemo[normalizado] || fotosPerfilDemo[normalizado.split(/\s+/)[0]] || '';
+                };
+                const fotosPorCaminho = new Map();
                 lista.innerHTML = relatos.map(relato => {
-                    const nome = relato.anonimo ? '@Anônimo' : `@${textoSeguro(relato.nome || 'Usuário')}`;
-                    const avatar = !relato.anonimo && relato.foto_perfil
-                        ? `<img src="${textoSeguro(relato.foto_perfil)}" alt="Foto de perfil">`
-                        : '<span class="avatar-placeholder"><i class="fa-solid fa-user"></i></span>';
+                    const anonimo = relato.anonimo === true || Number(relato.anonimo) === 1;
+                    const nome = anonimo ? '@Anônimo' : `@${textoSeguro(relato.nome || 'Usuário')}`;
+                    const fotoDemo = !anonimo ? fotoDemoDoAutor(relato.nome) : '';
+                    let fotoPerfil = !anonimo ? String(relato.foto_perfil || fotoDemo).trim() : '';
+                    const autor = nomeNormalizado(relato.nome);
+                    if (fotoPerfil) {
+                        try {
+                            const caminho = new URL(fotoPerfil, document.baseURI).pathname.toLocaleLowerCase();
+                            const outroAutor = fotosPorCaminho.get(caminho);
+                            if (outroAutor && outroAutor !== autor) fotoPerfil = fotoDemo;
+                            if (fotoPerfil) fotosPorCaminho.set(new URL(fotoPerfil, document.baseURI).pathname.toLocaleLowerCase(), autor);
+                        } catch {
+                            fotoPerfil = fotoDemo;
+                        }
+                    }
+                    const avatar = `<span class="avatar-placeholder"><i class="fa-solid fa-user"></i></span>${fotoPerfil ? `<img src="${textoSeguro(fotoPerfil)}" data-fallback="${textoSeguro(fotoDemo)}" onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.dataset.fallback=''}else{this.remove()}" alt="Foto de perfil de ${textoSeguro(relato.nome || 'usuário')}">` : ''}`;
                     const data = new Date(String(relato.data_publicacao).replace(' ', 'T')).toLocaleDateString('pt-BR');
                     return `<div class="card-depoimento" data-depoimento><div class="cabecalho-depoimento"><div class="avatar">${avatar}</div><div><h4>${nome}</h4><span>${data}</span></div></div><div class="texto-depoimento"><h3>${textoSeguro(relato.titulo)}</h3><p style="white-space:pre-line">${textoSeguro(relato.conteudo)}</p></div></div>`;
                 }).join('');

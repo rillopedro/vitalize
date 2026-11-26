@@ -162,14 +162,29 @@ require_once __DIR__ . '/iniciar_sessao.php';
         function escaparHtml(valor) {
             return String(valor ?? '').replace(/[&<>"']/g, caractere => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caractere]));
         }
-        function urlImagemGrupo(valor) {
+        const imagensAlternativasGrupo = [
+            'img/grupos/grupo-01.webp', 'img/grupos/grupo-02.webp',
+            'img/grupos/grupo-03.webp', 'img/grupos/grupo-04.webp',
+            'img/grupos/grupo-05.webp', 'img/grupos/grupo-06.webp'
+        ];
+        const chaveImagem = caminho => new URL(caminho, document.baseURI).pathname.toLocaleLowerCase();
+        function imagemAlternativaGrupo(grupo, usadas = new Set()) {
+            const id = Math.max(1, Number(grupo.id_grupo) || 1);
+            const inicio = (id - 1) % imagensAlternativasGrupo.length;
+            for (let passo = 0; passo < imagensAlternativasGrupo.length; passo++) {
+                const imagem = imagensAlternativasGrupo[(inicio + passo) % imagensAlternativasGrupo.length];
+                if (!usadas.has(chaveImagem(imagem))) return imagem;
+            }
+            return imagensAlternativasGrupo[inicio];
+        }
+        function urlImagemGrupo(valor, alternativa) {
             const caminho = String(valor ?? '').trim().replace(/\\/g, '/');
-            if (!caminho) return 'img/apoio1.webp';
+            if (!caminho || caminho === 'img/apoio1.webp') return alternativa;
             if (/^https?:\/\//i.test(caminho) || caminho.startsWith('/')) return caminho;
             if (caminho.startsWith('img/')) return caminho;
             if (caminho.startsWith('uploads/')) return `img/${caminho}`;
             if (/^[a-z0-9_.-]+\.(?:jpe?g|png|webp)$/i.test(caminho)) return `img/uploads/grupos/${encodeURIComponent(caminho)}`;
-            return 'img/apoio1.webp';
+            return alternativa;
         }
         function dataGrupo(valor) {
             if (!valor) return 'Data a definir';
@@ -180,6 +195,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
             const lista = document.getElementById('listaGrupos');
             try {
                 const resposta = await VitalizeAPI.requisicao('/api/groups');
+                const imagensUsadas = new Set();
                 const renderizar = grupo => {
                     const nome = escaparHtml(grupo.nome_grupo);
                     const foco = escaparHtml(grupo.foco || 'Foco não informado');
@@ -189,8 +205,13 @@ require_once __DIR__ . '/iniciar_sessao.php';
                     const link = escaparHtml(grupo.link || '#');
                     const telefone = escaparHtml(grupo.telefone_grupo || 'Não informado');
                     const responsavel = escaparHtml(grupo.responsavel || 'Não informado');
-                    const imagem = escaparHtml(urlImagemGrupo(grupo.imagem));
-                    return `<article class="cardgrupos"><img src="${imagem}" onerror="this.onerror=null;this.src='img/apoio1.webp'" alt="Imagem do grupo ${nome}"><div class="conteudocards"><span class="taggrupo">Foco: ${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${responsavel}</li><li><strong>Contato:</strong> ${telefone}</li></ul><div class="botoescards"><button class="infogrupos" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-modalidade="Detalhes na ficha" data-local="Consulte os detalhes antes de participar" data-responsavel="${responsavel}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}">Mais info</button></div></div></article>`;
+                    const alternativa = imagemAlternativaGrupo(grupo, imagensUsadas);
+                    imagensUsadas.add(chaveImagem(alternativa));
+                    let caminhoImagem = urlImagemGrupo(grupo.imagem, alternativa);
+                    if (imagensUsadas.has(chaveImagem(caminhoImagem))) caminhoImagem = alternativa;
+                    imagensUsadas.add(chaveImagem(caminhoImagem));
+                    const imagem = escaparHtml(caminhoImagem);
+                    return `<article class="cardgrupos"><img src="${imagem}" data-fallback="${alternativa}" onerror="this.onerror=null;this.src=this.dataset.fallback" alt="Imagem do grupo ${nome}"><div class="conteudocards"><span class="taggrupo">Foco: ${foco}</span><h3>${nome}</h3><div class="infosgrupo"><span>${data}</span><span>${horario}</span></div><p class="focogrupo">${info}</p><ul class="dados-grupo-meta"><li><strong>Responsável:</strong> ${responsavel}</li><li><strong>Contato:</strong> ${telefone}</li></ul><div class="botoescards"><button class="infogrupos" data-id-grupo="${Number(grupo.id_grupo)}" data-nome="${nome}" data-foco="${foco}" data-data="${data}" data-horario="${horario}" data-modalidade="Detalhes na ficha" data-local="Consulte os detalhes antes de participar" data-responsavel="${responsavel}" data-info="${info}" data-link="${link}" data-telefone="${telefone}" data-imagem="${imagem}" data-fallback="${alternativa}">Mais info</button></div></div></article>`;
                 };
                 const reais = (resposta.grupos || []).map(renderizar);
 
@@ -273,6 +294,7 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 const imagem =
                     botao.getAttribute("data-imagem") ||
                     "img/apoio1.webp";
+                const alternativaImagem = botao.getAttribute("data-fallback") || imagemAlternativaGrupo({ id_grupo: botao.dataset.idGrupo });
 
                 linkGrupoAtual = link;
                 nomeGrupoAtual = nome;
@@ -291,6 +313,10 @@ require_once __DIR__ . '/iniciar_sessao.php';
                 modalDescricao.textContent = info;
                 modalTelefone.textContent = telefone;
 
+                modalImagem.onerror = () => {
+                    modalImagem.onerror = null;
+                    modalImagem.src = alternativaImagem;
+                };
                 modalImagem.src = imagem;
                 modalImagem.alt =
                     "Imagem do grupo " + nome;
