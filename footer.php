@@ -49,10 +49,6 @@
                 Pedro Rillo
             </a>
 
-            <span class="desenvolvedor-sem-link">
-                <i class="fab fa-github"></i>
-                Vitória Guedes
-            </span>
         </div>
 
         <div class="footer-coluna">
